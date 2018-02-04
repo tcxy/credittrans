@@ -23,7 +23,7 @@ Route::get('/test', function () {
     return view('dbtest');
 });
 
-Route::post('/login', 'LoginController@login')->name('admin.login');
+Route::post('/validate', 'LoginController@login')->name('admin.login');
 Route::get('/questions', 'LoginController@getQuestions')->name('admin.getquestions');
 
 Route::get('/login', function () {
