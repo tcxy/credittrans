@@ -29,7 +29,7 @@
                 data: form.serialize(),
                 success: function (data) {
                     if (data['code'] == '001') {
-                        alert('Succeed login');
+                        window.location.replace("{{ route('admin.transaction') }}");
                     } else {
                         alert(data['message']);
                     }
@@ -42,7 +42,7 @@
         }
 
         function loadQuestions() {
-            
+            return null;
         }
     </script>
 </head>

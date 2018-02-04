@@ -25,6 +25,9 @@ Route::get('/test', function () {
 
 Route::post('/validate', 'LoginController@login')->name('admin.login');
 Route::get('/questions', 'LoginController@getQuestions')->name('admin.getquestions');
+Route::get('/transaction', function () {
+    return view('transaction');
+})->name('admin.transaction');
 
 Route::get('/login', function () {
     return view('login');

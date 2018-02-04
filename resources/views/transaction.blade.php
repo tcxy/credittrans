@@ -9,9 +9,9 @@
     <meta charset="utf-8">
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-responsive.min.css' }}" rel="stylesheet">
-    <link href="css/site.css" rel="stylesheet">
+    <link href="{!! asset('css/bootstrap.css') !!}" rel="stylesheet">
+    <link href="{!! asset('css/bootstrap-responsive.css') !!}" rel="stylesheet">
+    <link href="{!! asset('css/site.css') !!}" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <style>
@@ -101,13 +101,13 @@
 <script type="text/javascript">
 
 
-//    var c = document.getElementById("scene");
-//    var cxt = c.getContext("2d");
-//    var img = new Image();
-//    img.src = "creditCard.png";
-//    img.onload = function () {
-//        cxt.drawImage(img, 0, 0);
-//    }
+    //    var c = document.getElementById("scene");
+    //    var cxt = c.getContext("2d");
+    //    var img = new Image();
+    //    img.src = "creditCard.png";
+    //    img.onload = function () {
+    //        cxt.drawImage(img, 0, 0);
+    //    }
 
 
 </script>
