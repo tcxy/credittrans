@@ -19,11 +19,11 @@ class LoginController extends Controller
 
         foreach ($admins as $admin) {
             if ($username == $admin->username and $password == $admin->password) {
-//                if ($this->validateQuestion($questionid, $answer)) {
+                if ($this->validateQuestion($questionid, $answer)) {
                     return response()->json(['code' => '001']);
-//                } else {
-//                    return response()->json(['code' => '002', 'message' => 'The answer don\'t match with validation question']);
-//                }
+                } else {
+                    return response()->json(['code' => '002', 'message' => 'The answer don\'t match with validation question']);
+                }
             }
         }
         return response()->json(['code' => '002', 'message' => "username/password don't match with our records"]);
