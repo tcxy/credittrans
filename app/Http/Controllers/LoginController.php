@@ -44,6 +44,9 @@ class LoginController extends Controller
 
         for ($i = 0; $i < 3; $i++) {
             $id = rand(1, 6);
+            while (array_key_exists($id, $questions)) {
+                $id = rand(1, 6);
+            }
             $questions[$id] = Question::find($id)->question;
         }
 
