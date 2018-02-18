@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAdminTable extends Migration
+class CreateCreditcardTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateAdminTable extends Migration
      */
     public function up()
     {
-        Schema::create('admins', function (Blueprint $table) {
-            $table->increments('uid');
-            $table->string('username');
-            $table->string('password');
-            $table->boolean('isBlocked');
+        Schema::create('creditcards', function (Blueprint $table) {
+            $table->string('cardId')->primary();
+            $table->integer('csc');
+            $table->date('expireDate');
+            $table->string('accountid');
         });
     }
 
@@ -28,6 +28,6 @@ class CreateAdminTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin');
+        Schema::dropIfExists('creditcard');
     }
 }

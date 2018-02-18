@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Questions extends Migration
+class CreatCreaditaccountTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class Questions extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('questions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('question');
-            $table->string('answer');
+        Schema::create('creditaccounts', function (Blueprint $table) {
+            $table->increments('accountid');
+            $table->string('holdername');
+            $table->string('phonenumber');
+            $table->string('address');
+            $table->double('spendlinglimit');
+            $table->double('balance');
         });
     }
 
@@ -29,6 +31,5 @@ class Questions extends Migration
     public function down()
     {
         //
-        Schema::dropIfExists('questions');
     }
 }

@@ -35,7 +35,9 @@
                     data: form.serialize(),
                     success: function (data) {
                         if (data['code'] == '001') {
-                            window.location.replace("{{ route('admin.transaction') }}");
+                            console.log(data['data']);
+                            sessionStorage.setItem('userId', data['data']);
+                            window.location.replace("{{ route('admin.validation') }}");
                         } else {
                             alert(data['message']);
                         }
@@ -50,25 +52,13 @@
 
         }
 
-        function loadQuestions() {
-            $.ajax({
-                type: 'get',
-                url: '{{ route("admin.getquestions") }}',
-                success: function (data) {
-                    if (data['code'] == '001') {
-                        var select = $('#selection');
-                        var questions = data['data'];
-                        for (var key in questions) {
-                            select.append("<option value=\'" + key + "\'>" + questions[key] + "</option>");
-                        }
-                    }
-                }
-            });
+        function validation() {
+
         }
     </script>
 </head>
 
-<body onload="loadQuestions()">
+<body>
 <form id="loginform" method="post" action="{{ route('admin.login') }}">
     <table width="202" border="0" align="center" cellpadding="05" cellspacing="0" id="logintable">
         <tr>
@@ -81,18 +71,6 @@
         </tr>
         <tr>
             <td><input type="password" name="password" type="text" id="password" value="" placeholder="password"></td>
-        </tr>
-        <tr>
-            <td>
-                <select form="loginform" id="selection" name="questionid">
-
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <input type="answer" name="answer" type="text" id="answer" value="" placeholder="Your answer">
-            </td>
         </tr>
         <tr>
             <td><input type="button" class="submit" value="Login" onclick="login()"></td>

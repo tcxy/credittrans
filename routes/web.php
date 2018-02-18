@@ -24,7 +24,11 @@ Route::get('/test', function () {
 });
 
 Route::post('/validate', 'LoginController@login')->name('admin.login');
-Route::get('/questions', 'LoginController@getQuestions')->name('admin.getquestions');
+Route::get('/validation', function () {
+    return view('validation');
+})->name('admin.validation');
+Route::post('/validatequestion', 'LoginController@validatequestion')->name('admin.validatequestion');
+Route::post('/question', 'LoginController@getQuestion')->name('admin.getquestion');
 Route::get('/transaction', function () {
     return view('transaction');
 })->name('admin.transaction');
@@ -32,3 +36,5 @@ Route::get('/transaction', function () {
 Route::get('/login', function () {
     return view('login');
 });
+
+Route::post('/questionwithblock', 'LoginController@questionWithBlock')->name('admin.questionwithblock');
