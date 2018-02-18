@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html lang="en" class="ie6 ielt7 ielt8 ielt9"><![endif]--><!--[if IE 7 ]>
+<html lang="en" class="ie7 ielt8 ielt9"><![endif]--><!--[if IE 8 ]>
+<html lang="en" class="ie8 ielt9"><![endif]--><!--[if IE 9 ]>
+<html lang="en" class="ie9"> <![endif]--><!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en"><!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/site.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <style>
+        .container {
+            margin: 0 auto;
+            width: 800px;
+
+        }
+
+        #scene {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span
+                    class="icon-bar"></span>
+                <span class="icon-bar"></span> <span class="icon-bar"></span> </a> <a class="brand"
+                                                                                      href="transaction.html">Transaction</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li>
+                        <a href="#">Account</a>
+                    </li>
+                    <li>
+                        <a href="creditCard.html">Credit card</a>
+                    </li>
+
+                </ul>
+                <ul class="nav pull-right">
+                    <li>
+                        <a href="#">@username</a>
+                    </li>
+                    <li>
+                        <a href="login.html">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="span9">
+    <h1>
+        Account information
+    </h1>
+    <a class="toggle-link" href="#new-file">Create new account</a>
+    <form id="new-file" class="form-horizontal hidden">
+        <fieldset>
+            <legend>New account</legend>
+            <div class="control-group">
+                <label class="control-label" for="textarea">First name:</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="fName"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="textarea">Last name:</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="lName"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="textarea">Type:</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="type"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="textarea">Max Limit:</label>
+                <div class="controls">
+                    <input type="number" class="input-xlarge" id="limit"/>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" onclick="add()">Summit</button>
+                <button class="btn" onclick="cancel()">Cancel</button>
+            </div>
+        </fieldset>
+    </form>
+    <table class="table table-bordered table-striped" id="account">
+        <thead>
+        <tr>
+            <th>
+                Account Number
+            </th>
+            <th>
+                First Name
+            </th>
+            <th>
+                Last Name
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Max Limit
+
+            </th>
+            <th>
+
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                497399811
+            </td>
+            <td>
+                Keanu
+            </td>
+            <td>
+                Reeves
+            </td>
+            <td>
+                CHECKING
+            </td>
+            <th>
+                20000
+            </th>
+            <td>
+                <!--<a href="#" class="delete-link" onclick="addCard()">add</a>&nbsp;&nbsp;&nbsp;-->
+                <a href="#" class="delete-link" class="edit" onclick="editAccount(this,1)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                677615251
+            </td>
+            <td>
+                Mariah
+            </td>
+            <td>
+                Carey
+            </td>
+            <td>
+                SAVING
+            </td>
+            <th>
+                20000
+            </th>
+            <td>
+                <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
+                <a href="#" class="delete-link" onclick="editAccount(this,2)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                245438646
+            </td>
+            <td>
+                Micheal
+            </td>
+            <td>
+                Jackson
+            </td>
+            <td>
+                SAVING
+            </td>
+            <th>
+                20000
+            </th>
+            <td>
+                <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
+                <a href="#" class="delete-link" onclick="editAccount(this,3)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                932286486
+            </td>
+            <td>
+                Jean
+            </td>
+            <td>
+                Leo
+            </td>
+            <td>
+                SAVING
+            </td>
+            <th>
+                20000
+            </th>
+            <td>
+                <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
+                <a href="#" class="delete-link" onclick="editAccount(this,4)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                247112623
+            </td>
+            <td>
+                Tom
+            </td>
+            <td>
+                Hanks
+            </td>
+            <td>
+                CHECKING
+            </td>
+            <th>
+                20000
+            </th>
+            <td>
+                <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
+                <a href="#" class="delete-link" onclick="editAccount(this,5)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <ul>
+            <li class="disabled">
+                <a href="#">&laquo;</a>
+            </li>
+            <li class="active">
+                <a href="#">1</a>
+            </li>
+            <li>
+                <a href="#">2</a>
+            </li>
+            <li>
+                <a href="#">3</a>
+            </li>
+            <li>
+                <a href="#">4</a>
+            </li>
+            <li>
+                <a href="#">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>
