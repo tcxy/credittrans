@@ -11,7 +11,7 @@ class CreditController extends Controller
     //
     public function getAccountList(Request $request) {
         $page = $request->input('page');
-        $offset = $page * 15;
+        $offset = (int($page)-1) * 15;
         $accountlist = [];
         $accounts = CreditAccount::offset($offset)->limite(15)->get();
         foreach ($accounts as $account) {
@@ -19,12 +19,15 @@ class CreditController extends Controller
         }
 
         $amount = CreditAccount::count();
-        $hasNextpage = false;
-        if ($amount > $offset + 15) {
-            $hasNextpage = true;
+        $total_page = 0;
+
+        if ($amount % 15 == 0) {
+            $total_page = $amount / 15;
+        } else {
+            $total_page = $amount / 15 + 1;
         }
 
-        return response()->json(['code' => '001', 'data' => $accountlist, 'hasnext' => $hasNextpage]);
+        return response()->json(['code' => '001', 'data' => ['accounts' => $accountlist, 'total_pages' => $total_page, 'current_page' => $page]]);
     }
 
     public function getCardList(Request $request) {

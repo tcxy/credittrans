@@ -38,3 +38,8 @@ Route::get('/login', function () {
 });
 
 Route::post('/questionwithblock', 'LoginController@questionWithBlock')->name('admin.questionwithblock');
+
+Route::get('/getaccounts', 'CreditController@getAccountList')->name('credit.getaccounts');
+Route::get('/account', function () {
+    return view('Account');
+});

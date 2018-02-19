@@ -14,6 +14,7 @@
     <link href="{!! asset('css/site.css') !!}" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <style>
         .container {
             margin: 0 auto;
@@ -25,8 +26,22 @@
             border: 1px solid black;
         }
     </style>
+
+
+    <script>
+        function loadData() {
+            var username = sessionStorage.getItem('username');
+            if (username != null) {
+                $('#username').val(username);
+            } else {
+                alert('You should login first');
+                window.location.replace('/');
+            }
+        }
+    </script>
+
 </head>
-<body>
+<body onload="loadData()">
 <div class="navbar">
     <div class="navbar-inner">
         <div class="container">
@@ -36,55 +51,15 @@
             <div class="nav-collapse">
                 <ul class="nav">
                     <li>
-                        <a href="#">Dashboard</a>
+                        <a href="/account">Account</a>
                     </li>
                     <li>
-                        <a href="#">Activate</a>
+                        <a href="creditCard.html">Credit card</a>
                     </li>
-                    <li>
-                        <a href="#">Inactivate</a>
-                    </li>
-                    <li>
-                        <a href="#">Connect</a>
-                    </li>
-                    <li>
-                        <a href="#">Disconnect</a>
-                    </li>
-                    <!--<li class="dropdown">-->
-                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Tours <b class="caret"></b></a>-->
-                    <!--<ul class="dropdown-menu">-->
-                    <!--<li>-->
-                    <!--<a href="#">Introduction Tour</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                    <!--<a href="#">Project Organisation</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                    <!--<a href="#">Task Assignment</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                    <!--<a href="#">Access Permissions</a>-->
-                    <!--</li>-->
-                    <!--<li class="divider">-->
-                    <!--</li>-->
-                    <!--<li class="nav-header">-->
-                    <!--Files-->
-                    <!--</li>-->
-                    <!--<li>-->
-                    <!--<a href="#">How to upload multiple files</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                    <!--<a href="#">Using file version</a>-->
-                    <!--</li>-->
-                    <!--</ul>-->
-                    <!--</li>-->
                 </ul>
-                <!--<form class="navbar-search pull-left" action="">-->
-                <!--<input type="text" class="search-query span2" placeholder="Search" />-->
-                <!--</form>-->
                 <ul class="nav pull-right">
                     <li>
-                        <a href="#">@username</a>
+                        <a href="#" id="username">@username</a>
                     </li>
                     <li>
                         <a href="login.html">Logout</a>
@@ -96,6 +71,7 @@
 </div>
 <div class="container">
     <canvas id="scene" width="800" height="500">Your browser does not support the canvas element.</canvas>
+
 </div>
 
 <script type="text/javascript">

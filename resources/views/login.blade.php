@@ -36,7 +36,8 @@
                     success: function (data) {
                         if (data['code'] == '001') {
                             console.log(data['data']);
-                            sessionStorage.setItem('userId', data['data']);
+                            sessionStorage.setItem('username', $('#username').val());
+                            sessionStorage.setItem('userId', data['data'])
                             window.location.replace("{{ route('admin.validation') }}");
                         } else {
                             alert(data['message']);
@@ -52,9 +53,6 @@
 
         }
 
-        function validation() {
-
-        }
     </script>
 </head>
 

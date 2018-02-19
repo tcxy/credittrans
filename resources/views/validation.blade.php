@@ -97,7 +97,7 @@
         }
 
         function checkUser() {
-            if (!sessionStorage.getItem('userId')) {
+            if (!sessionStorage.getItem('username')) {
                 alert('You should login first');
                 window.location.replace('/');
             } else {
