@@ -78,8 +78,16 @@
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">Type:</label>
+                <div class="controls"><select id="type" style="width: 284px">
+                    <option>CHECKING</option>
+                    <option>SAVING</option>
+                </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="textarea">Balance:</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="type"/>
+                    <input type="number" class="input-xlarge" id="balance"/>
                 </div>
             </div>
             <div class="control-group">
@@ -88,10 +96,24 @@
                     <input type="number" class="input-xlarge" id="limit"/>
                 </div>
             </div>
+            <legend>New credit card</legend>
+            <div class="control-group">
+                <label class="control-label" for="textarea">CVV Number:</label>
+                <div class="controls">
+                    <input type="number" class="input-xlarge" id="cvv"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="textarea">Date of expiration:</label>
+                <div class="controls">
+                    <input type="date" class="input-xlarge" id="date"/>
+                </div>
+            </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-primary" onclick="add()">Summit</button>
                 <button class="btn" onclick="cancel()">Cancel</button>
             </div>
+
         </fieldset>
     </form>
     <table class="table table-bordered table-striped" id="account">
@@ -108,6 +130,9 @@
             </th>
             <th>
                 Type
+            </th>
+            <th>
+                Balance
             </th>
             <th>
                 Max Limit
@@ -133,11 +158,15 @@
                 CHECKING
             </td>
             <th>
+                20
+            </th>
+            <th>
                 20000
             </th>
             <td>
                 <!--<a href="#" class="delete-link" onclick="addCard()">add</a>&nbsp;&nbsp;&nbsp;-->
                 <a href="#" class="delete-link" class="edit" onclick="editAccount(this,1)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link" data-toggle="modal" data-target=".bs-example-modal-sm">view</a>&nbsp;&nbsp;&nbsp;
                 <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
             </td>
         </tr>
@@ -155,11 +184,15 @@
                 SAVING
             </td>
             <th>
+                20
+            </th>
+            <th>
                 20000
             </th>
             <td>
                 <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
                 <a href="#" class="delete-link" onclick="editAccount(this,2)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link" id="pop">view</a>&nbsp;&nbsp;&nbsp;
                 <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
             </td>
         </tr>
@@ -177,11 +210,15 @@
                 SAVING
             </td>
             <th>
+                20
+            </th>
+            <th>
                 20000
             </th>
             <td>
                 <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
                 <a href="#" class="delete-link" onclick="editAccount(this,3)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;
                 <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
             </td>
         </tr>
@@ -199,11 +236,15 @@
                 SAVING
             </td>
             <th>
+                20
+            </th>
+            <th>
                 20000
             </th>
             <td>
                 <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
                 <a href="#" class="delete-link" onclick="editAccount(this,4)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;
                 <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
             </td>
         </tr>
@@ -221,11 +262,15 @@
                 CHECKING
             </td>
             <th>
+                20
+            </th>
+            <th>
                 20000
             </th>
             <td>
                 <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
                 <a href="#" class="delete-link" onclick="editAccount(this,5)">edit</a>&nbsp;&nbsp;&nbsp;
+                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;
                 <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
             </td>
         </tr>
@@ -255,6 +300,23 @@
         </ul>
     </div>
 
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <legend style="text-align: center">Credit card information</legend>
+            <div class="control-group">
+                <label class="control-label" for="textarea">credit cards:</label>
+                <div class="controls">
+                    <select style="width: 284px">
+                        <option>23782683264832</option>
+                        <option>23343432434878</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="js/jquery.min.js"></script>

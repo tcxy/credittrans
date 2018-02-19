@@ -65,15 +65,65 @@
         <fieldset>
             <legend>New credit card</legend>
             <div class="control-group">
-                <label class="control-label" for="textarea">Account number:</label>
+                <label class="control-label">Account number:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="accountNum"/>
+                    <select style="width: 284px" id="accountNum">
+                        <option>TEST1</option>
+                        <option>TEST2</option>
+                    </select>
+                    <a href="#" data-toggle="modal" data-target=".bs-example-modal-sm">New account</a>
+
+                    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                        <div class="modal-dialog modal-sm" role="document">
+                            <div class="modal-content">
+                                <legend style="text-align: center">New Account</legend>
+                                <div class="control-group">
+                                    <label class="control-label" for="textarea">First name:</label>
+                                    <div class="controls">
+                                        <input type="text" class="input-xlarge" id="fName"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="textarea">Last name:</label>
+                                    <div class="controls">
+                                        <input type="text" class="input-xlarge" id="lName"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="textarea">Type:</label>
+                                    <div class="controls">
+                                        <select id="type" style="width: 284px">
+                                            <option>CHECKING</option>
+                                            <option>SAVING</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="textarea">Balance:</label>
+                                    <div class="controls">
+                                        <input type="number" class="input-xlarge" id="balance"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="textarea">Max Limit:</label>
+                                    <div class="controls">
+                                        <input type="number" class="input-xlarge" id="limit"/>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-primary" onclick="add()">Summit</button>
+                                    <button class="btn" onclick="cancel()">Cancel</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="textarea">Balance:</label>
+                <label class="control-label" for="textarea">CVV Number:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="balance"/>
+                    <input type="number" class="input-xlarge" id="cvv"/>
                 </div>
             </div>
             <div class="control-group">
@@ -98,7 +148,7 @@
                 Account number
             </th>
             <th>
-                Balance
+                CVV Number
             </th>
             <th>
                 Date of expiration
@@ -117,7 +167,7 @@
                 497399811
             </td>
             <td>
-                30
+                497
             </td>
             <td>
                 2019-02-02
@@ -135,7 +185,7 @@
                 525173998
             </td>
             <td>
-                20
+                598
             </td>
             <td>
                 2019-02-10
@@ -153,7 +203,7 @@
                 214872536
             </td>
             <td>
-                12
+                216
             </td>
             <td>
                 2019-03-02
@@ -171,7 +221,7 @@
                 129364725
             </td>
             <td>
-                27839
+                125
             </td>
             <td>
                 2020-02-02

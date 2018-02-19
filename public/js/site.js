@@ -162,14 +162,16 @@ function add() {
     var td4 = document.createElement('td');
     var td5 = document.createElement('td');
     var td6 = document.createElement('td');
+    var td7 = document.createElement('td');
 
 
     td1.innerHTML = accountNUmber();
     td2.innerHTML = document.getElementById('fName').value;
     td3.innerHTML = document.getElementById('lName').value;
-    td4.innerHTML = document.getElementById('type').value;
+    td7.innerHTML = document.getElementById('type').value;
+    td4.innerHTML = document.getElementById('balance').value;
     td5.innerHTML = document.getElementById('limit').value;
-    td6.innerHTML = "<a href='#' class='delete-link' onclick='editAccount(this,accRowLength)'>edit</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' class='delete-link' onclick='delRow(this)' >delete</a> ";
+    td6.innerHTML = "<a href='#' class='delete-link' onclick='editAccount(this,accRowLength)'>edit</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' class='delete-link' data-toggle='modal' data-target='.bs-example-modal-sm'>view</a> &nbsp;&nbsp;&nbsp;<a href='#' class='delete-link' onclick='delRow(this)' >delete</a> ";
 
 
     var myTab = document.getElementById('account');
@@ -177,9 +179,11 @@ function add() {
     tr.appendChild(td1);
     tr.appendChild(td2);
     tr.appendChild(td3);
+    tr.appendChild(td7);
     tr.appendChild(td4);
     tr.appendChild(td5);
     tr.appendChild(td6);
+
 
 
 }
@@ -189,11 +193,14 @@ function cancel() {
     document.getElementById('lName').value = "";
     document.getElementById('limit').value = "";
     document.getElementById('type').value = "";
+    document.getElementById('balance').value = "";
+    document.getElementById('date').value = "";
+    document.getElementById('cvv').value = "";
 }
 
 function clear() {
     document.getElementById('accountNum').value = "";
-    document.getElementById('balance').value = "";
+    document.getElementById('cvv').value = "";
     document.getElementById('date').value = "";
 }
 
@@ -209,27 +216,28 @@ function createCard() {
     var td5 = document.createElement('td');
 
 
+
     td1.innerHTML = cardNUmber();
     td2.innerHTML = document.getElementById('accountNum').value;
-    td3.innerHTML = document.getElementById('balance').value;
-    td4.innerHTML = document.getElementById('date').value;
-    td5.innerHTML = "<a href='#' class='delete-link' onclick='editCard(this,5)'>edit</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' class='delete-link' onclick='del(this)' >delete</a> ";
+    td5.innerHTML = document.getElementById('cvv').value;
+    td3.innerHTML = document.getElementById('date').value;
+    td4.innerHTML = "<a href='#' class='delete-link' onclick='editCard(this,5)'>edit</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' class='delete-link' onclick='del(this)' >delete</a> ";
 
 
     var myTab = document.getElementById('card');
     myTab.appendChild(tr);
     tr.appendChild(td1);
     tr.appendChild(td2);
+    tr.appendChild(td5);
     tr.appendChild(td3);
     tr.appendChild(td4);
-    tr.appendChild(td5);
 }
 
 function editAccount(obj,x){
     var table = document.getElementById("account");
     for(var i=0;i<table.rows[x].cells.length-1;i++){
         var text = table.rows[x].cells[i].innerHTML;
-        table.rows[x].cells[i].innerHTML = '<input class="input" name="input'+ x + '" type="text" value=""/>';
+        table.rows[x].cells[i].innerHTML = '<input class="input" name="input'+ x + '" type="text" value="" />';
         var input = document.getElementsByName("input" + x);
         input[i].value = text;
         input[0].focus();
