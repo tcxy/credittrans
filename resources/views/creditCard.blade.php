@@ -56,7 +56,6 @@
                     }
                 });
 
-                $('#username').text(username);
                 $.ajax({
                     type: "get",
                     url: "{{ route('credit.getaccounts') }}",
@@ -176,7 +175,7 @@
                 </ul>
                 <ul class="nav pull-right">
                     <li>
-                        <a href="#">@username</a>
+                        <a href="#" id="username">@username</a>
                     </li>
                     <li>
                         <a href="login.html">Logout</a>
