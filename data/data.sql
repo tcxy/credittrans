@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `cs744` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `cs744`;
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: cs744
@@ -58,7 +56,7 @@ CREATE TABLE `creditaccounts` (
   `spendlinglimit` double NOT NULL,
   `balance` double NOT NULL,
   PRIMARY KEY (`accountid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,6 +65,7 @@ CREATE TABLE `creditaccounts` (
 
 LOCK TABLES `creditaccounts` WRITE;
 /*!40000 ALTER TABLE `creditaccounts` DISABLE KEYS */;
+INSERT INTO `creditaccounts` VALUES (1,'Wei Du','6464319123','1824 La Crosse St',2000,600),(2,'Yi Liang','6464312012','1824 La Crossse St',1500,400);
 /*!40000 ALTER TABLE `creditaccounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,6 +91,7 @@ CREATE TABLE `creditcards` (
 
 LOCK TABLES `creditcards` WRITE;
 /*!40000 ALTER TABLE `creditcards` DISABLE KEYS */;
+INSERT INTO `creditcards` VALUES ('4556704099291426',888,'2018-10-01','1'),('5345751038575230',998,'2018-09-01','2');
 /*!40000 ALTER TABLE `creditcards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,4 +232,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-18 15:09:45
+-- Dump completed on 2018-02-20  5:50:14

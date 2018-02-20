@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<!--[if lt IE 7 ]>
-<html lang="en" class="ie6 ielt7 ielt8 ielt9"><![endif]--><!--[if IE 7 ]>
-<html lang="en" class="ie7 ielt8 ielt9"><![endif]--><!--[if IE 8 ]>
-<html lang="en" class="ie8 ielt9"><![endif]--><!--[if IE 9 ]>
-<html lang="en" class="ie9"> <![endif]--><!--[if (gt IE 9)|!(IE)]><!-->
-<html lang="en"><!--<![endif]-->
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-responsive.css }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
+    <script src="{{ asset('js/jquery-bootstrap-pagination.js') }}"></script>
+    <script src="{{ asset('js/site.js') }}"></script>
     <style>
         .container {
             margin: 0 auto;
@@ -25,8 +24,139 @@
             border: 1px solid black;
         }
     </style>
+
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        function loadCards() {
+            var username = sessionStorage.getItem("username");
+            if (username == null) {
+                alert("You should login first");
+                window.location.replace("/");
+            } else {
+                $('#username').text(username);
+                $.ajax({
+                    type: "get",
+                    url: "{{ route('credit.getcards') }}",
+                    data: {"page": 1},
+                    success: function (data) {
+                        if (data['code'] == '001') {
+                            console.log(data['data']);
+                            var returnData = data['data'];
+
+                            loadList(returnData);
+                        }
+                    },
+                    error: function (data) {
+                        console.log("Connection failed");
+                        console.log(data);
+                    }
+                });
+
+                $('#username').text(username);
+                $.ajax({
+                    type: "get",
+                    url: "{{ route('credit.getaccounts') }}",
+                    data: {"page": 1},
+                    success: function (data) {
+                        if (data['code'] == '001') {
+                            $('select#accountid').empty();
+                            console.log(data['data']);
+                            var returnData = data['data'];
+                            for (var index in returnData['accounts']) {
+                                var account = returnData['accounts'][index];
+                                $('select#accountid').append('<option class="loaded-accounts" value="' + account.accountid + '">' + account.holdername + '</option>');
+                            }
+                        }
+                    },
+                    error: function (data) {
+                        console.log("Connection failed");
+                        console.log(data);
+                    }
+                });
+            }
+        }
+
+        function query(e, page) {
+            $.getJSON('{{ route("credit.getcards") }}', page, loadList);
+        }
+
+        function deleteCard(cardId, accountid) {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('credit.deletecard') }}',
+                data: {
+                    'cardId': cardId,
+                    'accountid': accountid
+                },
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        loadCards();
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (data) {
+                    console.log("Connection failed");
+                    console.log(data);
+                }
+            });
+        }
+
+        function addCard() {
+            var form = $('#new-file');
+
+            form.submit(function (e) {
+                e.preventDefault();
+            });
+
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        loadCards();
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (data) {
+                    console.log("Connection failed");
+                    console.log(data);
+                }
+            });
+        }
+
+        function loadList(data) {
+            $('.loaded-data').remove();
+
+            for (var index in data['cards']) {
+                console.log('card:' + data['cards'][index]);
+                var card = data['cards'][index];
+                $('#cards').append('<tr class="loaded-data"><th id="cardId">' + card.cardId +
+                    '</th><th id="accountid">' + card.accountid + '</th><th id="csc">' + card.csc +
+                    '</th><th id="expireDate">' + card.expireDate + '</th>' +
+                    '<td>' +
+                    '                <a href="#" class="delete-link" onclick="editCard(this,' + (index+1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
+                    '                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;\n' +
+                    '                <a href="#" class="delete-link" onclick="deleteCard(' + card.cardId + ',' + card.accountid + ')">delete</a>' + '</td></tr>');
+            }
+
+
+            $('.pagination').unbind();
+            $('.pagination').pagination({
+                total_pages: data['total_pages'],
+                current_page: data['current_page'],
+                call_back: query
+            });
+        }
+    </script>
 </head>
-<body>
+<body onload="loadCards()">
 <div class="navbar">
     <div class="navbar-inner">
         <div class="container">
@@ -37,7 +167,7 @@
             <div class="nav-collapse">
                 <ul class="nav">
                     <li>
-                        <a href="Account.html">Account</a>
+                        <a href="/account">Account</a>
                     </li>
                     <li>
                         <a href="#">Credit card</a>
@@ -61,15 +191,13 @@
         Credit card information
     </h1>
     <a class="toggle-link" href="#new-file">Create new credit card</a>
-    <form id="new-file" class="form-horizontal hidden">
+    <form id="new-file" class="form-horizontal hidden" method="post" action="{{ route('credit.addcard') }}">
         <fieldset>
             <legend>New credit card</legend>
             <div class="control-group">
                 <label class="control-label">Account number:</label>
                 <div class="controls">
-                    <select style="width: 284px" id="accountNum">
-                        <option>TEST1</option>
-                        <option>TEST2</option>
+                    <select style="width: 284px" id="accountid" name="accountid">
                     </select>
                     <a href="#" data-toggle="modal" data-target=".bs-example-modal-sm">New account</a>
 
@@ -78,161 +206,91 @@
                             <div class="modal-content">
                                 <legend style="text-align: center">New Account</legend>
                                 <div class="control-group">
-                                    <label class="control-label" for="textarea">First name:</label>
+                                    <label class="control-label" for="textarea">Holder name:</label>
                                     <div class="controls">
-                                        <input type="text" class="input-xlarge" id="fName"/>
+                                        <input type="text" class="input-xlarge" id="holdername" name="holdername"/>
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="textarea">Last name:</label>
+                                    <label class="control-label" for="textarea">Phone Number:</label>
                                     <div class="controls">
-                                        <input type="text" class="input-xlarge" id="lName"/>
+                                        <input type="tel" class="input-xlarge" id="phonenumber" name="phonenumber"/>
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="textarea">Type:</label>
+                                    <label class="control-label" for="textarea">Address:</label>
                                     <div class="controls">
-                                        <select id="type" style="width: 284px">
-                                            <option>CHECKING</option>
-                                            <option>SAVING</option>
-                                        </select>
+                                        <input type="tel" class="input-xlarge" id="address" name="address"/>
                                     </div>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" for="textarea">Balance:</label>
                                     <div class="controls">
-                                        <input type="number" class="input-xlarge" id="balance"/>
+                                        <input type="number" class="input-xlarge" id="balance" name="balance"/>
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="textarea">Max Limit:</label>
+                                    <label class="control-label" for="textarea">Spending Limit:</label>
                                     <div class="controls">
-                                        <input type="number" class="input-xlarge" id="limit"/>
+                                        <input type="number" class="input-xlarge" id="spendlinglimit" name="spendlinglimit"/>
                                     </div>
                                 </div>
-                                <div class="form-actions">
-                                    <button type="button" class="btn btn-primary" onclick="add()">Summit</button>
-                                    <button class="btn" onclick="cancel()">Cancel</button>
-                                </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <legend>New credit card</legend>
+            <div class="control-group">
+                <label class="control-label" for="textarea">Credit Number:</label>
+                <div class="controls">
+                    <input type="number" class="input-xlarge" id="cardId" name="cardId"/>
+                </div>
+            </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">CVV Number:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="cvv"/>
+                    <input type="number" class="input-xlarge" id="csc" name="csc"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">Date of expiration:</label>
                 <div class="controls">
-                    <input type="date" class="input-xlarge" id="date"/>
+                    <input type="date" class="input-xlarge" id="expireDate" name="expireDate"/>
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" class="btn btn-primary" onclick="createCard()">Summit</button>
+                <button type="button" class="btn btn-primary" onclick="addCard()">Summit</button>
                 <button class="btn" onclick="clear()">Cancel</button>
             </div>
         </fieldset>
     </form>
-    <table class="table table-bordered table-striped" id="card">
-        <thead>
-        <tr>
-            <th>
-                Credit card number
-            </th>
-            <th>
-                Account number
-            </th>
-            <th>
-                CVV Number
-            </th>
-            <th>
-                Date of expiration
-            </th>
-            <th>
+    <form id="editcard" method="post" action="{{ route('credit.updatecard') }}">
+        <table class="table table-bordered table-striped" id="card">
+            <thead>
+            <tr>
+                <th>
+                    Credit card number
+                </th>
+                <th>
+                    Account number
+                </th>
+                <th>
+                    CVV Number
+                </th>
+                <th>
+                    Date of expiration
+                </th>
+                <th>
 
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                4751483065186767
-            </td>
-            <td>
-                497399811
-            </td>
-            <td>
-                497
-            </td>
-            <td>
-                2019-02-02
-            </td>
-            <td>
-                <a href="#" class="delete-link" onclick="editCard(this,1)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="del(this)">delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                6776152517399811
-            </td>
-            <td>
-                525173998
-            </td>
-            <td>
-                598
-            </td>
-            <td>
-                2019-02-10
-            </td>
-            <td>
-                <a href="#" class="delete-link" onclick="editCard(this,2)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="del(this)">delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                2454386462456247
-            </td>
-            <td>
-                214872536
-            </td>
-            <td>
-                216
-            </td>
-            <td>
-                2019-03-02
-            </td>
-            <td>
-                <a href="#" class="delete-link" onclick="editCard(this,3)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="del(this)">delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                9322864863218274
-            </td>
-            <td>
-                129364725
-            </td>
-            <td>
-                125
-            </td>
-            <td>
-                2020-02-02
-            </td>
-            <td>
-                <a href="#" class="delete-link" onclick="editCard(this,4)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="del(this)">delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="cards">
+            </tbody>
+        </table>
+    </form>
+
 
     <div class="pagination">
         <ul>
@@ -258,9 +316,5 @@
     </div>
 
 </div>
-
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/site.js"></script>
 </body>
 </html>

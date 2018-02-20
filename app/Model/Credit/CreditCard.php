@@ -16,6 +16,6 @@ class CreditCard extends Model
     ];
 
     public function account() {
-        $this->belongsTo('App\Model\Credit\CreditAccount', 'accountid');
+        $this->belongsTo('App\Model\Credit\CreditAccount', 'accountid', 'cardId');
     }
 }

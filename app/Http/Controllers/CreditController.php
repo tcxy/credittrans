@@ -11,9 +11,9 @@ class CreditController extends Controller
     //
     public function getAccountList(Request $request) {
         $page = $request->input('page');
-        $offset = (int($page)-1) * 15;
+        $offset = (intval($page)-1) * 15;
         $accountlist = [];
-        $accounts = CreditAccount::offset($offset)->limite(15)->get();
+        $accounts = CreditAccount::offset($offset)->limit(15)->get();
         foreach ($accounts as $account) {
             array_push($accountlist, $account);
         }
@@ -24,32 +24,40 @@ class CreditController extends Controller
         if ($amount % 15 == 0) {
             $total_page = $amount / 15;
         } else {
-            $total_page = $amount / 15 + 1;
+            $total_page = intval($amount / 15) + 1;
         }
 
         return response()->json(['code' => '001', 'data' => ['accounts' => $accountlist, 'total_pages' => $total_page, 'current_page' => $page]]);
     }
 
     public function getCardList(Request $request) {
-        $accountid = $request->input('accountid');
+        $page = $request->input('page');
+        $offset = (intval($page)-1) * 15;
         $cardlist = [];
-        $cards = CreditAccount::find($accountid)->cards;
+        $cards = CreditCard::offset($offset)->limit(15)->get();
         foreach ($cards as $card) {
-            array_push($cards, $card);
+            array_push($cardlist, $card);
+        }
+        $amount = CreditCard::count();
+        $total_page = 0;
+        if ($amount % 15 == 0) {
+            $total_page = $amount / 15;
+        } else {
+            $total_page = intval($amount / 15) + 1;
         }
 
-        return response()->json(['code' => '001', 'data' => $cardlist]);
+        return response()->json(['code' => '001', 'data' => ['cards' => $cardlist, 'total_pages' => $total_page, 'current_page' => $page]]);
     }
 
     public function addAccount(Request $request) {
         $phonenumber = $request->input('phonenumber');
         $holdername = $request->input('holdername');
         $address = $request->input('address');
-        $spendlinglimit = $request->input('spendlinglimit');
-        $balance = $request->input('balance');
+        $spendlinglimit = doubleval($request->input('spendlinglimit'));
+        $balance = doubleval($request->input('balance'));
 
         $creditCardId = $request->input('cardId');
-        $csc = $request->input('csc');
+        $csc = intval($request->input('csc'));
         $expireDate = $request->input('expireDate');
 
 
@@ -82,9 +90,47 @@ class CreditController extends Controller
         return response()->json(['code' => '001']);
     }
 
+    public function addCard(Request $request) {
+        $cardId = $request->input('cardId');
+        $csc = $request->input('csc');
+        $expireDate = $request->input('expireDate');
+        $accountid = $request->input('accountid');
+
+        if (CreditCard::find($cardId)) {
+            return response()->json(['code' => '002', 'message' => 'The card with this card number has already existed.']);
+        }
+
+        $card = new CreditCard;
+        $card->cardId = $cardId;
+        $card->csc = $csc;
+        $card->expireDate = $expireDate;
+        $card->accountid = $accountid;
+
+        $card->save();
+        return response()->json(['code' => '001']);
+    }
+
+    public function updateAccount(Request $request) {
+        $accountid = $request->input('accountid');
+        $holdername = $request->input('holdername');
+        $address = $request->input('address');
+        $spendlinglimit = floatval($request->input('spendlinglimit'));
+        $balance = floatval($request->input('balance'));
+
+        $account = CreditAccount::find($accountid);
+        $account->holdername = $holdername;
+        $account->address = $address;
+        $account->spendlinglimit = $spendlinglimit;
+        $account->balance = $balance;
+
+        $account->save();
+        return response()->json(['code' => '001']);
+
+    }
+
     public function deleteAccount(Request $request) {
-        $accoundid = $request->input('accountid');
-        $account = CreditAccount::find($accoundid);
+        $accountid = $request->input('accountid');
+        $account = CreditAccount::find($accountid);
         if ($account->balance != 0) {
             return response()->json(['code' => '002', 'message' => 'The account has not deleted because the balance is not 0']);
         }
@@ -98,8 +144,9 @@ class CreditController extends Controller
 
     public function deleteCard(Request $request) {
         $cardId = $request->input('cardId');
+        $accountid = $request->input('accountid');
         $card = CreditCard::find($cardId);
-        $account = $card->account;
+        $account = CreditAccount::find($accountid);
         if ($account->cards->count() == 1) {
             if ($account->balance == 0) {
                 $account->delete();
@@ -111,6 +158,21 @@ class CreditController extends Controller
         }
         $card->delete();
         return response()->json(['code' => '001', 'message' => 'The card has been deleted']);
+    }
+
+    public function updateCard(Request $request) {
+        $cardId = $request->input('cardId');
+        $csc = intval($request->input('csc'));
+        $expireDate = $request->input('expireDate');
+        $accountid = $request->input('accountid');
+
+        $card = CreditCard::find($cardId);
+        $card->csc = $csc;
+        $card->expireDate = $expireDate;
+        $card->accountid = $accountid;
+
+        $card->save();
+        return response()->json(['code' => '001']);
     }
 
     public function addCreditCard(Request $request) {
@@ -135,7 +197,7 @@ class CreditController extends Controller
     }
 
     public function checkPhoneNumber($number) {
-        if (preg_match('^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$',
+        if (preg_match('/^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/',
              $number)) {
             return true;
         }

@@ -9,10 +9,10 @@
     <link href="{{ asset('css/bootstrap-responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <script src="{{ asset('js/bootstrap.js') }}"></script>
-    <script src="{{ asset('js/jquery-bootstrap-pagination.js }}"></script>
+    <script src="{{ asset('js/jquery-bootstrap-pagination.js') }}"></script>
+    <script src="{{ asset('js/site.js') }}"></script>
     <style>
         .container {
             margin: 0 auto;
@@ -26,16 +26,22 @@
     </style>
 
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         function loadAccounts() {
             var username = sessionStorage.getItem("username");
             if (username == null) {
                 alert("You should login first");
                 window.location.replace("/");
             } else {
-                $('#username').val(username);
+                $('#username').text(username);
                 $.ajax({
                     type: "get",
-                    url: "{{ route('credit.getaccouts') }}",
+                    url: "{{ route('credit.getaccounts') }}",
                     data: {"page": 1},
                     success: function (data) {
                         if (data['code'] == '001') {
@@ -54,17 +60,44 @@
         }
 
         function query(e, page) {
-            $.getJSON('{{ route("credit.getaccouts") }}', page, loadList);
+            $.getJSON('{{ route("credit.getaccounts") }}', page, loadList);
+        }
+
+        function deleteAccount(accountid) {
+            $.ajax({
+                type: 'post',
+                url: '{{ route('credit.deleteaccount') }}',
+                data: {
+                    'accountid': accountid
+                },
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        loadAccounts();
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (data) {
+                    console.log("Connection failed");
+                    console.log(data);
+                }
+            });
         }
 
         function loadList(data) {
             $('.loaded-data').remove();
 
-            for (var account in data['accounts']) {
-                $('#accounts').append('<th class="loaded-data"><th>' + account["holdername"] +
-                    '</th><th>' + account['phonenumber'] + '</th><th>' + account['address'] +
-                    '</th><th>' + account['spendlinglimit'] + '</th><th>' + account['balance'] + '</th>' +
-                    '<td>' + '</td></tr>');
+            for (var index in data['accounts']) {
+                console.log('account:' + data['accounts'][index]);
+                var account = data['accounts'][index];
+                $('#accounts').append('<tr class="loaded-data"><th id="holdername">' + account.holdername +
+                    '</th><th id="phonenumber">' + account.phonenumber + '</th><th id="address">' + account.address +
+                    '</th><th id="spendlinglimit">' + account.spendlinglimit + '</th><th id="balance">' + account.balance + '</th>' +
+                    '<th id="accountid" hidden="hidden">' + account.accountid + '</th>' +
+                    '<td>' +
+                    '                <a href="#" class="delete-link" onclick="editAccount(this,' + (index+1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
+                    '                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;\n' +
+                    '                <a href="#" class="delete-link" onclick="deleteAccount(' + account.accountid + ')">delete</a>' + '</td></tr>');
             }
 
 
@@ -73,6 +106,31 @@
                 total_pages: data['total_pages'],
                 current_page: data['current_page'],
                 call_back: query
+            });
+        }
+
+        function addAccount() {
+            var form = $('#new-file');
+
+            form.submit(function (e) {
+                e.preventDefault();
+            });
+
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        loadAccounts();
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (data) {
+                    console.log("Connection failed");
+                    console.log(data);
+                }
             });
         }
     </script>
@@ -91,7 +149,7 @@
                         <a href="#">Account</a>
                     </li>
                     <li>
-                        <a href="creditCard.html">Credit card</a>
+                        <a href="/card">Credit card</a>
                     </li>
 
                 </ul>
@@ -100,7 +158,7 @@
                         <a href="#" id="username">@username</a>
                     </li>
                     <li>
-                        <a href="login.html">Logout</a>
+                        <a href="/">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -112,217 +170,95 @@
         Account information
     </h1>
     <a class="toggle-link" href="#new-file">Create new account</a>
-    <form id="new-file" class="form-horizontal hidden">
+    <form id="new-file" class="form-horizontal hidden" method="post" action="{{ route('credit.addaccount') }}">
         <fieldset>
             <legend>New account</legend>
             <div class="control-group">
-                <label class="control-label" for="textarea">First name:</label>
+                <label class="control-label" for="textarea">Holder name:</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="fName"/>
+                    <input type="text" class="input-xlarge" id="holdername" name="holdername"/>
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="textarea">Last name:</label>
+                <label class="control-label" for="textarea">Phone Number:</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="lName"/>
+                    <input type="tel" class="input-xlarge" id="phonenumber" name="phonenumber"/>
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="textarea">Type:</label>
-                <div class="controls"><select id="type" style="width: 284px">
-                        <option>CHECKING</option>
-                        <option>SAVING</option>
-                    </select>
+                <label class="control-label" for="textarea">Address:</label>
+                <div class="controls">
+                    <input type="tel" class="input-xlarge" id="address" name="address"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">Balance:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="balance"/>
+                    <input type="number" class="input-xlarge" id="balance" name="balance"/>
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="textarea">Max Limit:</label>
+                <label class="control-label" for="textarea">Spending Limit:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="limit"/>
+                    <input type="number" class="input-xlarge" id="spendlinglimit" name="spendlinglimit"/>
                 </div>
             </div>
             <legend>New credit card</legend>
             <div class="control-group">
+                <label class="control-label" for="textarea">Credit Number:</label>
+                <div class="controls">
+                    <input type="number" class="input-xlarge" id="cardId" name="cardId"/>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="textarea">CVV Number:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="cvv"/>
+                    <input type="number" class="input-xlarge" id="csc" name="csc"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">Date of expiration:</label>
                 <div class="controls">
-                    <input type="date" class="input-xlarge" id="date"/>
+                    <input type="date" class="input-xlarge" id="expireDate" name="expireDate"/>
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" class="btn btn-primary" onclick="add()">Summit</button>
+                <button type="button" class="btn btn-primary" onclick="addAccount()">Summit</button>
                 <button class="btn" onclick="cancel()">Cancel</button>
             </div>
 
         </fieldset>
     </form>
-    <table class="table table-bordered table-striped" id="account">
-        <thead>
-        <tr>
-            <th>
-                Holder Name
-            </th>
-            <th>
-                Phone number
-            </th>
-            <th>
-                Address
-            </th>
-            <th>
-                Spending Limit
-            </th>
-            <th>
-                Balance
-            </th>
-            <th>
+    <form method="post" action="{{ route('credit.updateaccount') }}" id="updateaccount">
+        <table class="table table-bordered table-striped" id="accounttable">
+            <thead>
+            <tr>
+                <th>
+                    Holder Name
+                </th>
+                <th>
+                    Phone number
+                </th>
+                <th>
+                    Address
+                </th>
+                <th>
+                    Spending Limit
+                </th>
+                <th>
+                    Balance
+                </th>
+                <th>
 
-            </th>
-        </tr>
-        </thead>
-        <tbody id="accounts">
-        <tr>
-            <td>
-                497399811
-            </td>
-            <td>
-                Keanu
-            </td>
-            <td>
-                Reeves
-            </td>
-            <td>
-                CHECKING
-            </td>
-            <th>
-                20
-            </th>
-            <th>
-                20000
-            </th>
-            <td>
-                <!--<a href="#" class="delete-link" onclick="addCard()">add</a>&nbsp;&nbsp;&nbsp;-->
-                <a href="#" class="delete-link" class="edit" onclick="editAccount(this,1)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" data-toggle="modal" data-target=".bs-example-modal-sm">view</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                677615251
-            </td>
-            <td>
-                Mariah
-            </td>
-            <td>
-                Carey
-            </td>
-            <td>
-                SAVING
-            </td>
-            <th>
-                20
-            </th>
-            <th>
-                20000
-            </th>
-            <td>
-                <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
-                <a href="#" class="delete-link" onclick="editAccount(this,2)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" id="pop">view</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                245438646
-            </td>
-            <td>
-                Micheal
-            </td>
-            <td>
-                Jackson
-            </td>
-            <td>
-                SAVING
-            </td>
-            <th>
-                20
-            </th>
-            <th>
-                20000
-            </th>
-            <td>
-                <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
-                <a href="#" class="delete-link" onclick="editAccount(this,3)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                932286486
-            </td>
-            <td>
-                Jean
-            </td>
-            <td>
-                Leo
-            </td>
-            <td>
-                SAVING
-            </td>
-            <th>
-                20
-            </th>
-            <th>
-                20000
-            </th>
-            <td>
-                <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
-                <a href="#" class="delete-link" onclick="editAccount(this,4)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                247112623
-            </td>
-            <td>
-                Tom
-            </td>
-            <td>
-                Hanks
-            </td>
-            <td>
-                CHECKING
-            </td>
-            <th>
-                20
-            </th>
-            <th>
-                20000
-            </th>
-            <td>
-                <!--<a href="#" class="delete-link">add</a>&nbsp;&nbsp;&nbsp;-->
-                <a href="#" class="delete-link" onclick="editAccount(this,5)">edit</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;
-                <a href="#" class="delete-link" onclick="delRow(this)">delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="accounts">
+
+            </tbody>
+        </table>
+    </form>
+
 
     <div class="pagination">
         <ul>

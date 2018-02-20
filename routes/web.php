@@ -40,6 +40,18 @@ Route::get('/login', function () {
 Route::post('/questionwithblock', 'LoginController@questionWithBlock')->name('admin.questionwithblock');
 
 Route::get('/getaccounts', 'CreditController@getAccountList')->name('credit.getaccounts');
+Route::post('/updateaccount', 'CreditController@updateAccount')->name('credit.updateaccount');
+Route::post('/deleteaccount', 'CreditController@deleteAccount')->name('credit.deleteaccount');
+Route::post('/addaccount', 'CreditController@addAccount')->name('credit.addaccount');
 Route::get('/account', function () {
     return view('Account');
+});
+
+
+Route::get('/getcards', 'CreditController@getCardList')->name('credit.getcards');
+Route::post('/updatecard', 'CreditController@updateCard')->name('credit.updatecard');
+Route::post('/deletecard', 'CreditController@deleteCard')->name('credit.deletecard');
+Route::post('/addcard', 'CreditController@addCard')->name('credit.addcard');
+Route::get('/card', function () {
+   return view('creditCard');
 });

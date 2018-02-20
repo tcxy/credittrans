@@ -32,7 +32,7 @@
         function loadData() {
             var username = sessionStorage.getItem('username');
             if (username != null) {
-                $('#username').val(username);
+                $('#username').text(username);
             } else {
                 alert('You should login first');
                 window.location.replace('/');
@@ -54,7 +54,7 @@
                         <a href="/account">Account</a>
                     </li>
                     <li>
-                        <a href="creditCard.html">Credit card</a>
+                        <a href="/card">Credit card</a>
                     </li>
                 </ul>
                 <ul class="nav pull-right">

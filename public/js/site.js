@@ -144,7 +144,7 @@ function cardNUmber() {
 
 function delRow(r) {
     var i = r.parentNode.parentNode.rowIndex;
-    document.getElementById('account').deleteRow(i);
+    document.getElementById('accounttable').deleteRow(i);
 }
 
 function del(r) {
@@ -152,7 +152,7 @@ function del(r) {
     document.getElementById('card').deleteRow(i);
 }
 
-var accRowLength = document.getElementById('account').rows.length;
+// var accRowLength = document.getElementById('account').rows.length;
 
 function add() {
     var tr = document.createElement('tr');
@@ -174,7 +174,7 @@ function add() {
     td6.innerHTML = "<a href='#' class='delete-link' onclick='editAccount(this,accRowLength)'>edit</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' class='delete-link' data-toggle='modal' data-target='.bs-example-modal-sm'>view</a> &nbsp;&nbsp;&nbsp;<a href='#' class='delete-link' onclick='delRow(this)' >delete</a> ";
 
 
-    var myTab = document.getElementById('account');
+    var myTab = document.getElementById('accounttable');
     myTab.appendChild(tr);
     tr.appendChild(td1);
     tr.appendChild(td2);
@@ -234,49 +234,70 @@ function createCard() {
 }
 
 function editAccount(obj,x){
-    var table = document.getElementById("account");
+    var table = document.getElementById("accounttable");
     for(var i=0;i<table.rows[x].cells.length-1;i++){
-        var text = table.rows[x].cells[i].innerHTML;
-        table.rows[x].cells[i].innerHTML = '<input class="input" name="input'+ x + '" type="text" value="" />';
-        var input = document.getElementsByName("input" + x);
-        input[i].value = text;
-        input[0].focus();
-        input[0].select();
+        var cell = table.rows[x].cells[i];
+        var isHidden = cell.hasAttribute('hidden');
+        var text = cell.innerHTML;
+        console.log(text);
+
+        if (isHidden) {
+            cell.innerHTML = '<input class="input" hidden="hidden" name="' + cell.getAttribute('id') + '" id="' + cell.getAttribute('id') + '"  type="text" value="' + text + '" />';
+        } else {
+            cell.innerHTML = '<input class="input" name="' + cell.getAttribute('id') + '" id="' + cell.getAttribute('id') + '" type="text" value="' + text + '" />';
+        }
     }
     obj.innerHTML = "confirm";
     obj.onclick = function onclick(event) {
         update_success(this,x)
     };
 }
-function update_success(obj,x){
-    var arr = [];
-    var table = document.getElementById("account");
-    var input = document.getElementsByName("input" + x);
-    for(var i=0;i<table.rows[x].cells.length-1;i++){
-        var text = input[i].value;
-        arr.push(text);
-    }
-    //把值赋值给表格，不能在取值的时候给，会打乱input的个数
-    for(var j=0;j<arr.length;j++){
-        table.rows[x].cells[j].innerHTML = arr[j];
-    }
-    //回到原来状态
-    obj.innerHTML = "edit";
-    obj.onclick = function onclick(event) {
-        editAccount(this,x)
-    };
-    alert("edit is done");
+function update_success(){
+    // var arr = [];
+    // var table = document.getElementById("accounttable");
+    // var input = document.getElementsByName("input" + x);
+    // for(var i=0;i<table.rows[x].cells.length-1;i++){
+    //     var text = input[i].value;
+    //     arr.push(text);
+    // }
+    // //把值赋值给表格，不能在取值的时候给，会打乱input的个数
+    // for(var j=0;j<arr.length;j++){
+    //     table.rows[x].cells[j].innerHTML = arr[j];
+    // }
+    // //回到原来状态
+    // obj.innerHTML = "edit";
+    // obj.onclick = function onclick(event) {
+    //     editAccount(this,x)
+    // };
+    // alert("edit is done");
+
+    var form = $('#updateaccount');
+    form.submit(function (e) {
+        e.preventDefault();
+    });
+
+    $.ajax({
+        type: form.attr('method'),
+        url: form.attr('action'),
+        data: form.serialize(),
+        success: function (data) {
+            if (data['code'] == '001') {
+                loadAccounts();
+            }
+        },
+        error: function (data) {
+            console.log("Connection failed");
+            console.log(data);
+        }
+    });
 }
 
 function editCard(obj,y){
     var table = document.getElementById('card');
     for(var i=0;i<table.rows[y].cells.length-1;i++){
-        var text = table.rows[y].cells[i].innerHTML;
-        table.rows[y].cells[i].innerHTML = '<input class="input" name="input'+ y + '" type="text" value=""/>';
-        var input = document.getElementsByName("input" + y);
-        input[i].value = text;
-        input[0].focus();
-        input[0].select();
+        var cell = table.rows[y].cells[i];
+        var text = cell.innerHTML;
+        cell.innerHTML = '<input class="input" name="' + cell.getAttribute('id') + '" type="text" value="' + text + '"/>';
     }
     obj.innerHTML = "confirm";
     obj.onclick = function onclick(event) {
@@ -284,21 +305,40 @@ function editCard(obj,y){
     };
 }
 function updateSuccess(obj,y){
-    var arr = [];
-    var table = document.getElementById("card");
-    var input = document.getElementsByName("input" + y);
-    for(var i=0;i<table.rows[y].cells.length-1;i++){
-        var text = input[i].value;
-        arr.push(text);
-    }
-    //把值赋值给表格，不能在取值的时候给，会打乱input的个数
-    for(var j=0;j<arr.length;j++){
-        table.rows[y].cells[j].innerHTML = arr[j];
-    }
-    //回到原来状态
-    obj.innerHTML = "edit";
-    obj.onclick = function onclick(event) {
-        editCard(this,y)
-    };
-    alert("edit is done");
+    // var arr = [];
+    // var table = document.getElementById("card");
+    // var input = document.getElementsByName("input" + y);
+    // for(var i=0;i<table.rows[y].cells.length-1;i++){
+    //     var text = input[i].value;
+    //     arr.push(text);
+    // }
+    // //把值赋值给表格，不能在取值的时候给，会打乱input的个数
+    // for(var j=0;j<arr.length;j++){
+    //     table.rows[y].cells[j].innerHTML = arr[j];
+    // }
+    // //回到原来状态
+    // obj.innerHTML = "edit";
+    // obj.onclick = function onclick(event) {
+    //     editCard(this,y)
+    // };
+    // alert("edit is done");
+    var form = $('#editcard');
+    form.submit(function (e) {
+        e.preventDefault();
+    });
+
+    $.ajax({
+        type: form.attr('method'),
+        url: form.attr('action'),
+        data: form.serialize(),
+        success: function (data) {
+            if (data['code'] == '001') {
+                loadCards();
+            }
+        },
+        error: function (data) {
+            console.log("Connection failed");
+            console.log(data);
+        }
+    });
 }
