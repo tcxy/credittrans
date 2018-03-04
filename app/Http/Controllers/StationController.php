@@ -14,6 +14,13 @@ class StationController extends Controller
         $stations = Station::all();
         $nodes = [];
         foreach ($stations as $station) {
+            if ($station->type == 0) {
+                $station->shape = 'database';
+            } else if ($station->type == 1) {
+                $station->shape = 'triangle';
+            } else {
+                $station->shape = 'circle';
+            }
             array_push($nodes, $station);
         }
 
