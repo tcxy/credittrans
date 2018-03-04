@@ -90,10 +90,14 @@
     <div id="addNewStore">
         <button type="button" class="btn btn-primary" id="addStore" onclick="showStoreForm()">Add new Store</button>
         <div id="storeForm" style="visibility: hidden">
-            <label>Relay Station ID:<input type="text" id="relayID2"></label>
-            <label>Store ID:<input type="text" id="storeID2" style="margin-left: 68px;"></label>
-            <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
-            <input type="submit" value="Clear" class="btn btn-primary" id="clear2" onclick="clearStoreForm()">
+            <form>
+                <label>Relay Station Ip:<input type="text" id="relayID2" name="to"></label>
+                <label>Store Ip:<input type="text" id="storeID2" name="ip" style="margin-left: 68px;"></label>
+                <input name="type" hidden="hidden" value="2">
+                <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
+                <input type="submit" value="Clear" class="btn btn-primary" id="clear2" onclick="clearStoreForm()">
+            </form>
+
         </div>
     </div>
 </div>
@@ -133,16 +137,6 @@
 
                     for (var node in nodes) {
                         console.log(nodes[node]);
-                        if (parseInt(nodes[node]['type']) == 0) {
-                            nodes[node]['shape'] == 'rectangle';
-                        } else if (parseInt(nodes[node]['type']) == 1) {
-                            nodes[node]['shape'] = 'triangle';
-                        } else if (parseInt(nodes[node]['type']) == 2) {
-                            nodes[node]['shape'] = 'circle';
-                        } else {
-                            console.log(nodes[node]);
-                            nodes[node]['shape'] = 'database';
-                        }
                     }
 
                     // create a network
