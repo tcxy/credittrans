@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7904d07d1e1765a0a199aa11d6301a3",
+    "content-hash": "2e8c0682180a346416f0eea61a6054db",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2125,6 +2125,42 @@
                 "dump"
             ],
             "time": "2018-01-29T09:03:43+00:00"
+        },
+        {
+            "name": "taniko/dijkstra",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/taniko/dijkstra.git",
+                "reference": "0f0577837dc5da3af4d0b45c28779b34da9a3054"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/taniko/dijkstra/zipball/0f0577837dc5da3af4d0b45c28779b34da9a3054",
+                "reference": "0f0577837dc5da3af4d0b45c28779b34da9a3054",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Hrgruri\\Dijkstra\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yuya Aratani",
+                    "email": "hrgruri@gmail.com"
+                }
+            ],
+            "description": "dijkstra algorithm",
+            "time": "2016-10-01T04:52:59+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

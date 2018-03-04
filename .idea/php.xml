@@ -73,6 +73,7 @@
       <path value="$PROJECT_DIR$/vendor/sebastian/version" />
       <path value="$PROJECT_DIR$/vendor/ramsey/uuid" />
       <path value="$PROJECT_DIR$/vendor/hamcrest/hamcrest-php" />
+      <path value="$PROJECT_DIR$/vendor/taniko/dijkstra" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7" />
