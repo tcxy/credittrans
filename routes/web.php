@@ -55,3 +55,8 @@ Route::post('/addcard', 'CreditController@addCard')->name('credit.addcard');
 Route::get('/card', function () {
    return view('creditCard');
 });
+
+Route::get('/graph', 'StationController@getGraph')->name('graph.get');
+Route::post('/add', 'StationController@add')->name('graph.add');
+Route::post('/shortest', 'StationController@shortest')->name('graph.shortest');
+Route::get('/graphtest', 'StationController@graphtest');
