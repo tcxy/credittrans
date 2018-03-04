@@ -64,6 +64,7 @@
         }
 
         function deleteAccount(accountid) {
+
             $.ajax({
                 type: 'post',
                 url: '{{ route('credit.deleteaccount') }}',
@@ -95,7 +96,7 @@
                     '</th><th id="spendlinglimit">' + account.spendlinglimit + '</th><th id="balance">' + account.balance + '</th>' +
                     '<th id="accountid" hidden="hidden">' + account.accountid + '</th>' +
                     '<td>' +
-                    '                <a href="#" class="delete-link" onclick="editAccount(this,' + (index+1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
+                    '                <a href="#" class="delete-link" onclick="editAccount(this,' + ((index+1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
                     '                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;\n' +
                     '                <a href="#" class="delete-link" onclick="deleteAccount(' + account.accountid + ')">delete</a>' + '</td></tr>');
             }
