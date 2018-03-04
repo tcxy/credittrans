@@ -1,47 +1,59 @@
 <!DOCTYPE html>
-<!--[if lt IE 7 ]>
-<html lang="en" class="ie6 ielt7 ielt8 ielt9"><![endif]--><!--[if IE 7 ]>
-<html lang="en" class="ie7 ielt8 ielt9"><![endif]--><!--[if IE 8 ]>
-<html lang="en" class="ie8 ielt9"><![endif]--><!--[if IE 9 ]>
-<html lang="en" class="ie9"> <![endif]--><!--[if (gt IE 9)|!(IE)]><!-->
-<html lang="en"><!--<![endif]-->
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{!! asset('css/bootstrap.css') !!}" rel="stylesheet">
-    <link href="{!! asset('css/bootstrap-responsive.css') !!}" rel="stylesheet">
-    <link href="{!! asset('css/site.css') !!}" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <style>
-        .container {
-            margin: 0 auto;
-            width: 800px;
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <link href='{{ asset("css/bootstrap.css") }}' rel="stylesheet">
+    <link href='{{ asset("css/bootstrap-responsive.css") }}' rel="stylesheet">
+    <link href="{{ asset('css/site.css') }}" rel="stylesheet">
+    <link href='{{ asset("css/vis-network.min.css") }}' rel="stylesheet"/>
+    <script type="text/javascript" src="{{ asset('js/vis.js') }}"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <style type="text/css">
+        #mynetwork {
+            width: 700px;
+            height: 600px;
+            border: 1px solid lightgray;
+            margin-left: 20px;
+            float: left;
 
         }
 
-        #scene {
-            border: 1px solid black;
+        #addStore {
+            margin-left: 50px;
+        }
+
+        #addRelay {
+            margin-left: 50px;
+        }
+
+        #inputField {
+            float: left;
+        }
+
+        input {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        #submit1 {
+            margin-left: 150px;
+        }
+
+        #submit2 {
+            margin-left: 150px;
+        }
+
+        #addNewStore {
+            float: left;
+            margin-top: 20px;
         }
     </style>
-
-
-    <script>
-        function loadData() {
-            var username = sessionStorage.getItem('username');
-            if (username != null) {
-                $('#username').text(username);
-            } else {
-                alert('You should login first');
-                window.location.replace('/');
-            }
-        }
-    </script>
-
 </head>
-<body onload="loadData()">
+<body onload="getNodesFunction()">
 <div class="navbar">
     <div class="navbar-inner">
         <div class="container">
@@ -51,15 +63,15 @@
             <div class="nav-collapse">
                 <ul class="nav">
                     <li>
-                        <a href="/account">Account</a>
+                        <a href="Account.html">Account</a>
                     </li>
                     <li>
-                        <a href="/card">Credit card</a>
+                        <a href="creditCard.html">Credit card</a>
                     </li>
                 </ul>
                 <ul class="nav pull-right">
                     <li>
-                        <a href="#" id="username">@username</a>
+                        <a href="#">@username</a>
                     </li>
                     <li>
                         <a href="login.html">Logout</a>
@@ -69,21 +81,196 @@
         </div>
     </div>
 </div>
-<div class="container">
-    <canvas id="scene" width="800" height="500">Your browser does not support the canvas element.</canvas>
-
+<div id="inputField">
+    <button type="button" class="btn btn-primary" id="addRelay" onclick="showRelayForm()">Add new Relay</button>
+    <div id="relayForm" style="visibility: hidden"><label>Relay Station ID:<input type="text" id="relayID1"></label>
+        <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addNewRelay()">
+        <input type="submit" value="Clear" class="btn btn-primary" id="clear1" onclick="clearRelayForm()">
+    </div>
+    <div id="addNewStore">
+        <button type="button" class="btn btn-primary" id="addStore" onclick="showStoreForm()">Add new Store</button>
+        <div id="storeForm" style="visibility: hidden">
+            <label>Relay Station ID:<input type="text" id="relayID2"></label>
+            <label>Store ID:<input type="text" id="storeID2" style="margin-left: 68px;"></label>
+            <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
+            <input type="submit" value="Clear" class="btn btn-primary" id="clear2" onclick="clearStoreForm()">
+        </div>
+    </div>
 </div>
-
+<div id="mynetwork"></div>
 <script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    var nodes = null;
+    var edges = null;
 
 
-    //    var c = document.getElementById("scene");
-    //    var cxt = c.getContext("2d");
-    //    var img = new Image();
-    //    img.src = "creditCard.png";
-    //    img.onload = function () {
-    //        cxt.drawImage(img, 0, 0);
+    //    var DIR = 'img/refresh-cl/';
+    var EDGE_LENGTH_MAIN = 150;
+    var EDGE_LENGTH_SUB = 50;
+    var EDGE_LENGTH_REMOTE = 200;
+    var EDGE_LENGTH_AROUND = 30;
+
+
+    function getNodesFunction(){
+        $.ajax({
+            type: 'GET',
+            dataType : "json",
+            url: "/graph",
+            error: function () {
+                alert('failed');
+            },
+            success:function(data){
+                if (data['code'] == '001') {
+                    jsondata = data['data'];
+                    nodes = jsondata['nodes'];
+                    edges = jsondata['edges'];
+
+
+                    for (var node in nodes) {
+                        console.log(nodes[node]);
+                        if (parseInt(nodes[node]['type']) == 0) {
+                            nodes[node]['shape'] == 'rectangle';
+                        } else if (parseInt(nodes[node]['type']) == 1) {
+                            nodes[node]['shape'] = 'triangle';
+                        } else if (parseInt(nodes[node]['type']) == 2) {
+                            nodes[node]['shape'] = 'circle';
+                        } else {
+                            console.log(nodes[node]);
+                            nodes[node]['shape'] = 'database';
+                        }
+                    }
+
+                    // create a network
+                    var container = document.getElementById('mynetwork');
+                    var data = {
+                        nodes: nodes,
+                        edges: edges
+                    };
+                    var options = {
+                        interaction: {hover: true}
+                    };
+                    var network = new vis.Network(container, data, options);
+                } else {
+                    alert(data['message']);
+                }
+            }
+        });
+
+
+
+    }
+
+    //    getNodesFunction();
+
+    // Called when the Visualization API is loaded.
+    //    function draw() {
+    //        // Create a data table with nodes.
+    //        nodes = [
+    //            {id: 0, label: 'Process Center', shape: 'database'},
+    //            {id: 10, label: 'Relay Station#10', shape: 'triangle', status: true, load: 0},
+    //            {id: 11, label: 'Relay Station#11', shape: 'triangle', status: true, load: 0},
+    //            {id: 12, label: 'Relay Station#12', shape: 'triangle', status: true, load: 0},
+    //            {id: 13, label: 'Relay Station#13', shape: 'triangle', status: true, load: 0},
+    //            {id: 14, label: 'Relay Station#14', shape: 'triangle', status: true, load: 0},
+    //        ];
+    //
+    //        // Create a data table with links.
+    //        edges = [
+    //            {id: 0, from: 0, to: 12, length: EDGE_LENGTH_MAIN, color: {}},
+    //            {id: 1, from: 0, to: 10, length: EDGE_LENGTH_MAIN},
+    //            {id: 2, from: 10, to: 11, length: EDGE_LENGTH_MAIN},
+    //            {id: 3, from: 12, to: 13, length: EDGE_LENGTH_MAIN},
+    //            {id: 4, from: 10, to: 14, length: EDGE_LENGTH_MAIN},
+    //            {id: 5, from: 12, to: 14, length: EDGE_LENGTH_MAIN},
+    //        ];
+    //
+    //
+    //        //draw stores
+    //        for (var i = 100; i <= 103; i++) {
+    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
+    //            edges.push({from: 11, to: i, length: EDGE_LENGTH_SUB});
+    //        }
+    //
+    //        for (var i = 107; i <= 108; i++) {
+    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
+    //            edges.push({from: 12, to: i, length: EDGE_LENGTH_SUB});
+    //        }
+    //        for (var i = 109; i <= 111; i++) {
+    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
+    //            edges.push({from: 13, to: i, length: EDGE_LENGTH_SUB});
+    //        }
+    //        for (var i = 112; i <= 114; i++) {
+    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
+    //            edges.push({from: 14, to: i, length: EDGE_LENGTH_SUB});
+    //        }
+    //        for (var i = 115; i <= 116; i++) {
+    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
+    //            edges.push({from: 10, to: i, length: EDGE_LENGTH_AROUND});
+    //        }
+    //
+    //        // create a network
+    //        var container = document.getElementById('mynetwork');
+    //        var data = {
+    //            nodes: nodes,
+    //            edges: edges
+    //        };
+    //        var options = {
+    //            interaction: {hover: true}
+    //        };
+    //        network = new vis.Network(container, data, options);
     //    }
+
+    //add new relay
+    function addNewRelay() {
+        var rid = document.getElementById('relayID1');
+        nodes.push({id: rid, label: 'Relay Station#' + rid, shape: 'triangle', status: true, load: 0})
+        console.log(nodes);
+    }
+
+    function clearRelayForm() {
+        document.getElementById('relayID1').value = '';
+
+    }
+
+    function showRelayForm() {
+        var form = document.getElementById('relayForm');
+        if (form.style.visibility == 'hidden') {
+            form.style.visibility = 'visible';
+        } else {
+            clearRelayForm();
+            form.style.visibility = 'hidden';
+        }
+    }
+
+    // add new store
+    function addNewStore() {
+        var sid = document.getElementById('storeID2');
+        var rid = document.getElementById('relayID2');
+        nodes.push({id: sid, label: 'Store#' + sid, shape: 'circle', status: true});
+        edges.push({from: rid, to: sid, length: EDGE_LENGTH_SUB});
+        console.log(nodes);
+    }
+
+    function clearStoreForm() {
+        document.getElementById('storeID2').value = '';
+        document.getElementById('relayID2').value = '';
+    }
+
+    function showStoreForm() {
+        var form = document.getElementById('storeForm');
+        if (form.style.visibility == 'hidden') {
+            form.style.visibility = 'visible';
+        } else {
+            clearStoreForm();
+            form.style.visibility = 'hidden';
+        }
+    }
+
 
 
 </script>
