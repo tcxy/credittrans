@@ -11,6 +11,6 @@ class Connection extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'weight', 'from', 'to'
+        'weight', 'from_s', 'to_s'
     ];
 }

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
 --
--- Host: localhost    Database: cs744
+-- Host: 127.0.0.1    Database: cs744
 -- ------------------------------------------------------
--- Server version	5.7.21-log
+-- Server version	5.7.17
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,31 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `admin` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES (1,'admin','123456');
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `admins`
@@ -42,6 +67,32 @@ INSERT INTO `admins` VALUES (1,'Wei Du','123456',0);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `connections`
+--
+
+DROP TABLE IF EXISTS `connections`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `connections` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `from_s` int(11) NOT NULL,
+  `to_s` int(11) NOT NULL,
+  `weight` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `connections`
+--
+
+LOCK TABLES `connections` WRITE;
+/*!40000 ALTER TABLE `connections` DISABLE KEYS */;
+INSERT INTO `connections` VALUES (1,2,1,3),(2,3,1,2),(3,4,2,1),(4,5,2,3),(5,6,3,2),(6,7,2,4),(7,8,7,2);
+/*!40000 ALTER TABLE `connections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `creditaccounts`
 --
 
@@ -56,7 +107,7 @@ CREATE TABLE `creditaccounts` (
   `spendlinglimit` double NOT NULL,
   `balance` double NOT NULL,
   PRIMARY KEY (`accountid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +116,7 @@ CREATE TABLE `creditaccounts` (
 
 LOCK TABLES `creditaccounts` WRITE;
 /*!40000 ALTER TABLE `creditaccounts` DISABLE KEYS */;
-INSERT INTO `creditaccounts` VALUES (1,'Wei Du','6464319123','1824 La Crosse St',2000,600),(2,'Yi Liang','6464312012','1824 La Crossse St',1500,400);
+INSERT INTO `creditaccounts` VALUES (1,'Wei Du','6464319033','1824 La Crosse St',2000,650);
 /*!40000 ALTER TABLE `creditaccounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +142,7 @@ CREATE TABLE `creditcards` (
 
 LOCK TABLES `creditcards` WRITE;
 /*!40000 ALTER TABLE `creditcards` DISABLE KEYS */;
-INSERT INTO `creditcards` VALUES ('4556704099291426',888,'2018-10-01','1'),('5345751038575230',998,'2018-09-01','2');
+INSERT INTO `creditcards` VALUES ('4716459360888577',201,'2019-12-01','1');
 /*!40000 ALTER TABLE `creditcards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,7 +158,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,7 +167,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(6,'2018_02_04_044557_create_admin_table',2),(9,'2018  02  04  093520  questions',3),(10,'2018_02_18_045942_creat_creaditaccount_table',4),(12,'2018_02_18_050035_create_creditcard_table',5);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(6,'2018_02_04_044557_create_admin_table',2),(9,'2018  02  04  093520  questions',3),(10,'2018_02_18_045942_creat_creaditaccount_table',4),(12,'2018_02_18_050035_create_creditcard_table',5),(13,'2018_03_04_135808_create_station_table',6),(14,'2018_03_04_140140_create_connections_table',6);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,6 +219,33 @@ LOCK TABLES `questions` WRITE;
 /*!40000 ALTER TABLE `questions` DISABLE KEYS */;
 INSERT INTO `questions` VALUES (1,'Which course do you take for this project?','CS744',1),(2,'Who is your instructor for this project?','Kasi',1),(3,'Who is your partner?','Yi',1);
 /*!40000 ALTER TABLE `questions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `station`
+--
+
+DROP TABLE IF EXISTS `station`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `station` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `type` int(11) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `ip` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `station_ip_unique` (`ip`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `station`
+--
+
+LOCK TABLES `station` WRITE;
+/*!40000 ALTER TABLE `station` DISABLE KEYS */;
+INSERT INTO `station` VALUES (1,0,1,'192.168.0.1'),(2,1,1,'192.168.0.2'),(3,1,1,'192.168.0.3'),(4,2,1,'192.168.0.5'),(5,2,1,'192.168.0.7'),(6,2,1,'192.168.0.9'),(7,1,1,'192.168.1.3'),(8,2,1,'192.168.1.20');
+/*!40000 ALTER TABLE `station` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -232,4 +310,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-20  5:50:14
+-- Dump completed on 2018-03-04 15:43:06

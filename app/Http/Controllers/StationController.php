@@ -20,7 +20,9 @@ class StationController extends Controller
         $connections = Connection::all();
         $edges = [];
         foreach ($connections as $connection) {
-            array_push($edge, $connection);
+            $connection->from = $connection->from_s;
+            $connection->to = $connection->to_s;
+            array_push($edges, $connection);
         }
 
         return response()->json(['code' => '001', 'data' => [
@@ -75,16 +77,17 @@ class StationController extends Controller
 //        $graph->add('1','2',3);
 //        $graph->add('1','3',2);
 //        $graph->add('2','4',3);
-            $graph->add('1', '2', 1);
+            $graph->add('1', 'b', 1);
             $graph->add('1', '3', 2);
             $graph->add('a', 'b', 2);
             $graph->add('a', 'c', 4);
+            $graph->add('a', 't', 5);
             $graph->add('b', 'c', 2);
             $graph->add('b', 'd', 5);
             $graph->add('c', 'd', 1);
             $graph->add('c', 't', 3);
             $graph->add('d', 't', 1);
-        $route = $graph->search('1', '3');
+        $route = $graph->search('a', 't');
         return response()->json($route);
     }
 }
