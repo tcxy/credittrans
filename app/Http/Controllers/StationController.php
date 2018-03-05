@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use App\Model\Connection\Connection;
 use App\Model\Station\Station;
@@ -119,5 +120,12 @@ class StationController extends Controller
         } else {
             return False;
         }
+    }
+
+    public function stationInfo(Request $request) {
+        $id = $request->input('id');
+        $station = Station::find($id);
+
+        return response()->json(['code' => '001', 'data' => $station]);
     }
 }
