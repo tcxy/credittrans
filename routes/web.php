@@ -57,6 +57,7 @@ Route::get('/card', function () {
 });
 
 Route::get('/graph', 'StationController@getGraph')->name('graph.get');
-Route::post('/add', 'StationController@add')->name('graph.add');
+Route::post('/addstation', 'StationController@add')->name('graph.add');
 Route::post('/shortest', 'StationController@shortest')->name('graph.shortest');
 Route::get('/graphtest', 'StationController@graphtest');
+Route::get('/testshort', 'StationController@shortest');

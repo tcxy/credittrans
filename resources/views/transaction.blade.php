@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <link href='{{ asset("css/bootstrap.css") }}' rel="stylesheet">
     <link href='{{ asset("css/bootstrap-responsive.css") }}' rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
@@ -14,11 +14,11 @@
 
     <style type="text/css">
         #mynetwork {
+            position: absolute;
             width: 700px;
             height: 600px;
             border: 1px solid lightgray;
-            margin-left: 20px;
-            float: left;
+            margin-left: 370px;
 
         }
 
@@ -82,20 +82,28 @@
     </div>
 </div>
 <div id="inputField">
-    <button type="button" class="btn btn-primary" id="addRelay" onclick="showRelayForm()">Add new Relay</button>
-    <div id="relayForm" style="visibility: hidden"><label>Relay Station ID:<input type="text" id="relayID1"></label>
-        <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addNewRelay()">
-        <input type="submit" value="Clear" class="btn btn-primary" id="clear1" onclick="clearRelayForm()">
+    <button type="button" class="btn btn-primary" id="addRelay">Add new Relay</button>
+    <div id="relayForm">
+        <form id="relay_form" style="display: none">
+
+            <label>Relay Station Ip:<input type="text" id="relayID1"
+                                           name="ip"></label>
+            <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
+            <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
+            <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addNewRelay()">
+            <input type="button" value="Clear" class="btn btn-primary" id="clear1" onclick="clearRelayForm()">
+        </form>
     </div>
     <div id="addNewStore">
-        <button type="button" class="btn btn-primary" id="addStore" onclick="showStoreForm()">Add new Store</button>
-        <div id="storeForm" style="visibility: hidden">
-            <form>
+        <button type="button" class="btn btn-primary" id="addStore">Add new Store</button>
+        <div id="storeForm">
+            <form id="store_form" style="display: none">
                 <label>Relay Station Ip:<input type="text" id="relayID2" name="to"></label>
-                <label>Store Ip:<input type="text" id="storeID2" name="ip" style="margin-left: 68px;"></label>
+                <label>Store Ip:<input type="text" id="storeID2" name="ip" style="margin-left: 70px;"></label>
+                <label>Weight:<input type="text" id="weight2" name="weight" style="margin-left: 77px;"></label>
                 <input name="type" hidden="hidden" value="2">
                 <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
-                <input type="submit" value="Clear" class="btn btn-primary" id="clear2" onclick="clearStoreForm()">
+                <input type="button" value="Clear" class="btn btn-primary" id="clear2" onclick="clearStoreForm()">
             </form>
 
         </div>
@@ -103,41 +111,42 @@
 </div>
 <div id="mynetwork"></div>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $('#addRelay').click(function () {
+            $('#relay_form').toggle();
+            clearRelayForm();
+        })
+    });
+    $(document).ready(function () {
+        $('#addStore').click(function () {
+            $('#store_form').toggle();
+            clearStoreForm();
+        })
+    });
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    var nodes = null;
-    var edges = null;
-
-
-    //    var DIR = 'img/refresh-cl/';
-    var EDGE_LENGTH_MAIN = 150;
-    var EDGE_LENGTH_SUB = 50;
-    var EDGE_LENGTH_REMOTE = 200;
-    var EDGE_LENGTH_AROUND = 30;
-
-
-    function getNodesFunction(){
+    function getNodesFunction() {
         $.ajax({
             type: 'GET',
-            dataType : "json",
+            dataType: "json",
             url: "/graph",
             error: function () {
                 alert('failed');
             },
-            success:function(data){
+            success: function (data) {
                 if (data['code'] == '001') {
-                    jsondata = data['data'];
-                    nodes = jsondata['nodes'];
-                    edges = jsondata['edges'];
+                    var jsondata = data['data'];
+                    nodes = new vis.DataSet(jsondata['nodes']);
+                    edges = new vis.DataSet(jsondata['edges']);
 
 
-                    for (var node in nodes) {
-                        console.log(nodes[node]);
-                    }
+//                    for (var node in nodes) {
+//                        console.log(nodes);
+//                    }
 
                     // create a network
                     var container = document.getElementById('mynetwork');
@@ -145,16 +154,24 @@
                         nodes: nodes,
                         edges: edges
                     };
-                    var options = {
-                        interaction: {hover: true}
-                    };
+                    var options = {};
                     var network = new vis.Network(container, data, options);
-                } else {
-                    alert(data['message']);
+                    network.on('doubleClick', function (params) {
+                        if (params.nodes.length != 0) {
+                            var id = params.nodes[0];
+                            nodes.update({id: id, color: {background: 'red', highlight: {background: 'red'}}});
+                        } else if (params.edges.length != 0){
+                            var eid = params.edges[0];
+                            edges.update({id:eid, color:{color:'red',highlight:'red'}});
+                        } else {
+                            alert('unselected');
+                        }
+
+
+                    })
                 }
             }
         });
-
 
 
     }
@@ -220,51 +237,45 @@
     //    }
 
     //add new relay
-    function addNewRelay() {
-        var rid = document.getElementById('relayID1');
-        nodes.push({id: rid, label: 'Relay Station#' + rid, shape: 'triangle', status: true, load: 0})
-        console.log(nodes);
-    }
+
 
     function clearRelayForm() {
         document.getElementById('relayID1').value = '';
-
-    }
-
-    function showRelayForm() {
-        var form = document.getElementById('relayForm');
-        if (form.style.visibility == 'hidden') {
-            form.style.visibility = 'visible';
-        } else {
-            clearRelayForm();
-            form.style.visibility = 'hidden';
-        }
+        document.getElementById('connectedTo').value = '';
+        document.getElementById('weight').value = '';
     }
 
     // add new store
     function addNewStore() {
-        var sid = document.getElementById('storeID2');
-        var rid = document.getElementById('relayID2');
-        nodes.push({id: sid, label: 'Store#' + sid, shape: 'circle', status: true});
-        edges.push({from: rid, to: sid, length: EDGE_LENGTH_SUB});
+//        var sid = document.getElementById('storeID2');
+//        var rid = document.getElementById('relayID2');
+//        nodes.push({id: sid, label: 'Store#' + sid, shape: 'circle', status: true});
+//        edges.push({from: rid, to: sid, length: EDGE_LENGTH_SUB});
         console.log(nodes);
+        $form = $('#store_form');
+        console.log($form.serialize());
+        $.ajax({
+            url: "/addstation",
+            type: 'post',
+            data: $form.serialize(),
+            success: function (data) {
+                if (data['code'] == '001') {
+                    getNodesFunction();
+                } else {
+                    alert(data['message']);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
     }
 
     function clearStoreForm() {
         document.getElementById('storeID2').value = '';
         document.getElementById('relayID2').value = '';
+        document.getElementById('weight2').value = '';
     }
-
-    function showStoreForm() {
-        var form = document.getElementById('storeForm');
-        if (form.style.visibility == 'hidden') {
-            form.style.visibility = 'visible';
-        } else {
-            clearStoreForm();
-            form.style.visibility = 'hidden';
-        }
-    }
-
 
 
 </script>

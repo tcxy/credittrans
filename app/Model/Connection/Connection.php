@@ -9,8 +9,9 @@ class Connection extends Model
     //
     protected $table = 'connections';
     protected $primaryKey = 'id';
+    public $timestamps = false;
 
     protected $fillable = [
-        'weight', 'from_s', 'to_s'
+        'weight', 'from', 'to'
     ];
 }
