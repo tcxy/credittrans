@@ -48,6 +48,13 @@ class StationController extends Controller
         $connect_to = $request->input('to');
         $weight = $request->input('weight');
 
+        $stations = Station::all();
+        foreach ($stations as $station) {
+            if ($station->ip == $ip) {
+                return response()->json(['code' => '002', 'message' => 'The ip address already exist in our records.']);
+            }
+        }
+
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) == False) {
             return response()->json(['code' => '002', 'message' => 'The ip address is not validate ipv4 or ipv6 address, please check it and reinput again']);
         }
@@ -77,7 +84,7 @@ class StationController extends Controller
 
     function shortest(Request $request) {
         $from = $request->input('from');
-        $from_station = Station::find($from);
+        $start_station = Station::find($from);
         $to = '192.168.0.1';
         $graph = Graph::create();
         $edges = Connection::all();
@@ -87,7 +94,7 @@ class StationController extends Controller
             $graph->add($from_station->ip, $to_station->ip, $edge->weight);
         }
 
-        $route = $graph->search($from_station->ip, $to);
+        $route = $graph->search($start_station->ip, $to);
         $route_id = array();
 
         foreach ($route as $node) {
@@ -105,7 +112,7 @@ class StationController extends Controller
 //        $graph->add('2','4',3);
             $graph->add('192.168.1.10', '192.168.2.10', 1);
             $graph->add('192.168.1.10', '192.168.1.15', 2);
-            $graph->add('192,168.2.10', '192.168.10.1', 2);
+            $graph->add('192.168.2.10', '192.168.10.1', 2);
             $graph->add('192.168.10.1', '192.168.20.3', 4);
             $graph->add('192.168.1.10', '192.168.2.13', 5);
             $graph->add('192.168.2.13', '192.168.3.20', 2);
@@ -113,7 +120,7 @@ class StationController extends Controller
 //            $graph->add('c', 'd', 1);
 //            $graph->add('c', 't', 3);
 //            $graph->add('d', 't', 1);
-        $route = $graph->search('192.168.1.10', '192.168.3.20');
+        $route = $graph->search('192.168.1.10', '192.168.10.1');
 //        console.log($route);
         return response()->json($route);
     }
