@@ -80,15 +80,15 @@
             <div class="nav-collapse">
                 <ul class="nav">
                     <li>
-                        <a href="Account.html">Account</a>
+                        <a href="/account">Account</a>
                     </li>
                     <li>
-                        <a href="creditCard.html">Credit card</a>
+                        <a href="/card">Credit card</a>
                     </li>
                 </ul>
                 <ul class="nav pull-right">
                     <li>
-                        <a href="#">@username</a>
+                        <a href="#" id="username">@username</a>
                     </li>
                     <li>
                         <a href="login.html">Logout</a>
@@ -166,6 +166,16 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+    window.onload = function () {
+        var username = sessionStorage.getItem("username");
+        if (username == null) {
+            alert("You should login first");
+            window.location.replace("/");
+        } else {
+            $('#username').text(username);
+        }
+    }
 
     function getNodesFunction() {
         $.ajax({
