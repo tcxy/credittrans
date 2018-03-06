@@ -88,8 +88,14 @@ class StationController extends Controller
         }
 
         $route = $graph->search($from_station->ip, $to);
+        $route_id = array();
 
-        return response()->json(['code' => '001', 'data' => $route]);
+        foreach ($route as $node) {
+            $station = Station::where('ip', '=', $node)->get()->first();
+            array_push($route_id, $station->id);
+        }
+
+        return response()->json(['code' => '001', 'data' => $route_id]);
     }
 
     function graphtest() {
