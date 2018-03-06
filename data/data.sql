@@ -1,3 +1,4 @@
+use cs744;
 -- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
 --
 -- Host: localhost    Database: cs744

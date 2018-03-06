@@ -246,6 +246,8 @@
                                         document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
                                             + '<br/>' + 'status :' + status;
 
+                                    } else {
+                                        alert(data['message']);
                                     }
                                 }
                             });
