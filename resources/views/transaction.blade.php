@@ -167,14 +167,12 @@
         }
     });
 
-    window.onload = function () {
-        var username = sessionStorage.getItem("username");
-        if (username == null) {
-            alert("You should login first");
-            window.location.replace("/");
-        } else {
-            $('#username').text(username);
-        }
+    var username = sessionStorage.getItem("username");
+    if (username == null) {
+        alert("You should login first");
+        window.location.replace("/");
+    } else {
+        $('#username').text(username);
     }
 
     function getNodesFunction() {
