@@ -76,8 +76,8 @@ class StationController extends Controller
     }
 
     function shortest(Request $request) {
-        $from = $request->input('from');
-        $from_station = Station::find($from);
+        $from_id = $request->input('from');
+        $from = Station::where('ip', '=', $from_id)->get()->first();
         $to = '192.168.0.1';
         $graph = Graph::create();
         $edges = Connection::all();
@@ -87,7 +87,7 @@ class StationController extends Controller
             $graph->add($from_station->ip, $to_station->ip, $edge->weight);
         }
 
-        $route = $graph->search($from_station->ip, $to);
+        $route = $graph->search($from->ip, $to);
         $route_id = array();
 
         foreach ($route as $node) {

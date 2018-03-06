@@ -61,3 +61,4 @@ Route::post('/addstation', 'StationController@add')->name('graph.add');
 Route::post('/shortest', 'StationController@shortest')->name('graph.shortest');
 Route::get('/graphtest', 'StationController@graphtest');
 Route::get('/testshort', 'StationController@shortest');
+Route::get('/stationinfo', 'StationController@stationInfo');

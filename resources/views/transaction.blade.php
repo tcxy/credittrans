@@ -51,6 +51,23 @@
             float: left;
             margin-top: 20px;
         }
+
+        #eventSpan {
+            float: right;
+            width: 300px;
+            height: 300px;
+        }
+
+        #send {
+            margin-left: 50px;
+            margin-top: 20px;
+        }
+
+        #path {
+            width: 300px;
+            height: 300px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body onload="getNodesFunction()">
@@ -85,12 +102,13 @@
     <button type="button" class="btn btn-primary" id="addRelay">Add new Relay</button>
     <div id="relayForm">
         <form id="relay_form" style="display: none">
+            <input hidden="hidden" name="type" value="1">
 
             <label>Relay Station Ip:<input type="text" id="relayID1"
                                            name="ip"></label>
             <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
             <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
-            <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addNewRelay()">
+            <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
             <input type="button" value="Clear" class="btn btn-primary" id="clear1" onclick="clearRelayForm()">
         </form>
     </div>
@@ -108,7 +126,21 @@
 
         </div>
     </div>
+    <div id="sendTrans">
+        <button type="button" class="btn btn-primary" id="send">New Transaction</button>
+        <div id="sendForm">
+            <form id="send_form" style="display: none">
+                <label>Store IP:<input type="text" id="from" name="from"></label>
+                <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="sendNewTrans()">
+                <input type="button" value="Clear" class="btn btn-primary" id="clear2" onclick="clearTransForm()">
+            </form>
+        </div>
+    </div>
+    <div id="path"></div>
+
+
 </div>
+<div id="eventSpan"></div>
 <div id="mynetwork"></div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -123,6 +155,12 @@
             clearStoreForm();
         })
     });
+    $(document).ready(function () {
+        $('#send').click(function () {
+            $('#send_form').toggle();
+            clearTransForm();
+        })
+    });
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -134,8 +172,8 @@
             type: 'GET',
             dataType: "json",
             url: "/graph",
-            error: function () {
-                alert('failed');
+            error: function (data) {
+                console.log(data);
             },
             success: function (data) {
                 if (data['code'] == '001') {
@@ -143,10 +181,9 @@
                     nodes = new vis.DataSet(jsondata['nodes']);
                     edges = new vis.DataSet(jsondata['edges']);
 
+//
+                    console.log(nodes);
 
-//                    for (var node in nodes) {
-//                        console.log(nodes);
-//                    }
 
                     // create a network
                     var container = document.getElementById('mynetwork');
@@ -154,21 +191,70 @@
                         nodes: nodes,
                         edges: edges
                     };
-                    var options = {};
+                    var options = {
+                        interaction: {hover: true},
+
+                    };
                     var network = new vis.Network(container, data, options);
-                    network.on('doubleClick', function (params) {
+//                    network.on("showPopup", function (params) {
+//                        document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
+//                    });
+//                    network.on('doubleClick', function (params) {
+//                        if (params.nodes.length!=0){
+//                        var from = params.nodes[0];
+//                        $.ajax({
+//                            type:'POST',
+//                            dataType:'json',
+//                            url:'/shortest',
+//                            error:function (e) {
+//                                console.log(e);
+//                            }
+//                            success:function () {
+//
+//                            }
+//                        })
+//
+//                        }else {
+//                            alert('unselected');
+//                        }
+//                    });
+
+
+                    network.on('click', function (params) {
                         if (params.nodes.length != 0) {
+
                             var id = params.nodes[0];
-                            nodes.update({id: id, color: {background: 'red', highlight: {background: 'red'}}});
-                        } else if (params.edges.length != 0){
-                            var eid = params.edges[0];
-                            edges.update({id:eid, color:{color:'red',highlight:'red'}});
-                        } else {
-                            alert('unselected');
+
+                            $.ajax({
+                                type: 'GET',
+                                dataType: "json",
+                                url: "/stationinfo",
+                                data: {'id': id},
+                                error: function (data) {
+                                    console.log(data);
+                                },
+                                success: function (data) {
+                                    if (data['code'] == 001) {
+                                        console.log(data);
+                                        var ip = data['data']['ip'];
+                                        var status = data['data']['status'];
+                                        if (status == 1) {
+                                            status = 'Activated';
+                                        } else {
+                                            status = 'Inactivated';
+                                        }
+                                        document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
+                                            + '<br/>' + 'status :' + status;
+
+                                    }
+                                }
+                            });
+
+
                         }
 
 
-                    })
+                    });
                 }
             }
         });
@@ -245,6 +331,32 @@
         document.getElementById('weight').value = '';
     }
 
+    function clearTransForm() {
+        document.getElementById('from').value = '';
+        document.body.onload(getNodesFunction());
+
+    }
+
+    function addRelay() {
+        $form = $('#relay_form');
+        console.log($form.serialize());
+        $.ajax({
+            url: '/addstation',
+            type: 'post',
+            data: $form.serialize(),
+            success: function (data) {
+                if (data['code'] == '001') {
+                    getNodesFunction();
+                }
+                else alert(data['message']);
+            },
+            error: function(e) {
+                console.log(e);
+        }
+        })
+
+    }
+
     // add new store
     function addNewStore() {
 //        var sid = document.getElementById('storeID2');
@@ -271,12 +383,35 @@
         });
     }
 
-    function clearStoreForm() {
-        document.getElementById('storeID2').value = '';
-        document.getElementById('relayID2').value = '';
-        document.getElementById('weight2').value = '';
+
+    function sendNewTrans() {
+        $form = $('#send_form');
+        console.log($form.serialize());
+        $.ajax({
+            url: '/shortest',
+            type: 'post',
+            data: $form.serialize(),
+            success: function (data) {
+                var jsondata = data['data'];
+                if (data['code'] == '001') {
+                    document.getElementById('path').innerHTML = 'Transaction path is:' + '</br>' + jsondata;
+                    show(data);
+                } else {
+                    alert(data['message']);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
     }
 
+
+    function show(data) {
+        for (var i = 0; i < data['data'].length; i++) {
+            nodes.update({id: data['data'][i], color: {background: 'red', highlight: {background: 'red'}}});
+        }
+    }
 
 </script>
 </body>

@@ -1,10 +1,8 @@
-Use cs744;
-
 -- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
 --
--- Host: 127.0.0.1    Database: cs744
+-- Host: localhost    Database: cs744
 -- ------------------------------------------------------
--- Server version	5.7.17
+-- Server version	5.7.20
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -77,11 +75,11 @@ DROP TABLE IF EXISTS `connections`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `connections` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `from_s` int(11) NOT NULL,
-  `to_s` int(11) NOT NULL,
+  `from` int(11) NOT NULL,
+  `to` int(11) NOT NULL,
   `weight` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,7 +88,7 @@ CREATE TABLE `connections` (
 
 LOCK TABLES `connections` WRITE;
 /*!40000 ALTER TABLE `connections` DISABLE KEYS */;
-INSERT INTO `connections` VALUES (1,2,1,3),(2,3,1,2),(3,4,2,1),(4,5,2,3),(5,6,3,2),(6,7,2,4),(7,8,7,2);
+INSERT INTO `connections` VALUES (1,2,1,3),(2,3,1,2),(3,4,2,1),(4,5,2,3),(5,6,3,2),(6,7,2,4),(7,8,7,2),(8,13,7,3),(9,16,3,2),(10,17,3,3),(11,18,7,3),(12,19,18,2);
 /*!40000 ALTER TABLE `connections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -237,7 +235,7 @@ CREATE TABLE `station` (
   `ip` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `station_ip_unique` (`ip`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,7 +244,7 @@ CREATE TABLE `station` (
 
 LOCK TABLES `station` WRITE;
 /*!40000 ALTER TABLE `station` DISABLE KEYS */;
-INSERT INTO `station` VALUES (1,0,1,'192.168.0.1'),(2,1,1,'192.168.0.2'),(3,1,1,'192.168.0.3'),(4,2,1,'192.168.0.5'),(5,2,1,'192.168.0.7'),(6,2,1,'192.168.0.9'),(7,1,1,'192.168.1.3'),(8,2,1,'192.168.1.20');
+INSERT INTO `station` VALUES (1,0,1,'192.168.0.1'),(2,1,1,'192.168.0.2'),(3,1,1,'192.168.0.3'),(4,2,1,'192.168.0.5'),(5,2,1,'192.168.0.7'),(6,2,1,'192.168.0.9'),(7,1,1,'192.168.1.3'),(8,2,1,'192.168.1.20'),(13,2,1,'64.233.161.147'),(16,2,1,'192.168.1.4'),(17,2,1,'192.168.1.5'),(18,1,1,'192.168.1.30'),(19,2,1,'64.233.161.148');
 /*!40000 ALTER TABLE `station` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -312,4 +310,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-04 15:43:06
+-- Dump completed on 2018-03-06 10:51:03
