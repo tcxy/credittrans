@@ -33,6 +33,7 @@ class StationController extends Controller
         $connections = Connection::all();
         $edges = [];
         foreach ($connections as $connection) {
+            $connection->label = '' . $connection->weight;
             array_push($edges, $connection);
         }
 
@@ -118,19 +119,19 @@ class StationController extends Controller
         }
 
         $edges = array();
-        for ($i = 0; $i < sizeof($route); $i++) {
+        for ($i = 0; $i < sizeof($route) - 1; $i++) {
             $from_station = Station::where('ip', '=',$route[$i])->get()->first();
             $to_station = Station::where('ip', '=', $route[$i + 1])->get()->first();
 
-            $edge = Connection::where(['from' => $from_station->id, 'to' => $to_station->id])->
-            orwhere(['from' => $to_station->id, 'to' =>  $from_station->id])->get()->first();
+            $edge = Connection::where(['from' => $from_station->id, 'to' => $to_station->id])->get()->first();
 
-            array_push($edges, $from_station->id);
-            array_push($edges, $edge);
+            array_push($edges, ['type' => '1', 'id' => $from_station->id]);
+            array_push($edges, ['type' => '2', 'edge' => $edge]);
         }
-        array_push($edges, $route[sizeof($route) - 1]);
+        $station = Station::where('ip', '=', $route[sizeof($route) - 1])->get()->first();
+        array_push($edges, ['type' => '1', 'id' => $station->id]);
 
-        return response()->json(['code' => '001', 'data' => $route_id, 'test' => $edges]);
+        return response()->json(['code' => '001', 'data' => $edges, 'test' => $route]);
     }
 
     function graphtest()
