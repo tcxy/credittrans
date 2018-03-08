@@ -51,7 +51,15 @@ class StationController extends Controller
         $stations = Station::all();
         foreach ($stations as $station) {
             if ($station->ip == $ip) {
-                return response()->json(['code' => '002', 'message' => 'The ip address already exist in our records.']);
+
+        if ($connect_to == '192.168.0.1' && $type == 2) {
+            return response()->json(['code' => '002', 'message' => 'The stores cannot be connected to Processing Center']);
+        }
+
+        if ($type == 1) {
+            $station = Station::where('ip', '=', $connect_to)->get()->first();
+            if ($station->type == 2) {
+                return response()->json(['code' => '002', 'message' => 'The relay cannot be connected to a store']);
             }
         }
 
@@ -83,8 +91,10 @@ class StationController extends Controller
     }
 
     function shortest(Request $request) {
-        $from = $request->input('from');
-        $start_station = Station::find($from);
+
+        $from_id = $request->input('from');
+        $from = Station::where('ip', '=', $from_id)->get()->first();
+
         $to = '192.168.0.1';
         $graph = Graph::create();
         $edges = Connection::all();
