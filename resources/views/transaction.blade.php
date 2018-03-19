@@ -254,68 +254,6 @@
 
     }
 
-    //    getNodesFunction();
-
-    // Called when the Visualization API is loaded.
-    //    function draw() {
-    //        // Create a data table with nodes.
-    //        nodes = [
-    //            {id: 0, label: 'Process Center', shape: 'database'},
-    //            {id: 10, label: 'Relay Station#10', shape: 'triangle', status: true, load: 0},
-    //            {id: 11, label: 'Relay Station#11', shape: 'triangle', status: true, load: 0},
-    //            {id: 12, label: 'Relay Station#12', shape: 'triangle', status: true, load: 0},
-    //            {id: 13, label: 'Relay Station#13', shape: 'triangle', status: true, load: 0},
-    //            {id: 14, label: 'Relay Station#14', shape: 'triangle', status: true, load: 0},
-    //        ];
-    //
-    //        // Create a data table with links.
-    //        edges = [
-    //            {id: 0, from: 0, to: 12, length: EDGE_LENGTH_MAIN, color: {}},
-    //            {id: 1, from: 0, to: 10, length: EDGE_LENGTH_MAIN},
-    //            {id: 2, from: 10, to: 11, length: EDGE_LENGTH_MAIN},
-    //            {id: 3, from: 12, to: 13, length: EDGE_LENGTH_MAIN},
-    //            {id: 4, from: 10, to: 14, length: EDGE_LENGTH_MAIN},
-    //            {id: 5, from: 12, to: 14, length: EDGE_LENGTH_MAIN},
-    //        ];
-    //
-    //
-    //        //draw stores
-    //        for (var i = 100; i <= 103; i++) {
-    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
-    //            edges.push({from: 11, to: i, length: EDGE_LENGTH_SUB});
-    //        }
-    //
-    //        for (var i = 107; i <= 108; i++) {
-    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
-    //            edges.push({from: 12, to: i, length: EDGE_LENGTH_SUB});
-    //        }
-    //        for (var i = 109; i <= 111; i++) {
-    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
-    //            edges.push({from: 13, to: i, length: EDGE_LENGTH_SUB});
-    //        }
-    //        for (var i = 112; i <= 114; i++) {
-    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
-    //            edges.push({from: 14, to: i, length: EDGE_LENGTH_SUB});
-    //        }
-    //        for (var i = 115; i <= 116; i++) {
-    //            nodes.push({id: i, label: 'Store#' + i, shape: 'circle', status: true});
-    //            edges.push({from: 10, to: i, length: EDGE_LENGTH_AROUND});
-    //        }
-    //
-    //        // create a network
-    //        var container = document.getElementById('mynetwork');
-    //        var data = {
-    //            nodes: nodes,
-    //            edges: edges
-    //        };
-    //        var options = {
-    //            interaction: {hover: true}
-    //        };
-    //        network = new vis.Network(container, data, options);
-    //    }
-
-    //add new relay
-
 
     function clearRelayForm() {
         document.getElementById('relayID1').value = '';
@@ -413,10 +351,9 @@
                 var jsondata = data['data'];
                 if (data['code'] == '001') {
                     console.log(data);
-                    document.getElementById('path').innerHTML = 'Transaction path is:' + '</br>' + jsondata;
-                    path = data['data'];
-                    step = 0;
-                    clock = setInterval("animation()", 2000);
+                    // path = data['data'];
+                    // step = 0;
+                    // clock = setInterval("animation()", 2000);
                     // show(data);
                 } else {
                     alert(data['message']);

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Model\Connection\Connection;
 use App\Model\Station\Station;
 use App\Custom\Graph;
+use App\Model\Queue\Queue;
+use function MongoDB\BSON\fromJSON;
 
 class StationController extends Controller
 {
@@ -95,11 +97,53 @@ class StationController extends Controller
         }
     }
 
-    function shortest(Request $request)
-    {
+    /**
+     * The shortest without queue
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+//    function shortest(Request $request)
+//    {
+//
+//        $from_id = $request->input('from');
+//        $start_station = Station::where('ip', '=', $from_id)->get()->first();
+//
+//        $to = '192.168.0.1';
+//        $graph = Graph::create();
+//        $edges = Connection::all();
+//        foreach ($edges as $edge) {
+//            $from_station = Station::find($edge->from);
+//            $to_station = Station::find($edge->to);
+//            $graph->add($from_station->ip, $to_station->ip, $edge->weight);
+//        }
+//
+//        $route = $graph->search($start_station->ip, $to);
+//        $route_id = array();
+//
+//        foreach ($route as $node) {
+//            $station = Station::where('ip', '=', $node)->get()->first();
+//            array_push($route_id, $station->id);
+//        }
+//
+//        $edges = array();
+//        for ($i = 0; $i < sizeof($route) - 1; $i++) {
+//            $from_station = Station::where('ip', '=',$route[$i])->get()->first();
+//            $to_station = Station::where('ip', '=', $route[$i + 1])->get()->first();
+//
+//            $edge = Connection::where(['from' => $from_station->id, 'to' => $to_station->id])->get()->first();
+//
+//            array_push($edges, ['type' => '1', 'id' => $from_station->id]);
+//            array_push($edges, ['type' => '2', 'edge' => $edge]);
+//        }
+//        $station = Station::where('ip', '=', $route[sizeof($route) - 1])->get()->first();
+//        array_push($edges, ['type' => '1', 'id' => $station->id]);
+//
+//        return response()->json(['code' => '001', 'data' => $edges, 'test' => $route]);
+//    }
 
-        $from_id = $request->input('from');
-        $start_station = Station::where('ip', '=', $from_id)->get()->first();
+    function shortest(Request $request) {
+        $from_ip = $request->input('from');
+        $start_station = Station::where('ip', '=', $from_ip)->get()->first();
 
         $to = '192.168.0.1';
         $graph = Graph::create();
@@ -113,6 +157,7 @@ class StationController extends Controller
         $route = $graph->search($start_station->ip, $to);
         $route_id = array();
 
+
         foreach ($route as $node) {
             $station = Station::where('ip', '=', $node)->get()->first();
             array_push($route_id, $station->id);
@@ -120,18 +165,45 @@ class StationController extends Controller
 
         $edges = array();
         for ($i = 0; $i < sizeof($route) - 1; $i++) {
-            $from_station = Station::where('ip', '=',$route[$i])->get()->first();
+            $from_station = Station::where('ip', '=', $route[$i])->get()->first();
             $to_station = Station::where('ip', '=', $route[$i + 1])->get()->first();
 
             $edge = Connection::where(['from' => $from_station->id, 'to' => $to_station->id])->get()->first();
-
             array_push($edges, ['type' => '1', 'id' => $from_station->id]);
             array_push($edges, ['type' => '2', 'edge' => $edge]);
         }
         $station = Station::where('ip', '=', $route[sizeof($route) - 1])->get()->first();
         array_push($edges, ['type' => '1', 'id' => $station->id]);
 
-        return response()->json(['code' => '001', 'data' => $edges, 'test' => $route]);
+        $queue = new Queue;
+        $queue->message = 'Sending';
+        $queue->from = $station->id;
+        $queue->path = json_encode($edges);
+        $card = $request->input('card');
+        if (!$card) {
+            $card = '000000000000000';
+        }
+        $cvv = $request->input('cvv');
+        if (!$cvv) {
+            $cvv = '000';
+        }
+        $holder_name = $request->input('holder_name');
+        if (!$holder_name) {
+            $holder_name = 'null';
+        }
+        $amount = $request->input('amount');
+        if (!$amount) {
+            $amount = 0;
+        }
+        $queue->card = $card;
+        $queue->cvv = $cvv;
+        $queue->holder_name = $holder_name;
+        $queue->amount = $amount;
+        $queue->status = 1;
+        $queue->current = 0;
+        $queue->save();
+
+        return response()->json(['code' => '001', 'data' => $queue]);
     }
 
     function graphtest()
