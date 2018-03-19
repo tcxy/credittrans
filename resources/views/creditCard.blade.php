@@ -8,7 +8,6 @@
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/jquery-bootstrap-pagination.js') }}"></script>
@@ -102,7 +101,7 @@
                     console.log("Connection failed");
                     console.log(data);
                 }
-            });
+            })
         }
 
         function addCard() {
@@ -153,6 +152,16 @@
                 call_back: query
             });
         }
+
+        $("#cancel").click(function(){
+            $(".screen-window form input").each(function(){
+                $(this).val('');
+            });
+            $(".screen-window form select").each(function(){
+                $(this).val('');
+            });
+        });
+
     </script>
 </head>
 <body onload="loadCards()">
@@ -162,7 +171,7 @@
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span
                         class="icon-bar"></span>
                 <span class="icon-bar"></span> <span class="icon-bar"></span> </a> <a class="brand"
-                                                                                      href="transaction.html">Transaction</a>
+                                                                                      href="/transaction">Transaction</a>
             <div class="nav-collapse">
                 <ul class="nav">
                     <li>
@@ -178,7 +187,7 @@
                         <a href="#" id="username">@username</a>
                     </li>
                     <li>
-                        <a href="login.html">Logout</a>
+                        <a href="/login">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -225,13 +234,13 @@
                                 <div class="control-group">
                                     <label class="control-label" for="textarea">Balance:</label>
                                     <div class="controls">
-                                        <input type="number" class="input-xlarge" id="balance" name="balance"/>
+                                        <input type="text" class="input-xlarge" id="balance" name="balance"/>
                                     </div>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" for="textarea">Spending Limit:</label>
                                     <div class="controls">
-                                        <input type="number" class="input-xlarge" id="spendlinglimit" name="spendlinglimit"/>
+                                        <input type="text" class="input-xlarge" id="spendlinglimit" name="spendlinglimit"/>
                                     </div>
                                 </div>
                             </div>
@@ -243,13 +252,13 @@
             <div class="control-group">
                 <label class="control-label" for="textarea">Credit Number:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="cardId" name="cardId"/>
+                    <input type="text" class="input-xlarge" id="cardId" name="cardId"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">CVV Number:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="csc" name="csc"/>
+                    <input type="text" class="input-xlarge" id="csc" name="csc"/>
                 </div>
             </div>
             <div class="control-group">
@@ -260,7 +269,7 @@
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-primary" onclick="addCard()">Summit</button>
-                <button class="btn" onclick="clear()">Cancel</button>
+                <input type="button" class="btn" id="cancel" value="Cancel"/>
             </div>
         </fieldset>
     </form>

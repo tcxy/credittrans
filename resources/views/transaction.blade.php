@@ -55,7 +55,7 @@
         #eventSpan {
             float: right;
             width: 300px;
-            height: 300px;
+            height: 00px;
         }
 
         #send {
@@ -65,7 +65,7 @@
 
         #path {
             width: 300px;
-            height: 300px;
+            height: 100px;
             margin-top: 20px;
         }
     </style>
@@ -91,7 +91,7 @@
                         <a href="#" id="username">@username</a>
                     </li>
                     <li>
-                        <a href="login.html">Logout</a>
+                        <a href="/login">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -109,7 +109,7 @@
             <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
             <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
             <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
-            <input type="button" value="Clear" class="btn btn-primary" id="clear1" onclick="clearRelayForm()">
+            <input type="button" value="Clear" class="btn" id="clear1" onclick="clearRelayForm()">
         </form>
     </div>
     <div id="addNewStore">
@@ -121,7 +121,7 @@
                 <label>Weight:<input type="text" id="weight2" name="weight" style="margin-left: 77px;"></label>
                 <input name="type" hidden="hidden" value="2">
                 <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
-                <input type="button" value="Clear" class="btn btn-primary" id="clear2" onclick="clearStoreForm()">
+                <input type="button" value="Clear" class="btn" id="clear2" onclick="clearStoreForm()">
             </form>
 
         </div>
@@ -130,15 +130,21 @@
         <button type="button" class="btn btn-primary" id="send">New Transaction</button>
         <div id="sendForm">
             <form id="send_form" style="display: none">
-                <label>Store IP:<input type="text" id="from" name="from"></label>
+                <label>Store IP:<input type="text" id="from" name="from" style="margin-left: 70px"></label>
+                <label>Credit Card:<select id="cardNum" name='cardNum' style="margin-left: 48px"></select></label>
+                <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
+                <label>Amount:<input type="text" id="amount" name="amount" style="margin-left: 71px"></label>
                 <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="sendNewTrans()">
-                <input type="button" value="Clear" class="btn btn-primary" id="clear2" onclick="clearTransForm()">
+                <input type="button" value="Clear" class="btn" id="clear2" onclick="clearTransForm()">
             </form>
         </div>
     </div>
+
     <div id="path"></div>
-
-
+    <div id="action" style="margin-left:50px;margin-top:20px">
+        <button type="button" class="btn btn-success">Restart</button>
+        <button type="button" class="btn btn-danger" style="margin-left: 20px">Pause</button>
+    </div>
 </div>
 <div id="eventSpan"></div>
 <div id="mynetwork"></div>
@@ -158,7 +164,6 @@
     $(document).ready(function () {
         $('#send').click(function () {
             $('#send_form').toggle();
-            clearTransForm();
         })
     });
     $.ajaxSetup({
@@ -181,76 +186,84 @@
     }
 
     function getNodesFunction() {
-        $.ajax({
-            type: 'GET',
-            dataType: "json",
-            url: "/graph",
-            error: function (data) {
-                console.log(data);
-            },
-            success: function (data) {
-                if (data['code'] == '001') {
-                    var jsondata = data['data'];
-                    nodes = new vis.DataSet(jsondata['nodes']);
-                    edges = new vis.DataSet(jsondata['edges']);
+        var username = sessionStorage.getItem("username");
+        if (username == null) {
+            alert("You should login first");
+            window.location.replace("/");
+        } else {
+            $('#username').text(username);
+            $.ajax({
+
+                type: 'GET',
+                dataType: "json",
+                url: "/graph",
+                error: function (data) {
+                    console.log(data);
+                },
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        loadCards();
+                        var jsondata = data['data'];
+                        nodes = new vis.DataSet(jsondata['nodes']);
+                        edges = new vis.DataSet(jsondata['edges']);
 
 //
-                    console.log(nodes);
+                        console.log(nodes);
 
 
-                    // create a network
-                    var container = document.getElementById('mynetwork');
-                    var data = {
-                        nodes: nodes,
-                        edges: edges
-                    };
-                    var options = {
-                        interaction: {hover: true},
+                        // create a network
+                        var container = document.getElementById('mynetwork');
+                        var data = {
+                            nodes: nodes,
+                            edges: edges
+                        };
+                        var options = {
+                            interaction: {hover: true},
 
-                    };
-                    network = new vis.Network(container, data, options);
+                        };
+                        var network = new vis.Network(container, data, options);
+                        network.on('click', function (params) {
+                            if (params.nodes.length != 0) {
 
-                    network.on('click', function (params) {
-                        if (params.nodes.length != 0) {
+                                var id = params.nodes[0];
 
-                            var id = params.nodes[0];
-
-                            $.ajax({
-                                type: 'GET',
-                                dataType: "json",
-                                url: "/stationinfo",
-                                data: {'id': id},
-                                error: function (data) {
-                                    console.log(data);
-                                },
-                                success: function (data) {
-                                    if (data['code'] == 001) {
+                                $.ajax({
+                                    type: 'GET',
+                                    dataType: "json",
+                                    url: "/stationinfo",
+                                    data: {'id': id},
+                                    error: function (data) {
                                         console.log(data);
-                                        var ip = data['data']['ip'];
-                                        var status = data['data']['status'];
-                                        if (status == 1) {
-                                            status = 'Activated';
+                                    },
+                                    success: function (data) {
+                                        if (data['code'] == 001) {
+                                            console.log(data);
+                                            var ip = data['data']['ip'];
+                                            var status = data['data']['status'];
+                                            if (status == 1) {
+                                                status = 'Activated';
+                                            } else {
+                                                status = 'Inactivated';
+                                            }
+                                            document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
+                                                + '<br/>' + 'status :' + status;
+
                                         } else {
-                                            status = 'Inactivated';
+                                            alert(data['message']);
                                         }
-                                        document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
-                                            + '<br/>' + 'status :' + status;
-
-                                    } else {
-                                        alert(data['message']);
-                                    }
-                                }
-                            });
+                                    });
 
 
-                        }
+                            } else {
+                                document.getElementById('eventSpan').innerHTML = '';
+                            }
 
 
-                    });
+                        });
+                    }
                 }
-            }
-        });
-
+            });
+        }
 
     }
 
@@ -260,6 +273,13 @@
         document.getElementById('connectedTo').value = '';
         document.getElementById('weight').value = '';
     }
+
+    function clearStoreForm() {
+        document.getElementById('relayID2').value = '';
+        document.getElementById('storeID2').value = '';
+        document.getElementById('weight2').value = '';
+    }
+
 
     function clearTransForm() {
         document.getElementById('from').value = '';
@@ -280,9 +300,9 @@
                 }
                 else alert(data['message']);
             },
-            error: function(e) {
+            error: function (e) {
                 console.log(e);
-        }
+            }
         })
 
     }
@@ -348,6 +368,7 @@
             type: 'post',
             data: $form.serialize(),
             success: function (data) {
+                console.log($form.serialize());
                 var jsondata = data['data'];
                 if (data['code'] == '001') {
                     console.log(data);
@@ -362,9 +383,33 @@
             error: function (e) {
                 console.log(e);
             }
-        })
+        });
+
+
     }
 
+    function loadCards() {
+        $.ajax({
+            type: "get",
+            url: "{{ route('credit.getcards') }}",
+            data: {"page": 1},
+            success: function (data) {
+                if (data['code'] == '001') {
+                    $('select#cardNum').empty();
+                    console.log(data['data']);
+                    var returnData = data['data'];
+                    for (var index in returnData['cards']) {
+                        var card = returnData['cards'][index];
+                        $('select#cardNum').append('<option class="loaded-cards" value="' + card.cardId + '">' + card.cardId + '</option>');
+                    }
+                }
+            },
+            error: function (data) {
+                console.log("Connection failed");
+                console.log(data);
+            }
+        });
+    }
 
     function show(data) {
         for (var i = 0; i < data['data'].length; i++) {

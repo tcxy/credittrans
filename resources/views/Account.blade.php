@@ -4,12 +4,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/jquery-bootstrap-pagination.js') }}"></script>
     <script src="{{ asset('js/site.js') }}"></script>
@@ -32,30 +31,54 @@
             }
         });
 
-        function loadAccounts() {
-            var username = sessionStorage.getItem("username");
-            if (username == null) {
-                alert("You should login first");
-                window.location.replace("/");
-            } else {
-                $('#username').text(username);
-                $.ajax({
-                    type: "get",
-                    url: "{{ route('credit.getaccounts') }}",
-                    data: {"page": 1},
-                    success: function (data) {
-                        if (data['code'] == '001') {
-                            console.log(data['data']);
-                            var returnData = data['data'];
+//         function loadAccounts() {
+//             var username = sessionStorage.getItem("username");
+//             if (username == null) {
+//                 alert("You should login first");
+//                 window.location.replace("/");
+//             } else {
+//                 $('#username').text(username);
+//                 $.ajax({
+//                     type: "get",
+//                     url: "{{ route('credit.getaccounts') }}",
+//                     data: {"page": 1},
+//                     success: function (data) {
+//                         if (data['code'] == '001') {
+//                             console.log(data['data']);
+//                             var returnData = data['data'];
+//
+//                             loadList(returnData);
+//                         }
+//                     },
+//                     error: function (data) {
+//                         console.log("Connection failed");
+//                         console.log(data);
+//                     }
+//                 });
+                 function loadAccounts() {
+                     var username = sessionStorage.getItem("username");
+                     if (username == null) {
+                         alert("You should login first");
+                         window.location.replace("/");
+                     } else {
+                         $('#username').text(username);
+                         $.ajax({
+                             type: "get",
+                             url: "{{ route('credit.getaccounts') }}",
+                             data: {"page": 1},
+                             success: function (data) {
+                                 if (data['code'] == '001') {
+                                     console.log(data['data']);
+                                     var returnData = data['data'];
 
-                            loadList(returnData);
-                        }
-                    },
-                    error: function (data) {
-                        console.log("Connection failed");
-                        console.log(data);
-                    }
-                });
+                                     loadList(returnData);
+                                 }
+                             },
+                             error: function (data) {
+                                 console.log("Connection failed");
+                                 console.log(data);
+                             }
+                         });
             }
         }
 
@@ -63,27 +86,28 @@
             $.getJSON('{{ route("credit.getaccounts") }}', page, loadList);
         }
 
-        function deleteAccount(accountid) {
 
+        function deleteAccount(accountid) {
             $.ajax({
                 type: 'post',
                 url: '{{ route('credit.deleteaccount') }}',
                 data: {
-                    'accountid': accountid
-                },
-                success: function (data) {
-                    if (data['code'] == '001') {
-                        loadAccounts();
-                    } else {
-                        alert(data['message']);
-                    }
-                },
-                error: function (data) {
-                    console.log("Connection failed");
-                    console.log(data);
+                'accountid': accountid
+            },
+            success: function (data) {
+                if (data['code'] == '001') {
+                    loadAccounts();
+                } else {
+                    alert(data['message']);
                 }
-            });
+            },
+            error: function (data) {
+                console.log("Connection failed");
+                console.log(data);
+            }
+        })
         }
+
 
         function loadList(data) {
             $('.loaded-data').remove();
@@ -96,9 +120,9 @@
                     '</th><th id="spendlinglimit">' + account.spendlinglimit + '</th><th id="balance">' + account.balance + '</th>' +
                     '<th id="accountid" hidden="hidden">' + account.accountid + '</th>' +
                     '<td>' +
-                    '                <a href="#" class="delete-link" onclick="editAccount(this,' + ((index+1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
-                    '                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;\n' +
-                    '                <a href="#" class="delete-link" onclick="deleteAccount(' + account.accountid + ')">delete</a>' + '</td></tr>');
+                    '                <a href="#" class="delete-link" onclick="editAccount(this,' + (parseInt(index) + 1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
+                        '                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;\n' +
+                        '                <a href="#" class="delete-link" onclick="deleteAccount(' + account.accountid + ')">delete</a>' + '</td></tr>');
             }
 
 
@@ -143,7 +167,7 @@
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span
                         class="icon-bar"></span>
                 <span class="icon-bar"></span> <span class="icon-bar"></span> </a> <a class="brand"
-                                                                                      href="transaction.html">Transaction</a>
+                                                                                      href="/transaction">Transaction</a>
             <div class="nav-collapse">
                 <ul class="nav">
                     <li>
@@ -159,7 +183,7 @@
                         <a href="#" id="username">@username</a>
                     </li>
                     <li>
-                        <a href="/">Logout</a>
+                        <a href="/login">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -195,26 +219,26 @@
             <div class="control-group">
                 <label class="control-label" for="textarea">Balance:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="balance" name="balance"/>
+                    <input type="text" class="input-xlarge" id="balance" name="balance"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">Spending Limit:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="spendlinglimit" name="spendlinglimit"/>
+                    <input type="text" class="input-xlarge" id="spendlinglimit" name="spendlinglimit"/>
                 </div>
             </div>
             <legend>New credit card</legend>
             <div class="control-group">
                 <label class="control-label" for="textarea">Credit Number:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="cardId" name="cardId"/>
+                    <input type="text" class="input-xlarge" id="cardId" name="cardId"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">CVV Number:</label>
                 <div class="controls">
-                    <input type="number" class="input-xlarge" id="csc" name="csc"/>
+                    <input type="text" class="input-xlarge" id="csc" name="csc"/>
                 </div>
             </div>
             <div class="control-group">
@@ -225,9 +249,8 @@
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-primary" onclick="addAccount()">Summit</button>
-                <button class="btn" onclick="cancel()">Cancel</button>
+                <input type="button" class="btn" value="Cancel"/>
             </div>
-
         </fieldset>
     </form>
     <form method="post" action="{{ route('credit.updateaccount') }}" id="updateaccount">
