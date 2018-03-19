@@ -251,8 +251,8 @@
                                         } else {
                                             alert(data['message']);
                                         }
-                                    });
-
+                                    }
+                                });
 
                             } else {
                                 document.getElementById('eventSpan').innerHTML = '';

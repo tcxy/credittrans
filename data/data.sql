@@ -1,9 +1,8 @@
-use cs744;
--- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: cs744
 -- ------------------------------------------------------
--- Server version	5.7.20
+-- Server version	5.7.21-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -223,6 +222,39 @@ INSERT INTO `questions` VALUES (1,'Which course do you take for this project?','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `queues`
+--
+
+DROP TABLE IF EXISTS `queues`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `queues` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) DEFAULT NULL,
+  `from` int(11) NOT NULL,
+  `path` json NOT NULL,
+  `card` varchar(255) NOT NULL,
+  `cvv` varchar(255) NOT NULL,
+  `holder_name` varchar(255) NOT NULL,
+  `amount` double NOT NULL,
+  `result` varchar(255) DEFAULT NULL,
+  `status` int(11) NOT NULL COMMENT '1 - processing\n2 - returning\n3 - finish\n4 - stopped',
+  `current` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `queues`
+--
+
+LOCK TABLES `queues` WRITE;
+/*!40000 ALTER TABLE `queues` DISABLE KEYS */;
+INSERT INTO `queues` VALUES (1,'The card don\'t exist',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}]','000000000000000','000','null',0,'Declined',3,0),(2,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0),(3,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0),(4,'Sending',1,'[{\"id\": 8, \"type\": \"1\"}, {\"edge\": {\"id\": 7, \"to\": 7, \"from\": 8, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,NULL,1,1);
+/*!40000 ALTER TABLE `queues` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `station`
 --
 
@@ -311,4 +343,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-06 10:54:15
+-- Dump completed on 2018-03-19 14:35:56
