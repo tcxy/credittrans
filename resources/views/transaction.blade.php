@@ -172,6 +172,19 @@
         }
     });
 
+    var clock = 0;
+    var path;
+    var step;
+    var network;
+
+    var username = sessionStorage.getItem("username");
+    if (username == null) {
+        alert("You should login first");
+        window.location.replace("/");
+    } else {
+        $('#username').text(username);
+    }
+
     function getNodesFunction() {
         var username = sessionStorage.getItem("username");
         if (username == null) {
@@ -209,30 +222,6 @@
 
                         };
                         var network = new vis.Network(container, data, options);
-//                    network.on("showPopup", function (params) {
-//                        document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
-//                    });
-//                    network.on('doubleClick', function (params) {
-//                        if (params.nodes.length!=0){
-//                        var from = params.nodes[0];
-//                        $.ajax({
-//                            type:'POST',
-//                            dataType:'json',
-//                            url:'/shortest',
-//                            error:function (e) {
-//                                console.log(e);
-//                            }
-//                            success:function () {
-//
-//                            }
-//                        })
-//
-//                        }else {
-//                            alert('unselected');
-//                        }
-//                    });
-
-
                         network.on('click', function (params) {
                             if (params.nodes.length != 0) {
 
@@ -259,9 +248,10 @@
                                             document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
                                                 + '<br/>' + 'status :' + status;
 
+                                        } else {
+                                            alert(data['message']);
                                         }
-                                    }
-                                });
+                                    });
 
 
                             } else {
@@ -405,6 +395,32 @@
         });
     }
 
+    function animation() {
+        if (step == path.length) {
+            clearInterval(clock);
+            nodes.update({id: path[step - 1]['id'], color: {border: '#2B7CE9', background: '#97C2FC', highlight: {border: '#2B7CE9', background: '#D2E5FF'}, hover: {border: '#2B7CE9', background: '#D2E5FF'}}});
+            step = 0;
+            return ;
+        }
+
+        var node = path[step];
+        console.log(step);
+        console.log(node);
+        if (node['type'] == '1') {
+            nodes.update({id: node['id'], color: {background: 'red', highlight: {background: 'red'}}});
+            if (step != 0) {
+                edges.update({id: path[step-1]['edge']['id'], color: {color: '#848484', highlight: '#848484', hover: '#848484', inherit: 'from', opacity: 1}});
+            }
+        } else if (node['type'] == '2') {
+            edges.update({id: node['edge']['id'], color: {color: 'red', highlight: 'red', hover: 'red'}});
+            if (step != 0) {
+                nodes.update({id: path[step-1]['id'], color: {border: '#2B7CE9', background: '#97C2FC', highlight: {border: '#2B7CE9', background: '#D2E5FF'}, hover: {border: '#2B7CE9', background: '#D2E5FF'}}});
+            }
+        }
+
+        step++;
+    }
+
 
     function sendNewTrans() {
         $form = $('#send_form');
@@ -417,8 +433,12 @@
                 console.log($form.serialize());
                 var jsondata = data['data'];
                 if (data['code'] == '001') {
+                    console.log(data);
                     document.getElementById('path').innerHTML = 'Transaction path is:' + '</br>' + jsondata;
-                    show(data);
+                    path = data['data'];
+                    step = 0;
+                    clock = setInterval("animation()", 2000);
+                    // show(data);
                 } else {
                     alert(data['message']);
                 }
