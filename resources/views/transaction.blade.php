@@ -133,6 +133,8 @@
                 <label>Store IP:<input type="text" id="from" name="from" style="margin-left: 70px"></label>
                 <label>Credit Card:<select id="cardNum" name='cardNum' style="margin-left: 48px"></select></label>
                 <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
+                <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
+                                          style="margin-left: 38px"></label>
                 <label>Amount:<input type="text" id="amount" name="amount" style="margin-left: 71px"></label>
                 <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="sendNewTrans()">
                 <input type="button" value="Clear" class="btn" id="clear2" onclick="clearTransForm()">
@@ -143,11 +145,39 @@
     <div id="path"></div>
     <div id="action" style="margin-left:50px;margin-top:20px">
         <button type="button" class="btn btn-success">Restart</button>
-        <button type="button" class="btn btn-danger" style="margin-left: 20px">Pause</button>
+        <button type="button" class="btn btn-danger" style="margin-left: 20px" onclick="pause()">Pause</button>
     </div>
 </div>
 <div id="eventSpan"></div>
 <div id="mynetwork"></div>
+<div id="queueField" style="margin-top:650px">
+    <table class="table table-bordered table-striped" id="queueTable">
+        <thead>
+        <tr>
+            <th>
+                Store Ip
+            </th>
+            <th>
+                Credit Card
+            </th>
+            <th>
+                Holder Name
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Status
+            </th>
+
+        </tr>
+        </thead>
+        <tbody id="queues">
+
+        </tbody>
+
+    </table>
+</div>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#addRelay').click(function () {
@@ -295,6 +325,7 @@
             type: 'post',
             data: $form.serialize(),
             success: function (data) {
+                console.log(data);
                 if (data['code'] == '001') {
                     getNodesFunction();
                 }
@@ -321,6 +352,7 @@
             type: 'post',
             data: $form.serialize(),
             success: function (data) {
+                console.log(data);
                 if (data['code'] == '001') {
                     getNodesFunction();
                 } else {
@@ -336,9 +368,17 @@
     function animation() {
         if (step == path.length) {
             clearInterval(clock);
-            nodes.update({id: path[step - 1]['id'], color: {border: '#2B7CE9', background: '#97C2FC', highlight: {border: '#2B7CE9', background: '#D2E5FF'}, hover: {border: '#2B7CE9', background: '#D2E5FF'}}});
+            nodes.update({
+                id: path[step - 1]['id'],
+                color: {
+                    border: '#2B7CE9',
+                    background: '#97C2FC',
+                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                }
+            });
             step = 0;
-            return ;
+            return;
         }
 
         var node = path[step];
@@ -347,12 +387,23 @@
         if (node['type'] == '1') {
             nodes.update({id: node['id'], color: {background: 'red', highlight: {background: 'red'}}});
             if (step != 0) {
-                edges.update({id: path[step-1]['edge']['id'], color: {color: '#848484', highlight: '#848484', hover: '#848484', inherit: 'from', opacity: 1}});
+                edges.update({
+                    id: path[step - 1]['edge']['id'],
+                    color: {color: '#848484', highlight: '#848484', hover: '#848484', inherit: 'from', opacity: 1}
+                });
             }
         } else if (node['type'] == '2') {
             edges.update({id: node['edge']['id'], color: {color: 'red', highlight: 'red', hover: 'red'}});
             if (step != 0) {
-                nodes.update({id: path[step-1]['id'], color: {border: '#2B7CE9', background: '#97C2FC', highlight: {border: '#2B7CE9', background: '#D2E5FF'}, hover: {border: '#2B7CE9', background: '#D2E5FF'}}});
+                nodes.update({
+                    id: path[step - 1]['id'],
+                    color: {
+                        border: '#2B7CE9',
+                        background: '#97C2FC',
+                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                    }
+                });
             }
         }
 
@@ -372,10 +423,10 @@
                 var jsondata = data['data'];
                 if (data['code'] == '001') {
                     console.log(data);
-                    // path = data['data'];
-                    // step = 0;
-                    // clock = setInterval("animation()", 2000);
-                    // show(data);
+                     path = data['data'];
+                     step = 0;
+                     clock = setInterval("animation()", 2000);
+                     show(data);
                 } else {
                     alert(data['message']);
                 }
@@ -384,8 +435,28 @@
                 console.log(e);
             }
         });
+        $.ajax({
+            url: '/queues',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                if (data['code' == '001']) {
+                    console.log(data['data']);
+                } else {
+                    alert(data['message']);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+
+        });
 
 
+    }
+    function pause() {
+//        clock = setInterval("animation()", 2000);
+        setInterval(clock);
     }
 
     function loadCards() {
