@@ -180,7 +180,7 @@ class StationController extends Controller
 
         $queue = new Queue;
         $queue->message = 'Sending';
-        $queue->from = $station->id;
+        $queue->from = $start_station->id;
         $queue->path = json_encode($edges);
         $card = $request->input('cardNum');
         if (!$card) {
