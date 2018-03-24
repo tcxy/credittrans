@@ -53,48 +53,47 @@ class StationController extends Controller
         $connect_to = $request->input('to');
         $weight = $request->input('weight');
 
+        if ($connect_to == '192.168.0.1' && $type == 2) {
+            return response()->json(['code' => '002', 'message' => 'The store cannot be connected to Processing Center']);
+        }
+
+        if ($type == 1) {
+            $station = Station::where('ip', '=', $connect_to)->get()->first();
+            if ($station->type == 2) {
+                return response()->json(['code' => '002', 'message' => 'The relay cannot be connected to a store']);
+            }
+        }
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) == False) {
+            return response()->json(['code' => '002', 'message' => 'The ip address is not validate ipv4 or ipv6 address, please check it and reinput again']);
+        }
+
         $stations = Station::all();
         foreach ($stations as $station) {
             if ($station->ip == $ip) {
-
-                if ($connect_to == '192.168.0.1' && $type == 2) {
-                    return response()->json(['code' => '002', 'message' => 'The stores cannot be connected to Processing Center']);
-                }
-
-                if ($type == 1) {
-                    $station = Station::where('ip', '=', $connect_to)->get()->first();
-                    if ($station->type == 2) {
-                        return response()->json(['code' => '002', 'message' => 'The relay cannot be connected to a store']);
-                    }
-                }
-
-                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) == False) {
-                    return response()->json(['code' => '002', 'message' => 'The ip address is not validate ipv4 or ipv6 address, please check it and reinput again']);
-                }
-
-                $station = new Station;
-                $station->status = $status;
-                $station->ip = $ip;
-                $station->type = $type;
-
-                // $station = Station::all()->where('ip', $ip);
-                $to_station = Station::where('ip', '=', $connect_to)->get()->first();
-
-                if ($to_station == null) {
-                    return response()->json(['code' => '002', 'message' => 'The station doesn\'t exist']);
-                }
-                $to = $to_station->id;
-                $station->save();
-
-                $connection = new Connection;
-                $connection->from = $station->id;
-                $connection->to = $to;
-                $connection->weight = $weight;
-                $connection->save();
-
-                return response()->json(['code' => '001']);
+                return response()->json(['code' => '002', 'message' => 'The ip address has already exist']);
             }
         }
+        $station = new Station;
+        $station->status = $status;
+        $station->ip = $ip;
+        $station->type = $type;
+
+        // $station = Station::all()->where('ip', $ip);
+        $to_station = Station::where('ip', '=', $connect_to)->get()->first();
+
+        if ($to_station == null) {
+            return response()->json(['code' => '002', 'message' => 'The station doesn\'t exist']);
+        }
+        $to = $to_station->id;
+        $station->save();
+
+        $connection = new Connection;
+        $connection->from = $station->id;
+        $connection->to = $to;
+        $connection->weight = $weight;
+        $connection->save();
+
+        return response()->json(['code' => '001']);
     }
 
     /**
