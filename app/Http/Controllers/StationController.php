@@ -53,7 +53,7 @@ class StationController extends Controller
         $connect_to = $request->input('to');
         $weight = $request->input('weight');
 
-        if ($connect_to == '192.168.0.1' && $type == 2) {
+        if ($connect_to == '32.181.121.11' && $type == 2) {
             return response()->json(['code' => '002', 'message' => 'The store cannot be connected to Processing Center']);
         }
 
@@ -144,13 +144,17 @@ class StationController extends Controller
         $from_ip = $request->input('from');
         $start_station = Station::where('ip', '=', $from_ip)->get()->first();
 
-        $to = '192.168.0.1';
+        if (!$start_station) {
+            return response()->json(['code' => '002', 'message' => 'The store with this ip doesn\'t exist']);
+        }
+
+        $to = '32.181.121.11';
         $graph = Graph::create();
         $edges = Connection::all();
         foreach ($edges as $edge) {
             $from_station = Station::find($edge->from);
             $to_station = Station::find($edge->to);
-            $graph->add($from_station->ip, $to_station->ip, $edge->weight);
+            $graph->add(strval($from_station->ip), strval($to_station->ip), $edge->weight);
         }
 
         $route = $graph->search($start_station->ip, $to);
@@ -178,7 +182,7 @@ class StationController extends Controller
         $queue->message = 'Sending';
         $queue->from = $station->id;
         $queue->path = json_encode($edges);
-        $card = $request->input('card');
+        $card = $request->input('cardNum');
         if (!$card) {
             $card = '000000000000000';
         }
