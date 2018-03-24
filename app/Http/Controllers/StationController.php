@@ -13,7 +13,7 @@ use function MongoDB\BSON\fromJSON;
 class StationController extends Controller
 {
     //
-    function getGraph(Request $request)
+    public function getGraph(Request $request)
     {
         $stations = Station::all();
         $nodes = [];
@@ -45,7 +45,7 @@ class StationController extends Controller
 
     }
 
-    function add(Request $request)
+    public function add(Request $request)
     {
         $type = $request->input('type');
         $status = true;
@@ -238,12 +238,43 @@ class StationController extends Controller
         }
     }
 
-    public
-    function stationInfo(Request $request)
+    public function stationInfo(Request $request)
     {
         $id = $request->input('id');
         $station = Station::find($id);
 
         return response()->json(['code' => '001', 'data' => $station]);
+    }
+
+    public function inActivateStation(Request $request) {
+        $id = $request->input('id');
+        $station = Station::find($id);
+        $queues = json_decode($station->queues);
+        foreach ($queues as $queue) {
+            $queue = Queue::find($queue);
+            $queue->f_status = $queue->status;
+            $queue->status = 4;
+            $queue->save();
+        }
+        $station->status = false;
+        $station->save();
+
+        return response()->json(['code' => '001']);
+
+    }
+
+    public function activateStation(Request $request) {
+        $id = $request->input('id');
+        $station = Station::find($id);
+        $queues = json_encode($station->queues);
+        foreach ($queues as $queue) {
+            $queue = Queue::find($queue);
+            $queue->status = $queue->f_status;
+            $queue->save();
+        }
+        $station->status = true;
+        $station->save();
+
+        return response()->json(['code' => '001']);
     }
 }
