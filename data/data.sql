@@ -79,7 +79,7 @@ CREATE TABLE `connections` (
   `to` int(11) NOT NULL,
   `weight` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,7 +88,7 @@ CREATE TABLE `connections` (
 
 LOCK TABLES `connections` WRITE;
 /*!40000 ALTER TABLE `connections` DISABLE KEYS */;
-INSERT INTO `connections` VALUES (1,2,1,3),(2,3,1,2),(3,4,2,1),(4,5,2,3),(5,6,3,2),(6,7,2,4),(7,8,7,2),(8,13,7,3),(9,16,3,2),(10,17,3,3),(11,18,7,3),(12,19,18,2);
+INSERT INTO `connections` VALUES (1,2,1,3),(2,3,1,2),(3,4,2,1),(4,5,2,3),(5,6,3,2),(6,7,2,4),(7,8,7,2),(8,13,7,3),(9,16,3,2),(10,17,3,3),(11,18,7,3),(12,19,18,2),(13,20,7,4);
 /*!40000 ALTER TABLE `connections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,8 +240,9 @@ CREATE TABLE `queues` (
   `result` varchar(255) DEFAULT NULL,
   `status` int(11) NOT NULL COMMENT '1 - processing\n2 - returning\n3 - finish\n4 - stopped',
   `current` int(11) NOT NULL,
+  `f_status` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,7 +251,7 @@ CREATE TABLE `queues` (
 
 LOCK TABLES `queues` WRITE;
 /*!40000 ALTER TABLE `queues` DISABLE KEYS */;
-INSERT INTO `queues` VALUES (1,'The card don\'t exist',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}]','000000000000000','000','null',0,'Declined',3,0),(2,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0),(3,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0),(4,'Sending',1,'[{\"id\": 8, \"type\": \"1\"}, {\"edge\": {\"id\": 7, \"to\": 7, \"from\": 8, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,NULL,1,1);
+INSERT INTO `queues` VALUES (1,'The card don\'t exist',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(2,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(3,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(4,'Sending',1,'[{\"id\": 8, \"type\": \"1\"}, {\"edge\": {\"id\": 7, \"to\": 7, \"from\": 8, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,NULL,1,1,NULL),(5,'Sending',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','484','Wei',500,NULL,1,0,NULL);
 /*!40000 ALTER TABLE `queues` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,9 +267,11 @@ CREATE TABLE `station` (
   `type` int(11) NOT NULL,
   `status` tinyint(1) NOT NULL,
   `ip` varchar(45) NOT NULL,
+  `queues` json DEFAULT NULL,
+  `limit` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `station_ip_unique` (`ip`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -277,7 +280,7 @@ CREATE TABLE `station` (
 
 LOCK TABLES `station` WRITE;
 /*!40000 ALTER TABLE `station` DISABLE KEYS */;
-INSERT INTO `station` VALUES (1,0,1,'192.168.0.1'),(2,1,1,'192.168.0.2'),(3,1,1,'192.168.0.3'),(4,2,1,'192.168.0.5'),(5,2,1,'192.168.0.7'),(6,2,1,'192.168.0.9'),(7,1,1,'192.168.1.3'),(8,2,1,'192.168.1.20'),(13,2,1,'64.233.161.147'),(16,2,1,'192.168.1.4'),(17,2,1,'192.168.1.5'),(18,1,1,'192.168.1.30'),(19,2,1,'64.233.161.148');
+INSERT INTO `station` VALUES (1,0,1,'32.181.121.11',NULL,NULL),(2,1,1,'151.250.93.7',NULL,NULL),(3,1,1,'84.46.44.129',NULL,NULL),(4,2,1,'140.76.60.104',NULL,NULL),(5,2,1,'73.173.4.239',NULL,NULL),(6,2,1,'56.136.162.39',NULL,NULL),(7,1,1,'41.123.143.237',NULL,NULL),(8,2,1,'4.9.150.118',NULL,NULL),(13,2,1,'64.233.161.147',NULL,NULL),(16,2,1,'104.110.178.164',NULL,NULL),(17,2,1,'19.218.44.71',NULL,NULL),(18,1,1,'61.182.123.146',NULL,NULL),(19,2,1,'64.233.161.148',NULL,NULL),(20,2,1,'85.56.18.242',NULL,NULL);
 /*!40000 ALTER TABLE `station` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -343,4 +346,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-19 14:35:56
+-- Dump completed on 2018-03-24 15:47:44
