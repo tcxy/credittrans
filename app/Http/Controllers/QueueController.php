@@ -14,7 +14,7 @@ class QueueController extends Controller
         $queues = Queue::where('status', '=', 1)->orwhere('status', '=', '2')->get();
 
         foreach ($queues as $queue) {
-            $path = json_decode($queue->path);
+            $path = json_decode($queue->path, true);
             $position = $queue->current;
             $station = null;
             // If the queue is returning, then move to the next node in path
@@ -25,7 +25,7 @@ class QueueController extends Controller
                     $stationip = $path[2]['id'];
                     // Find the former relay station, and delete this queue from the queue array
                     // If the current position is zero, then former relay is the second element in the path
-                    $station = Station::find($stationip);
+                    $station = Station::find(intval($stationip));
                     if ($station->queues) {
                         $queue_array = json_decode($station->queues);
                         $key = array_search($queue->id, $queue_array);
@@ -39,9 +39,9 @@ class QueueController extends Controller
                     $queue->current = $position - 1;
                     $last = $path[$position];
                     if ($last['type'] == 1) {
-                        $station = Station::find( $last['id']);
+                        $station = Station::find(intval($last['id']));
                     } else {
-                        $station = Station::find($path[$position + 1]['id']);
+                        $station = Station::find(intval($path[$position + 1]['id']));
                     }
                     if ($station->queues) {
                         $queue_array = json_decode($station->queues);
@@ -56,7 +56,7 @@ class QueueController extends Controller
                     $current = $path[$queue->current];
                     // If next node is relay, then add current queue into the relay
                     if ($current['type'] == 1) {
-                        $station = Station::find($current['id']);
+                        $station = Station::find(intval($current['id']));
                         // If the next relay already had queues
                         if ($station->queues) {
                             $queue_array = json_decode($station->queues);
@@ -77,7 +77,7 @@ class QueueController extends Controller
                 if ($position == sizeof($path) - 1) {
                     $queue->status = 2;
                     $card = $queue->card;
-                    $creditcard = CreditCard::find($card);
+                    $creditcard = CreditCard::find(intval($card));
                     if (!$creditcard) {
                         $queue->result = 'Declined';
                         $queue->message = 'The card don\'t exist';
@@ -107,7 +107,7 @@ class QueueController extends Controller
                     // Delete this queue from former relay
                     // The former relay should be current position minus 2
                     $former = $path[$position - 2];
-                    $station = Station::find($former['id']);
+                    $station = Station::find(intval($former['id']));
                     if ($station->queues) {
                         $queue_array = json_decode($station->queues);
                         $key = array_search($queue->id, $queue_array);
@@ -119,15 +119,15 @@ class QueueController extends Controller
                     }
 
                 } else { // or move it to next position
+                    $last = $path[$position];
                     $position = $position + 1;
                     $queue->current = $position;
-                    $last = $path[$position];
                     if ($last['type'] == 1) {
                         // If the former node is relay
                         // Delete the queue from it
-                        $station = Station::find($last['id']);
+                        $station = Station::find(intval($last['id']));
                     } else {
-                        $station = Station::find($path[$position - 1]);
+                        $station = Station::find(intval($path[$position - 1]));
                     }
                     if ($station->queues) {
                         $queue_array = json_decode($station->queues);
@@ -141,7 +141,7 @@ class QueueController extends Controller
 
                     $current = $path[$queue->current];
                     if ($current['type'] == 1) {
-                        $station = Station::find($current['id']);
+                        $station = Station::find(intval($current['id']));
                         if ($station->queues) {
                             $queue_array = json_decode($station->queues);
                             array_push($queue_array, $queue->id);
@@ -150,7 +150,7 @@ class QueueController extends Controller
                         } else {
                             $queue_array = array();
                             array_push($queue_array, $queue->id);
-                            $station->queeus = json_encode($queue_array);
+                            $station->queues = json_encode($queue_array);
                             $station->save();
                         }
                     }

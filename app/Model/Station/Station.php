@@ -12,6 +12,6 @@ class Station extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'status', 'ip', 'type'
+        'status', 'ip', 'type', ''
     ];
 }
