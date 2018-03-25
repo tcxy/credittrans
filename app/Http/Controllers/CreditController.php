@@ -36,6 +36,7 @@ class CreditController extends Controller
         $cardlist = [];
         $cards = CreditCard::offset($offset)->limit(15)->get();
         foreach ($cards as $card) {
+            $card->cardId = strval($card->cardId);
             array_push($cardlist, $card);
         }
         $amount = CreditCard::count();
