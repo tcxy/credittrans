@@ -12,6 +12,7 @@ class QueueController extends Controller
     //
     public function updateQueue(Request $request) {
         $queues = Queue::where('status', '=', 1)->orwhere('status', '=', '2')->get();
+        $array = array();
 
         foreach ($queues as $queue) {
             $path = json_decode($queue->path, true);
@@ -22,53 +23,43 @@ class QueueController extends Controller
                 // when the queue is reaching its end, change its status
                 if ($position == 0) {
                     $queue->status = 3;
-                    $stationip = $path[2]['id'];
-                    // Find the former relay station, and delete this queue from the queue array
-                    // If the current position is zero, then former relay is the second element in the path
-                    $station = Station::find(intval($stationip));
-                    if ($station->queues) {
-                        $queue_array = json_decode($station->queues);
-                        $key = array_search($queue->id, $queue_array);
-                        if ($key) {
-                            array_splice($queue_array, $key, 1);
-                            $station->queues = json_encode($queue_array);
-                            $station->save();
-                        }
+                    $station = Station::find(intval($path[0]['id']));
+                    $queue_array = json_decode($station->queues);
+                    $key = array_search(intval($queue->id), $queue_array);
+                    if (in_array(intval($queue->id), $queue_array)) {
+                        array_splice($queue_array, $key, 1);
+                        $station->queues = json_encode($queue_array);
+                        $station->save();
                     }
                 } else { // or just move the path
-                    $queue->current = $position - 1;
                     $last = $path[$position];
                     if ($last['type'] == 1) {
-                        $station = Station::find(intval($last['id']));
-                    } else {
-                        $station = Station::find(intval($path[$position + 1]['id']));
-                    }
-                    if ($station->queues) {
-                        $queue_array = json_decode($station->queues);
-                        $key = array_search($queue->id, $queue_array);
-                        if ($key) {
-                            array_splice($queue_array, $key, 1);
-                            $station->queues = json_encode($queue_array);
-                            $station->save();
+                        $station = Station::find(intval($path[$position]['id']));
+                        if ($station->queues) {
+                            $queue_array = json_decode($station->queues);
+                            $key = array_search($queue->id, $queue_array);
+                            if (in_array(intval($queue->id), $queue_array)) {
+                                array_splice($queue_array, $key, 1);
+                                $station->queues = json_encode($queue_array);
+                                $station->save();
+                            }
                         }
                     }
+                    $queue->current = $position - 1;
+
                     // Take care of next node
                     $current = $path[$queue->current];
                     // If next node is relay, then add current queue into the relay
                     if ($current['type'] == 1) {
                         $station = Station::find(intval($current['id']));
+                        $queue_array = array();
                         // If the next relay already had queues
                         if ($station->queues) {
                             $queue_array = json_decode($station->queues);
-                            array_push($queue->id);
-                            $station->queues = json_encode($queue_array);
-                            $station->save();
-                        } else { // If the next relay doesn't have any queue, then create a new queue for it
-                            $array = array();
-                            array_push($array, $queue->id);
-                            $station->queues = json_encode($array);
-                            $station->save();
                         }
+                        array_push($queue_array, $queue->id);
+                        $station->queues = json_encode($queue_array);
+                        $station->save();
                     }
                 }
             } else {
@@ -91,68 +82,39 @@ class QueueController extends Controller
                             $queue->message = 'The transaction is finished';
                         }
                     }
-                    // The queue is at the processing center
-                    // Remove current queue from the processing center
-                    $station = Station::find(1);
-                    if ($station->queues) {
-                        $queue_array = json_decode($station->queues);
-                        $key = array_search($queue->id, $queue_array);
-                        if ($key) {
-                            array_splice($queue_array, $key, 1);
-                            $station->queues = json_encode($queue_array);
-                            $station->save();
-                        }
-                    }
-
-                    // Delete this queue from former relay
-                    // The former relay should be current position minus 2
-                    $former = $path[$position - 2];
-                    $station = Station::find(intval($former['id']));
-                    if ($station->queues) {
-                        $queue_array = json_decode($station->queues);
-                        $key = array_search($queue->id, $queue_array);
-                        if ($key) {
-                            array_splice($queue_array, $key, 1);
-                            $station->queues = json_encode($queue_array);
-                            $station->save();
-                        }
-                    }
 
                 } else { // or move it to next position
+
+                    $queue->current = $position + 1;
                     $last = $path[$position];
-                    $position = $position + 1;
-                    $queue->current = $position;
-                    if ($last['type'] == 1) {
-                        // If the former node is relay
-                        // Delete the queue from it
-                        $station = Station::find(intval($last['id']));
-                    } else {
-                        $station = Station::find(intval($path[$position - 1]));
-                    }
-                    if ($station->queues) {
-                        $queue_array = json_decode($station->queues);
-                        $key = array_search($queue->id, $queue_array);
-                        if ($key) {
-                            array_splice($queue_array, $key, 1);
-                            $station->queues = json_encode($queue_array);
-                            $station->save();
+                    if ($position != 0) {
+                        if ($last['type'] == 1) {
+                            // If the former node is relay
+                            // Delete the queue from it
+                            $station = Station::find(intval($last['id']));
+                            if ($station->queues) {
+                                $queue_array = json_decode($station->queues);
+                                $key = array_search(intval($queue->id), $queue_array);
+                                if (in_array(intval($queue->id), $queue_array)) {
+                                    array_splice($queue_array, $key, 1);
+                                    $station->queues = json_encode($queue_array);
+                                    $station->save();
+                                }
+                                array_push($array, $queue_array);
+                            }
                         }
                     }
 
                     $current = $path[$queue->current];
                     if ($current['type'] == 1) {
                         $station = Station::find(intval($current['id']));
+                        $queue_array = array();
                         if ($station->queues) {
                             $queue_array = json_decode($station->queues);
-                            array_push($queue_array, $queue->id);
-                            $station->queues = json_encode($queue_array);
-                            $station->save();
-                        } else {
-                            $queue_array = array();
-                            array_push($queue_array, $queue->id);
-                            $station->queues = json_encode($queue_array);
-                            $station->save();
                         }
+                        array_push($queue_array, intval($queue->id));
+                        $station->queues = json_encode($queue_array);
+                        $station->save();
                     }
                 }
             }
@@ -160,7 +122,7 @@ class QueueController extends Controller
         }
 
         $queues = Queue::where('status', '=', 1)->orwhere('status', '=', '2')->get();
-        return response()->json(['code' => '001', 'data' => $queues]);
+        return response()->json(['code' => '001', 'data' => $queues, 'array' => $array]);
     }
 
     public function getQueue(Request $request) {
