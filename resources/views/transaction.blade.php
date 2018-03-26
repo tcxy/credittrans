@@ -136,15 +136,14 @@
                 <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
                                           style="margin-left: 38px"></label>
                 <label>Amount:<input type="text" id="amount" name="amount" style="margin-left: 71px"></label>
-                <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="sendNewTrans()">
+                <input type="button" value="Submit" class="btn btn-primary" id="submit3" onclick="sendNewTrans()">
                 <input type="button" value="Clear" class="btn" id="clear2" onclick="clearTransForm()">
             </form>
         </div>
     </div>
-
     <div id="path"></div>
     <div id="action" style="margin-left:50px;margin-top:20px">
-        <button type="button" class="btn btn-success">Restart</button>
+        <button type="button" class="btn btn-success" onclick="restart()">Restart</button>
         <button type="button" class="btn btn-danger" style="margin-left: 20px" onclick="pause()">Pause</button>
     </div>
 </div>
@@ -203,6 +202,7 @@
     });
 
     var clock = 0;
+    var queueData;
     var path;
     var step;
     var network;
@@ -231,8 +231,10 @@
                     console.log(data);
                 },
                 success: function (data) {
+
                     if (data['code'] == '001') {
                         loadCards();
+                        loadQueues();
                         var jsondata = data['data'];
                         nodes = new vis.DataSet(jsondata['nodes']);
                         edges = new vis.DataSet(jsondata['edges']);
@@ -272,15 +274,42 @@
                                             var status = data['data']['status'];
                                             if (status == 1) {
                                                 status = 'Activated';
+                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
+                                                    + '<br/>' + 'status :' + status + '<br/>' + '<input class="btn" type="button"  value="Inactivate" id="inactivate">';
                                             } else {
                                                 status = 'Inactivated';
+                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
+                                                    + '<br/>' + 'status :' + status + '<br/>' + '<input  class="btn" type="button" value="Activate" id="activate">';
                                             }
-                                            document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
-                                                + '<br/>' + 'status :' + status;
 
                                         } else {
                                             alert(data['message']);
                                         }
+                                        $(document).ready(function () {
+                                            $('#inactivate').click(function () {
+                                                console.log('selected id:' + id);
+                                                updateQueues();
+//                                                $.ajax({
+//                                                    type: 'post',
+//                                                    url: '/inactivate',
+//                                                    data: {'id': id},
+//                                                    error: function (data) {
+//                                                        console.log(data);
+//                                                    },
+//                                                    success: function (data) {
+//                                                        if (data['code' == '001']) {
+//                                                            console.log(id);
+//                                                            nodes.update({id: id, color: {background: 'grey', highlight: {background: 'grey'}}});
+//                                                        }
+//                                                        else {
+//                                                            alert(data['message']);
+//                                                        }
+//                                                    }
+//
+//                                                })
+                                            })
+                                        });
+
                                     }
                                 });
 
@@ -293,6 +322,7 @@
                     }
                 }
             });
+
         }
 
     }
@@ -313,6 +343,10 @@
 
     function clearTransForm() {
         document.getElementById('from').value = '';
+        document.getElementById('cardNum').value = '';
+        document.getElementById('cvv').value = '';
+        document.getElementById('holder_name').value = '';
+        document.getElementById('amount').value = '';
         document.body.onload(getNodesFunction());
 
     }
@@ -366,10 +400,13 @@
     }
 
     function animation() {
-        if (step == path.length) {
-            clearInterval(clock);
+        console.log("queueData: ",queueData);
+        console.log("path: ",path);
+        var node = JSON.parse(path);
+        if (step == node.length) {
+            pause();
             nodes.update({
-                id: path[step - 1]['id'],
+                id: node[step - 1]['id'],
                 color: {
                     border: '#2B7CE9',
                     background: '#97C2FC',
@@ -381,22 +418,23 @@
             return;
         }
 
-        var node = path[step];
+
         console.log(step);
-        console.log(node);
-        if (node['type'] == '1') {
-            nodes.update({id: node['id'], color: {background: 'red', highlight: {background: 'red'}}});
+        if (node[step]['type'] == '1') {
+            console.log("node-id: ", node[step]['id']);
+            nodes.update({id: node[step]['id'], color: {background: 'red', highlight: {background: 'red'}}});
             if (step != 0) {
                 edges.update({
-                    id: path[step - 1]['edge']['id'],
+                    id: node[step - 1]['edge']['id'],
                     color: {color: '#848484', highlight: '#848484', hover: '#848484', inherit: 'from', opacity: 1}
                 });
             }
-        } else if (node['type'] == '2') {
-            edges.update({id: node['edge']['id'], color: {color: 'red', highlight: 'red', hover: 'red'}});
+        } else if (node[step]['type'] == '2') {
+            console.log(node);
+            edges.update({id: node[step]['edge']['id'], color: {color: 'red', highlight: 'red', hover: 'red'}});
             if (step != 0) {
                 nodes.update({
-                    id: path[step - 1]['id'],
+                    id: node[step - 1]['id'],
                     color: {
                         border: '#2B7CE9',
                         background: '#97C2FC',
@@ -405,7 +443,36 @@
                     }
                 });
             }
+        } else if (node[step]['id'] == '1') {
+            nodes.update({
+                id: 1,
+                color: {
+                    border: '#2B7CE9',
+                    background: '#97C2FC',
+                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                }
+            });
+
         }
+        $.ajax({
+            url: '/queues',
+            type: 'post',
+            dataType:'json',
+            data: queueData,
+            success: function (data) {
+                if (data['code' == '001']) {
+                    console.log(data);
+                }else {
+                    console.log(data['message']);
+                }
+            },
+            error:function (data) {
+                console.log(data);
+            }
+
+        });
+
 
         step++;
     }
@@ -422,41 +489,31 @@
                 console.log($form.serialize());
                 var jsondata = data['data'];
                 if (data['code'] == '001') {
-                    console.log(data);
-                     path = data['data'];
-                     step = 0;
-                     clock = setInterval("animation()", 2000);
-                     show(data);
-                } else {
-                    alert(data['message']);
-                }
-            },
-            error: function (e) {
-                console.log(e);
-            }
-        });
-        $.ajax({
-            url: '/queues',
-            type: 'get',
-            dataType: 'json',
-            success: function (data) {
-                if (data['code' == '001']) {
-                    console.log(data['data']);
-                } else {
-                    alert(data['message']);
-                }
-            },
-            error: function (e) {
-                console.log(e);
-            }
+                    path = data['data']['path'];
+                    queueData = data['data'];
 
+                    step = 0;
+                    clock = setInterval("animation()", 2000);
+//                     show(data);
+                } else {
+                    alert(data['message']);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
         });
 
 
     }
+
+
     function pause() {
-//        clock = setInterval("animation()", 2000);
-        setInterval(clock);
+        clearInterval(clock);
+    }
+
+    function restart() {
+        clock = setInterval("animation()", 2000);
     }
 
     function loadCards() {
@@ -480,6 +537,39 @@
                 console.log(data);
             }
         });
+    }
+
+    function loadQueues() {
+        $.ajax({
+            type: "get",
+            url: '/getqueue',
+            data: {"page": 1},
+            success: function (data) {
+                if (data['code'] == '001') {
+
+
+                    loadList(data);
+                }
+            },
+            error: function (data) {
+                console.log("Connection failed");
+                console.log(data);
+            }
+        });
+    }
+
+    function loadList(data) {
+        $('.loaded-data').remove();
+
+        for (var index in data['data']) {
+            var queue = data['data'][index];
+            $('#queues').append('<tr class="loaded-data"><th id="Store Ip">' + queue.id +
+                '</th><th id="CreditCard">' + queue.card + '</th><th id="HolderName">' + queue.holder_name +
+                '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th>')
+        }
+
+//        loadQueues();
+
     }
 
     function show(data) {
