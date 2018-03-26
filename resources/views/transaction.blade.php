@@ -546,8 +546,7 @@
             data: {"page": 1},
             success: function (data) {
                 if (data['code'] == '001') {
-
-
+                    console.log(data);
                     loadList(data);
                 }
             },

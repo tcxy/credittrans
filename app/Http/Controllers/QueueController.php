@@ -133,8 +133,19 @@ class QueueController extends Controller
         } else {
             $queues = Queue::all();
         }
+        $handled_queues = array();
 
-        return response()->json(['code' => '001', 'data' => $queues]);
+        foreach ($queues as $queue) {
+            if ($queue->status != 3 && $queue->current != sizeof(json_decode($queue->path)) - 1) {
+                $queue->message = md5($queue->message);
+                $queue->card = md5($queue->card);
+                $queue->cvv = md5($queue->cvv);
+                $queue->holder_name = md5($queue->holder_name);
+            }
+            array_push($handled_queues, $queue);
+        }
+
+        return response()->json(['code' => '001', 'data' => $handled_queues]);
     }
 
 }
