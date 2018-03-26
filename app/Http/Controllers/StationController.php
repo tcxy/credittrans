@@ -253,12 +253,15 @@ class StationController extends Controller
         $id = $request->input('id');
         $station = Station::find($id);
         $queues = json_decode($station->queues, true);
-        foreach ($queues as $queue) {
-            $queue = Queue::find($queue);
-            $queue->f_status = $queue->status;
-            $queue->status = 4;
-            $queue->save();
+        if ($queues) {
+            foreach ($queues as $queue) {
+                $queue = Queue::find($queue);
+                $queue->f_status = $queue->status;
+                $queue->status = 4;
+                $queue->save();
+            }
         }
+
         $station->status = false;
         $station->save();
 
@@ -270,11 +273,14 @@ class StationController extends Controller
         $id = $request->input('id');
         $station = Station::find($id);
         $queues = json_decode($station->queues, true);
-        foreach ($queues as $queue) {
-            $queue = Queue::find($queue);
-            $queue->status = $queue->f_status;
-            $queue->save();
+        if ($queues) {
+            foreach ($queues as $queue) {
+                $queue = Queue::find($queue);
+                $queue->status = $queue->f_status;
+                $queue->save();
+            }
         }
+
         $station->status = true;
         $station->save();
 
