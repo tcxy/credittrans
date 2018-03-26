@@ -252,7 +252,7 @@ class StationController extends Controller
     public function inActivateStation(Request $request) {
         $id = $request->input('id');
         $station = Station::find($id);
-        $queues = json_decode($station->queues);
+        $queues = json_decode($station->queues, true);
         foreach ($queues as $queue) {
             $queue = Queue::find($queue);
             $queue->f_status = $queue->status;
@@ -269,7 +269,7 @@ class StationController extends Controller
     public function activateStation(Request $request) {
         $id = $request->input('id');
         $station = Station::find($id);
-        $queues = json_encode($station->queues);
+        $queues = json_decode($station->queues, true);
         foreach ($queues as $queue) {
             $queue = Queue::find($queue);
             $queue->status = $queue->f_status;
