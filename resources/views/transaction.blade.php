@@ -261,7 +261,7 @@
                             interaction: {hover: true},
 
                         };
-                        var network = new vis.Network(container, data, options);
+                        network = new vis.Network(container, data, options);
                         network.on('click', function (params) {
                             if (params.nodes.length != 0) {
 
@@ -481,10 +481,11 @@
                                     edges.update({
                                         id: path[current - 1]['edge']['id'],
                                         color: {
-                                            border: '#2B7CE9',
-                                            background: '#97C2FC',
-                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                            color: "#848484",
+                                            highlight: "#848484",
+                                            hover: "#848484",
+                                            opacity: 1,
+                                            inherited: false
                                         }
                                     });
                                 }
@@ -526,10 +527,11 @@
                                     edges.update({
                                         id: path[current + 1]['edge']['id'],
                                         color: {
-                                            border: '#2B7CE9',
-                                            background: '#97C2FC',
-                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                            color: "#848484",
+                                            highlight: "#848484",
+                                            hover: "#848484",
+                                            opacity: 1,
+                                            inherited: false
                                         }
                                     });
                                 }
@@ -566,10 +568,11 @@
                                 edges.update({
                                     id: path[current],
                                     color: {
-                                        border: '#2B7CE9',
-                                        background: '#97C2FC',
-                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                        color: "#848484",
+                                        highlight: "#848484",
+                                        hover: "#848484",
+                                        opacity: 1,
+                                        inherited: false
                                     }
                                 });
                             }
