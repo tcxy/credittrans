@@ -156,7 +156,7 @@
         <thead>
         <tr>
             <th>
-                Store Ip
+                Queue Id
             </th>
             <th>
                 Credit Card
