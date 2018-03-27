@@ -25,11 +25,13 @@ class QueueController extends Controller
                     $queue->status = 3;
                     $station = Station::find(intval($path[0]['id']));
                     $queue_array = json_decode($station->queues);
-                    $key = array_search(intval($queue->id), $queue_array);
-                    if (in_array(intval($queue->id), $queue_array)) {
-                        array_splice($queue_array, $key, 1);
-                        $station->queues = json_encode($queue_array);
-                        $station->save();
+                    if ($queue_array) {
+                        $key = array_search(intval($queue->id), $queue_array);
+                        if (in_array(intval($queue->id), $queue_array)) {
+                            array_splice($queue_array, $key, 1);
+                            $station->queues = json_encode($queue_array);
+                            $station->save();
+                        }
                     }
                 } else { // or just move the path
                     $last = $path[$position];

@@ -53,9 +53,11 @@
         }
 
         #eventSpan {
-            float: right;
+            position: fixed;
             width: 300px;
             height: 00px;
+            right: 0px;
+            margin-left: 10px;
         }
 
         #send {
@@ -143,7 +145,7 @@
     </div>
     <div id="path"></div>
     <div id="action" style="margin-left:50px;margin-top:20px">
-        <button type="button" class="btn btn-success" onclick="restart()">Restart</button>
+        <button type="button" class="btn btn-success" onclick="restart()">Resume</button>
         <button type="button" class="btn btn-danger" style="margin-left: 20px" onclick="pause()">Pause</button>
     </div>
 </div>
@@ -343,7 +345,7 @@
 
                         });
                         for (var i = 1; i<=nodes.length;i++){
-                            if (nodes['_data'][i].status == '0'){
+                            if (nodes['_data'][i]['status'] == '0'){
                                 nodes.update({
                                     id: nodes['_data'][i].id,
                                     color: {
@@ -436,68 +438,110 @@
     }
 
     function animation() {
-        console.log("queueData: ",queueData);
-        console.log("path: ",path);
-        var node = JSON.parse(path);
-        if (step == node.length) {
-//            pause();
-            nodes.update({
-                id: node[step - 1]['id'],
-                color: {
-                    border: '#2B7CE9',
-                    background: '#97C2FC',
-                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                }
-            });
-            step = 0;
-            return;
-        }
-
-
-        console.log(step);
-        if (node[step]['type'] == '1') {
-            console.log("node-id: ", node[step]['id']);
-            nodes.update({id: node[step]['id'], color: {background: 'red', highlight: {background: 'red'}}});
-            if (step != 0) {
-                edges.update({
-                    id: node[step - 1]['edge']['id'],
-                    color: {color: '#848484', highlight: '#848484', hover: '#848484', inherit: 'from', opacity: 1}
-                });
-            }
-        } else if (node[step]['type'] == '2') {
-            console.log(node);
-            edges.update({id: node[step]['edge']['id'], color: {color: 'red', highlight: 'red', hover: 'red'}});
-            if (step != 0) {
-                nodes.update({
-                    id: node[step - 1]['id'],
-                    color: {
-                        border: '#2B7CE9',
-                        background: '#97C2FC',
-                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                    }
-                });
-            }
-        } else if (node[step]['id'] == '1') {
-            nodes.update({
-                id: 1,
-                color: {
-                    border: '#2B7CE9',
-                    background: '#97C2FC',
-                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                }
-            });
-
-        }
         $.ajax({
             url: '/queues',
             type: 'get',
             dataType:'json',
             success: function (data) {
-                if (data['code' == '001']) {
+                if (data['code'] == '001') {
                     console.log(data);
+                    var queues = data['data'];
+                    for (var i = 0; i < queues.length; i++) {
+                        var current = queues[i]['length'];
+                        var path = JSON.parse(queues[i]['path']);
+                        if (parseInt(queues[i]['status']) == 1) {
+                            if (parseInt(path[current]['type']) == 1) {
+                                nodes.update({
+                                    id: path[current]['id'],
+                                    color: {background: 'red', highlight: {background: 'red'}}
+                                });
+                                if (current != 0) {
+                                    edges.update({
+                                        id: path[current - 1]['edge']['id'],
+                                        color: {
+                                            color: '#848484',
+                                            highlight: '#848484',
+                                            hover: '#848484',
+                                            inherit: 'from',
+                                            opacity: 1
+                                        }
+                                    });
+                                }
+                            } else if (parseInt(path[current]['type']) == 2) {
+                                edges.update({
+                                    id: path[current]['edge']['id'],
+                                    color: {color: 'red', highlight: 'red', hover: 'red'}
+                                });
+                                if (current != 0) {
+                                    nodes.update({
+                                        id: path[current - 1]['id'],
+                                        color: {
+                                            border: '#2B7CE9',
+                                            background: '#97C2FC',
+                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                        }
+                                    });
+                                }
+                            } else if (parseInt(path[current]['id']) == 1) {
+                                nodes.update({
+                                    id: 1,
+                                    color: {
+                                        border: '#2B7CE9',
+                                        background: '#97C2FC',
+                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                    }
+                                });
+                            }
+
+                        } else {
+                            if (parseInt(path[current]['type']) == 1) {
+                                nodes.update({
+                                    id: path[current]['id'],
+                                    color: {background: 'red', highlight: {background: 'red'}}
+                                });
+                                if (current != path.length - 1) {
+                                    edges.update({
+                                        id: path[current + 1]['edge']['id'],
+                                        color: {
+                                            color: '#848484',
+                                            highlight: '#848484',
+                                            hover: '#848484',
+                                            inherit: 'from',
+                                            opacity: 1
+                                        }
+                                    });
+                                }
+                            } else if (parseInt(path[current]['type']) == 2) {
+                                edges.update({
+                                    id: path[current]['edge']['id'],
+                                    color: {color: 'red', highlight: 'red', hover: 'red'}
+                                });
+                                if (current != 0) {
+                                    nodes.update({
+                                        id: path[current + 1]['id'],
+                                        color: {
+                                            border: '#2B7CE9',
+                                            background: '#97C2FC',
+                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                        }
+                                    });
+                                }
+                            } else if (parseInt(path[current]['id']) == 1) {
+                                nodes.update({
+                                    id: 1,
+                                    color: {
+                                        border: '#2B7CE9',
+                                        background: '#97C2FC',
+                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                    }
+                                });
+                            }
+                        }
+                    }
                 }else {
                     console.log(data['message']);
                 }
