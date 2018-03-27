@@ -534,8 +534,7 @@
                                     });
                                 }
                                 if (current == 0) {
-                                    setTimeout("changeColor(path[current])", 1000);
-                                    for (var i = 0; i < 1000; i++) {
+                                    for (var i = 0; i < 4000; i++) {
                                         nodes.update({
                                             id: parseInt(path[0]['id']),
                                             color: {
