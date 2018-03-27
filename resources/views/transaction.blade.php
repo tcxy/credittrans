@@ -240,8 +240,9 @@
                         edges = new vis.DataSet(jsondata['edges']);
 
 //
-                        console.log(nodes);
+//                        console.log(nodes['_data']['4'].status);
 
+                        console.log(nodes);
 
                         // create a network
                         var container = document.getElementById('mynetwork');
@@ -288,25 +289,47 @@
                                         $(document).ready(function () {
                                             $('#inactivate').click(function () {
                                                 console.log('selected id:' + id);
-                                                updateQueues();
-//                                                $.ajax({
-//                                                    type: 'post',
-//                                                    url: '/inactivate',
-//                                                    data: {'id': id},
-//                                                    error: function (data) {
-//                                                        console.log(data);
-//                                                    },
-//                                                    success: function (data) {
-//                                                        if (data['code' == '001']) {
-//                                                            console.log(id);
-//                                                            nodes.update({id: id, color: {background: 'grey', highlight: {background: 'grey'}}});
-//                                                        }
-//                                                        else {
-//                                                            alert(data['message']);
-//                                                        }
-//                                                    }
-//
-//                                                })
+                                                $.ajax({
+                                                    type: 'post',
+                                                    url: '/inactivate',
+                                                    data: {'id': id},
+                                                    error: function (data) {
+                                                        console.log(data);
+                                                    },
+                                                    success: function (data) {
+                                                        if (data['code' == '001']) {
+                                                            console.log(id);
+                                                            nodes.update({id: id, color: {background: 'grey', highlight: {background: 'grey'}}});
+                                                        }
+                                                        else {
+                                                            getNodesFunction();
+                                                        }
+                                                    }
+
+                                                })
+                                            })
+                                        });
+                                        $(document).ready(function () {
+                                            $('#activate').click(function () {
+                                                console.log('selected id:' + id);
+                                                $.ajax({
+                                                    type: 'post',
+                                                    url: '/activate',
+                                                    data: {'id': id},
+                                                    error: function (data) {
+                                                        console.log(data);
+                                                    },
+                                                    success: function (data) {
+                                                        if (data['code' == '001']) {
+                                                            console.log(id);
+
+                                                        }
+                                                        else {
+                                                            getNodesFunction();
+                                                        }
+                                                    }
+
+                                                })
                                             })
                                         });
 
@@ -319,6 +342,19 @@
 
 
                         });
+                        for (var i = 1; i<=nodes.length;i++){
+                            if (nodes['_data'][i].status == '0'){
+                                nodes.update({
+                                    id: nodes['_data'][i].id,
+                                    color: {
+                                        border: 'grey',
+                                        background: 'grey',
+                                        highlight: {border: 'grey', background: 'grey'},
+                                        hover: {border: 'grey', background: 'grey'}
+                                    }
+                                });
+                            }
+                        }
                     }
                 }
             });
@@ -404,7 +440,7 @@
         console.log("path: ",path);
         var node = JSON.parse(path);
         if (step == node.length) {
-            pause();
+//            pause();
             nodes.update({
                 id: node[step - 1]['id'],
                 color: {
@@ -457,9 +493,8 @@
         }
         $.ajax({
             url: '/queues',
-            type: 'post',
+            type: 'get',
             dataType:'json',
-            data: queueData,
             success: function (data) {
                 if (data['code' == '001']) {
                     console.log(data);
@@ -546,7 +581,6 @@
             data: {"page": 1},
             success: function (data) {
                 if (data['code'] == '001') {
-                    console.log(data);
                     loadList(data);
                 }
             },
@@ -562,12 +596,22 @@
 
         for (var index in data['data']) {
             var queue = data['data'][index];
+            if(queue.status == '1'){
+                queue.status = 'sending';
+            }else if(queue.status == '2'){
+                queue.status = 'returning';
+            }else if (queue.status == '3'){
+                queue.status = 'finished';
+            }else {
+                queue.status = 'declined';
+            }
+
             $('#queues').append('<tr class="loaded-data"><th id="Store Ip">' + queue.id +
                 '</th><th id="CreditCard">' + queue.card + '</th><th id="HolderName">' + queue.holder_name +
                 '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th>')
         }
 
-//        loadQueues();
+        loadQueues();
 
     }
 
