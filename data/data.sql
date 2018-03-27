@@ -1,9 +1,9 @@
 use cs744;
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
 --
--- Host: localhost    Database: cs744
+-- Host: 127.0.0.1    Database: cs744
 -- ------------------------------------------------------
--- Server version	5.7.21-log
+-- Server version	5.7.17
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -108,7 +108,7 @@ CREATE TABLE `creditaccounts` (
   `spendlinglimit` double NOT NULL,
   `balance` double NOT NULL,
   PRIMARY KEY (`accountid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +117,7 @@ CREATE TABLE `creditaccounts` (
 
 LOCK TABLES `creditaccounts` WRITE;
 /*!40000 ALTER TABLE `creditaccounts` DISABLE KEYS */;
-INSERT INTO `creditaccounts` VALUES (1,'Wei Du','6464319033','1824 La Crosse St',2000,650);
+INSERT INTO `creditaccounts` VALUES (1,'Wei Du','6464319033','1824 La Crosse St',2000,49),(2,'Jason Peter','6084319023','1824 La Crossse St',200,800);
 /*!40000 ALTER TABLE `creditaccounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,7 +143,7 @@ CREATE TABLE `creditcards` (
 
 LOCK TABLES `creditcards` WRITE;
 /*!40000 ALTER TABLE `creditcards` DISABLE KEYS */;
-INSERT INTO `creditcards` VALUES ('4716459360888577',201,'2019-12-01','1');
+INSERT INTO `creditcards` VALUES ('4340847829821680',762,'2019-03-01','2'),('4716459360888577',201,'2019-12-01','1');
 /*!40000 ALTER TABLE `creditcards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -243,7 +243,7 @@ CREATE TABLE `queues` (
   `current` int(11) NOT NULL,
   `f_status` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,7 +252,7 @@ CREATE TABLE `queues` (
 
 LOCK TABLES `queues` WRITE;
 /*!40000 ALTER TABLE `queues` DISABLE KEYS */;
-INSERT INTO `queues` VALUES (1,'The card don\'t exist',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(2,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(3,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(4,'Sending',1,'[{\"id\": 8, \"type\": \"1\"}, {\"edge\": {\"id\": 7, \"to\": 7, \"from\": 8, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,NULL,1,1,NULL),(5,'Sending',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','484','Wei',500,NULL,1,0,NULL);
+INSERT INTO `queues` VALUES (1,'The card don\'t exist',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(2,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(3,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(4,'The card don\'t exist',1,'[{\"id\": 8, \"type\": \"1\"}, {\"edge\": {\"id\": 7, \"to\": 7, \"from\": 8, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(5,'The information of the card doesn\'t match with our records',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','484','Wei',500,'Declined',3,0,NULL),(6,'The information of the card doesn\'t match with our records',17,'[{\"id\": 17, \"type\": \"1\"}, {\"edge\": {\"id\": 10, \"to\": 3, \"from\": 17, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','200','Wei Du',100,'Declined',3,0,NULL),(7,'The information of the card doesn\'t match with our records',6,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','200','Wei Du',100,'Declined',3,0,NULL),(8,'The transaction is finished',13,'[{\"id\": 13, \"type\": \"1\"}, {\"edge\": {\"id\": 8, \"to\": 7, \"from\": 13, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',120,'Approved',3,0,NULL),(9,'The nearest relay is inactivated, please resend a new transaction later',19,'[{\"id\": 19, \"type\": \"1\"}, {\"edge\": {\"id\": 12, \"to\": 18, \"from\": 19, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 18, \"type\": \"1\"}, {\"edge\": {\"id\": 11, \"to\": 7, \"from\": 18, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',120,NULL,3,1,NULL),(10,'The transaction is finished',19,'[{\"id\": 19, \"type\": \"1\"}, {\"edge\": {\"id\": 12, \"to\": 18, \"from\": 19, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 18, \"type\": \"1\"}, {\"edge\": {\"id\": 11, \"to\": 7, \"from\": 18, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',120,'Approved',3,0,NULL),(11,'The transaction is finished',8,'[{\"id\": 8, \"type\": \"1\"}, {\"edge\": {\"id\": 7, \"to\": 7, \"from\": 8, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',100,'Approved',3,0,NULL),(12,'The transaction is finished',6,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',100,'Approved',3,0,NULL),(13,'The nearest relay is inactivated, please resend a new transaction later',19,'[{\"id\": 19, \"type\": \"1\"}, {\"edge\": {\"id\": 12, \"to\": 18, \"from\": 19, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 18, \"type\": \"1\"}, {\"edge\": {\"id\": 11, \"to\": 7, \"from\": 18, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',201,NULL,3,1,NULL),(14,'The transaction is finished',16,'[{\"id\": 16, \"type\": \"1\"}, {\"edge\": {\"id\": 9, \"to\": 3, \"from\": 16, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',201,'Approved',3,0,NULL),(15,'The transaction is finished',20,'[{\"id\": 20, \"type\": \"1\"}, {\"edge\": {\"id\": 13, \"to\": 7, \"from\": 20, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',100,'Approved',3,0,NULL),(16,'The transaction is finished',19,'[{\"id\": 19, \"type\": \"1\"}, {\"edge\": {\"id\": 12, \"to\": 18, \"from\": 19, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 18, \"type\": \"1\"}, {\"edge\": {\"id\": 11, \"to\": 7, \"from\": 18, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',100,'Approved',3,0,NULL);
 /*!40000 ALTER TABLE `queues` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -281,7 +281,7 @@ CREATE TABLE `station` (
 
 LOCK TABLES `station` WRITE;
 /*!40000 ALTER TABLE `station` DISABLE KEYS */;
-INSERT INTO `station` VALUES (1,0,1,'32.181.121.11',NULL,NULL),(2,1,1,'151.250.93.7',NULL,NULL),(3,1,1,'84.46.44.129',NULL,NULL),(4,2,1,'140.76.60.104',NULL,NULL),(5,2,1,'73.173.4.239',NULL,NULL),(6,2,1,'56.136.162.39',NULL,NULL),(7,1,1,'41.123.143.237',NULL,NULL),(8,2,1,'4.9.150.118',NULL,NULL),(13,2,1,'64.233.161.147',NULL,NULL),(16,2,1,'104.110.178.164',NULL,NULL),(17,2,1,'19.218.44.71',NULL,NULL),(18,1,1,'61.182.123.146',NULL,NULL),(19,2,1,'64.233.161.148',NULL,NULL),(20,2,1,'85.56.18.242',NULL,NULL);
+INSERT INTO `station` VALUES (1,0,1,'32.181.121.11','[]',NULL),(2,1,1,'151.250.93.7','[]',NULL),(3,1,1,'84.46.44.129','[]',NULL),(4,2,1,'140.76.60.104',NULL,NULL),(5,2,1,'73.173.4.239',NULL,NULL),(6,2,1,'56.136.162.39',NULL,NULL),(7,1,1,'41.123.143.237','[]',NULL),(8,2,1,'4.9.150.118',NULL,NULL),(13,2,1,'64.233.161.147',NULL,NULL),(16,2,1,'104.110.178.164',NULL,NULL),(17,2,1,'19.218.44.71',NULL,NULL),(18,1,1,'61.182.123.146','[]',NULL),(19,2,1,'64.233.161.148',NULL,NULL),(20,2,1,'85.56.18.242',NULL,NULL);
 /*!40000 ALTER TABLE `station` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -347,4 +347,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-24 15:47:44
+-- Dump completed on 2018-03-27 14:27:40

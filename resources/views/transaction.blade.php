@@ -53,7 +53,7 @@
         }
 
         #eventSpan {
-            position: fixed;
+            position: absolute;
             width: 300px;
             height: 00px;
             right: 0px;
@@ -170,7 +170,12 @@
             <th>
                 Status
             </th>
-
+            <th>
+                Result
+            </th>
+            <th>
+                Message
+            </th>
         </tr>
         </thead>
         <tbody id="queues">
@@ -278,11 +283,11 @@
                                             if (status == 1) {
                                                 status = 'Activated';
                                                 document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
-                                                    + '<br/>' + 'status :' + status + '<br/>' + '<input class="btn" type="button"  value="Inactivate" id="inactivate">';
+                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input class="btn" type="button"  value="Inactivate" id="inactivate">';
                                             } else {
                                                 status = 'Inactivated';
                                                 document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
-                                                    + '<br/>' + 'status :' + status + '<br/>' + '<input  class="btn" type="button" value="Activate" id="activate">';
+                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input  class="btn" type="button" value="Activate" id="activate">';
                                             }
 
                                         } else {
@@ -299,12 +304,10 @@
                                                         console.log(data);
                                                     },
                                                     success: function (data) {
-                                                        if (data['code' == '001']) {
+                                                        console.log(data);
+                                                        if (data['code'] == '001') {
                                                             console.log(id);
                                                             nodes.update({id: id, color: {background: 'grey', highlight: {background: 'grey'}}});
-                                                        }
-                                                        else {
-                                                            getNodesFunction();
                                                         }
                                                     }
 
@@ -322,12 +325,15 @@
                                                         console.log(data);
                                                     },
                                                     success: function (data) {
-                                                        if (data['code' == '001']) {
+                                                        console.log(data);
+                                                        if (data['code'] == '001') {
                                                             console.log(id);
-
-                                                        }
-                                                        else {
-                                                            getNodesFunction();
+                                                            nodes.update({id: id, color: {
+                                                                border: '#2B7CE9',
+                                                                background: '#97C2FC',
+                                                                highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                                                hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                                            }});
                                                         }
                                                     }
 
@@ -345,7 +351,7 @@
 
                         });
                         for (var i = 1; i<=nodes.length;i++){
-                            if (nodes['_data'][i]['status'] == '0'){
+                            if (nodes['_data'][i].status     == '0'){
                                 nodes.update({
                                     id: nodes['_data'][i].id,
                                     color: {
@@ -446,11 +452,27 @@
                 if (data['code'] == '001') {
                     console.log(data);
                     var queues = data['data'];
+                    if (queues == null) {
+                        for (var i = 0; i < nodes.length; i++) {
+                            nodes.update({
+                                id: i,
+                                color: {
+                                    border: '#2B7CE9',
+                                    background: '#97C2FC',
+                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                }
+                            });
+                        }
+                    }
                     for (var i = 0; i < queues.length; i++) {
-                        var current = queues[i]['length'];
+                        var current = queues[i]['current'];
                         var path = JSON.parse(queues[i]['path']);
+                        console.log(path);
+                        var currentNode = path[current];
+                        console.log(currentNode);
                         if (parseInt(queues[i]['status']) == 1) {
-                            if (parseInt(path[current]['type']) == 1) {
+                            if (parseInt(currentNode['type']) == 1) {
                                 nodes.update({
                                     id: path[current]['id'],
                                     color: {background: 'red', highlight: {background: 'red'}}
@@ -459,15 +481,14 @@
                                     edges.update({
                                         id: path[current - 1]['edge']['id'],
                                         color: {
-                                            color: '#848484',
-                                            highlight: '#848484',
-                                            hover: '#848484',
-                                            inherit: 'from',
-                                            opacity: 1
+                                            border: '#2B7CE9',
+                                            background: '#97C2FC',
+                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
                                         }
                                     });
                                 }
-                            } else if (parseInt(path[current]['type']) == 2) {
+                            } else if (parseInt(path[current].type) == 2) {
                                 edges.update({
                                     id: path[current]['edge']['id'],
                                     color: {color: 'red', highlight: 'red', hover: 'red'}
@@ -495,7 +516,7 @@
                                 });
                             }
 
-                        } else {
+                        } else if (parseInt(queues[i]['status']) == 2) {
                             if (parseInt(path[current]['type']) == 1) {
                                 nodes.update({
                                     id: path[current]['id'],
@@ -505,13 +526,26 @@
                                     edges.update({
                                         id: path[current + 1]['edge']['id'],
                                         color: {
-                                            color: '#848484',
-                                            highlight: '#848484',
-                                            hover: '#848484',
-                                            inherit: 'from',
-                                            opacity: 1
+                                            border: '#2B7CE9',
+                                            background: '#97C2FC',
+                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
                                         }
                                     });
+                                }
+                                if (current == 0) {
+                                    setTimeout("changeColor(path[current])", 1000);
+                                    for (var i = 0; i < 1000; i++) {
+                                        nodes.update({
+                                            id: parseInt(path[0]['id']),
+                                            color: {
+                                                border: '#2B7CE9',
+                                                background: '#97C2FC',
+                                                highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                                hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                            }
+                                        });
+                                    }
                                 }
                             } else if (parseInt(path[current]['type']) == 2) {
                                 edges.update({
@@ -530,8 +564,8 @@
                                     });
                                 }
                             } else if (parseInt(path[current]['id']) == 1) {
-                                nodes.update({
-                                    id: 1,
+                                edges.update({
+                                    id: path[current],
                                     color: {
                                         border: '#2B7CE9',
                                         background: '#97C2FC',
@@ -540,6 +574,17 @@
                                     }
                                 });
                             }
+
+                        } else {
+                            nodes.update({
+                                id: path[0]['id'],
+                                color: {
+                                    border: '#2B7CE9',
+                                    background: '#97C2FC',
+                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                }
+                            });
                         }
                     }
                 }else {
@@ -548,6 +593,7 @@
             },
             error:function (data) {
                 console.log(data);
+
             }
 
         });
@@ -555,7 +601,6 @@
 
         step++;
     }
-
 
     function sendNewTrans() {
         $form = $('#send_form');
@@ -652,7 +697,8 @@
 
             $('#queues').append('<tr class="loaded-data"><th id="Store Ip">' + queue.id +
                 '</th><th id="CreditCard">' + queue.card + '</th><th id="HolderName">' + queue.holder_name +
-                '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th>')
+                '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th> + ' +
+                '<th id="result">' + queue.result + '</th><th id="message">' + queue.message + "</th>")
         }
 
         loadQueues();
