@@ -52,14 +52,19 @@ class QueueController extends Controller
                     // If next node is relay, then add current queue into the relay
                     if ($current['type'] == 1) {
                         $station = Station::find(intval($current['id']));
-                        $queue_array = array();
-                        // If the next relay already had queues
-                        if ($station->queues) {
-                            $queue_array = json_decode($station->queues);
+                        if ($station->staus == true) {
+                            $queue_array = array();
+                            // If the next relay already had queues
+                            if ($station->queues) {
+                                $queue_array = json_decode($station->queues);
+                            }
+                            array_push($queue_array, $queue->id);
+                            $station->queues = json_encode($queue_array);
+                            $station->save();
+                        } else {
+                            $queues->current = $position;
                         }
-                        array_push($queue_array, $queue->id);
-                        $station->queues = json_encode($queue_array);
-                        $station->save();
+
                     }
                 }
             } else {
@@ -108,13 +113,21 @@ class QueueController extends Controller
                     $current = $path[$queue->current];
                     if ($current['type'] == 1) {
                         $station = Station::find(intval($current['id']));
-                        $queue_array = array();
-                        if ($station->queues) {
-                            $queue_array = json_decode($station->queues);
+                        if ($station->status == true) {
+                            $queue_array = array();
+                            if ($station->queues) {
+                                $queue_array = json_decode($station->queues);
+                            }
+                            array_push($queue_array, intval($queue->id));
+                            $station->queues = json_encode($queue_array);
+                            $station->save();
+                        } else {
+                            $queue->current = $position;
+                            if ($queue->current < 2) {
+                                $queue->status = 3;
+                                $queue->message = "The nearest relay is inactivated, please resend a new transaction later";
+                            }
                         }
-                        array_push($queue_array, intval($queue->id));
-                        $station->queues = json_encode($queue_array);
-                        $station->save();
                     }
                 }
             }
