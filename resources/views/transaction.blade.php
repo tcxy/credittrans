@@ -133,7 +133,7 @@
         <div id="sendForm">
             <form id="send_form" style="display: none">
                 <label>Store IP:<input type="text" id="from" name="from" style="margin-left: 70px"></label>
-                <label>Credit Card:<select id="cardNum" name='cardNum' style="margin-left: 48px"></select></label>
+                <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
                 <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
                 <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
                                           style="margin-left: 38px"></label>
@@ -277,17 +277,21 @@
                                     },
                                     success: function (data) {
                                         if (data['code'] == 001) {
-                                            console.log(data);
                                             var ip = data['data']['ip'];
                                             var status = data['data']['status'];
-                                            if (status == 1) {
+                                            var type = data['data']['type'];
+                                            console.log('type:',type);
+                                            if (status == 1 && type == 1) {
                                                 status = 'Activated';
                                                 document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
                                                     + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input class="btn" type="button"  value="Inactivate" id="inactivate">';
-                                            } else {
+                                            } else if(status == 0 && type == 1) {
                                                 status = 'Inactivated';
                                                 document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
                                                     + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input  class="btn" type="button" value="Activate" id="activate">';
+                                            } else {
+                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip;
+
                                             }
 
                                         } else {

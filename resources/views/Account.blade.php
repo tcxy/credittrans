@@ -244,7 +244,7 @@
             <div class="control-group">
                 <label class="control-label" for="textarea">Date of expiration:</label>
                 <div class="controls">
-                    <input type="date" class="input-xlarge" id="expireDate" name="expireDate"/>
+                    <input type="text" class="input-xlarge" id="expireDate" name="expireDate"/>
                 </div>
             </div>
             <div class="form-actions">
