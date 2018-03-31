@@ -108,6 +108,7 @@
 
             <label>Relay Station Ip:<input type="text" id="relayID1"
                                            name="ip"></label>
+            <!--            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" style="margin-left: 8px"></label>-->
             <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
             <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
             <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
@@ -249,7 +250,7 @@
 //
 //                        console.log(nodes['_data']['4'].status);
 
-                        console.log(nodes);
+                        console.log(jsondata);
 
                         // create a network
                         var container = document.getElementById('mynetwork');
@@ -262,6 +263,55 @@
 
                         };
                         network = new vis.Network(container, data, options);
+
+                        var colorList = ["#473C8B", "#00008B", "#006400", "#8B1A1A", "#B22222", "#CD6600", "#708090", "#7D26CD", "#00688B", "#27408B"];
+//                        for (var i = 0; i < colorList.length; i++) {
+//                            var bgColor = getColorByRandom(colorList);
+//                        }
+                        var color1 = getColorByRandom(colorList);
+                        var color2 = getColorByRandom(colorList);
+                        var color3 = getColorByRandom(colorList);
+                        for (var index in jsondata['nodes']) {
+
+                            var type = jsondata['nodes'][index]['type'];
+                            var id = jsondata['nodes'][index]['id'];
+                            var regionId = jsondata['nodes'][index]['regionID'];
+                            var color = getColorByRandom(colorList);
+                            console.log('color:', color);
+                            if (type == 1) {
+
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color1,
+                                        background: color1,
+                                        highlight: {border: color1, background: color1},
+                                        hover: {border: color1, background: color1}
+                                    }
+                                });
+                            } else if (type == 2) {
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color2,
+                                        background: color2,
+                                        highlight: {border: color2, background: color2},
+                                        hover: {border: color2, background: color2}
+                                    }
+                                });
+                            } else if (type==0){
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color3,
+                                        background: color3,
+                                        highlight: {border: color3, background: color3},
+                                        hover: {border: color3, background: color3}
+                                    }
+                                });
+                            }
+                        }
+
                         network.on('click', function (params) {
                             if (params.nodes.length != 0) {
 
@@ -280,12 +330,12 @@
                                             var ip = data['data']['ip'];
                                             var status = data['data']['status'];
                                             var type = data['data']['type'];
-                                            console.log('type:',type);
+                                            console.log('data:', data);
                                             if (status == 1 && type == 1) {
                                                 status = 'Activated';
                                                 document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
                                                     + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input class="btn" type="button"  value="Inactivate" id="inactivate">';
-                                            } else if(status == 0 && type == 1) {
+                                            } else if (status == 0 && type == 1) {
                                                 status = 'Inactivated';
                                                 document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
                                                     + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input  class="btn" type="button" value="Activate" id="activate">';
@@ -311,7 +361,13 @@
                                                         console.log(data);
                                                         if (data['code'] == '001') {
                                                             console.log(id);
-                                                            nodes.update({id: id, color: {background: 'grey', highlight: {background: 'grey'}}});
+                                                            nodes.update({
+                                                                id: id,
+                                                                color: {
+                                                                    background: 'grey',
+                                                                    highlight: {background: 'grey'}
+                                                                }
+                                                            });
                                                         }
                                                     }
 
@@ -332,12 +388,17 @@
                                                         console.log(data);
                                                         if (data['code'] == '001') {
                                                             console.log(id);
-                                                            nodes.update({id: id, color: {
-                                                                border: '#2B7CE9',
-                                                                background: '#97C2FC',
-                                                                highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                                                hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                                                            }});
+                                                            nodes.update({
+                                                                id: id, color: {
+                                                                    border: '#2B7CE9',
+                                                                    background: '#97C2FC',
+                                                                    highlight: {
+                                                                        border: '#2B7CE9',
+                                                                        background: '#D2E5FF'
+                                                                    },
+                                                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                                                }
+                                                            });
                                                         }
                                                     }
 
@@ -351,22 +412,7 @@
                             } else {
                                 document.getElementById('eventSpan').innerHTML = '';
                             }
-
-
                         });
-                        for (var i = 1; i<=nodes.length;i++){
-                            if (nodes['_data'][i].status     == '0'){
-                                nodes.update({
-                                    id: nodes['_data'][i].id,
-                                    color: {
-                                        border: 'grey',
-                                        background: 'grey',
-                                        highlight: {border: 'grey', background: 'grey'},
-                                        hover: {border: 'grey', background: 'grey'}
-                                    }
-                                });
-                            }
-                        }
                     }
                 }
             });
@@ -451,7 +497,7 @@
         $.ajax({
             url: '/queues',
             type: 'get',
-            dataType:'json',
+            dataType: 'json',
             success: function (data) {
                 if (data['code'] == '001') {
                     console.log(data);
@@ -593,11 +639,11 @@
                             });
                         }
                     }
-                }else {
+                } else {
                     console.log(data['message']);
                 }
             },
-            error:function (data) {
+            error: function (data) {
                 console.log(data);
 
             }
@@ -691,13 +737,13 @@
 
         for (var index in data['data']) {
             var queue = data['data'][index];
-            if(queue.status == '1'){
+            if (queue.status == '1') {
                 queue.status = 'sending';
-            }else if(queue.status == '2'){
+            } else if (queue.status == '2') {
                 queue.status = 'returning';
-            }else if (queue.status == '3'){
+            } else if (queue.status == '3') {
                 queue.status = 'finished';
-            }else {
+            } else {
                 queue.status = 'declined';
             }
 
@@ -711,11 +757,20 @@
 
     }
 
-    function show(data) {
-        for (var i = 0; i < data['data'].length; i++) {
-            nodes.update({id: data['data'][i], color: {background: 'red', highlight: {background: 'red'}}});
-        }
+
+    function getColorByRandom(colorList) {
+        var colorIndex = Math.floor(Math.random() * colorList.length);
+        var color = colorList[colorIndex];
+        colorList.splice(colorIndex, 1);
+        return color;
     }
+
+    //    function randomColor(){
+    //        var r=Math.floor(Math.random()*256);
+    //        var g=Math.floor(Math.random()*256);
+    //        var b=Math.floor(Math.random()*256);
+    //        return "rgb("+r+','+g+','+b+")";
+    //    }
 
 </script>
 </body>

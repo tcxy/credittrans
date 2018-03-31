@@ -139,7 +139,7 @@
                     '</th><th id="accountid">' + card.accountid + '</th><th id="csc">' + card.csc +
                     '</th><th id="expireDate">' + card.expireDate + '</th>' +
                     '<td>' +
-                    '                <a href="#" class="delete-link" onclick="editCard(this,' + (index+1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
+                    '                <a href="#" class="delete-link" onclick="editCard(this,' + (parseInt(index) + 1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
                     '                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;\n' +
                     '                <a href="#" class="delete-link" onclick="deleteCard(' + card.cardId + ',' + card.accountid + ')">delete</a>' + '</td></tr>');
             }
