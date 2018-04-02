@@ -230,17 +230,6 @@ class StationController extends Controller
         return response()->json($route);
     }
 
-    function validateIP($IP)
-    {
-        $valid = preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/', $IP);
-
-        if ($valid) {
-            return True;
-        } else {
-            return False;
-        }
-    }
-
     public function stationInfo(Request $request)
     {
         $id = $request->input('id');

@@ -25,6 +25,11 @@ class CreateQueuesTable extends Migration
             $table->string('result')->nullable();
             $table->integer('status');
             $table->integer('current');
+            $table->integer('f_current');
+            $table->string('merchant');
+            $table->timestamp('create_at');
+            $table->timestamp('handled_at')->nullable();
+            $table->string('billing_address');
         });
     }
 
