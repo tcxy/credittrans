@@ -53,11 +53,10 @@
         }
 
         #eventSpan {
-            position: fixed;
+            position: absolute;
             width: 300px;
-            height: 00px;
-            right: 0px;
-            margin-left: 10px;
+            height:300px;
+            margin-left: 1150px;
         }
 
         #send {
@@ -108,6 +107,7 @@
 
             <label>Relay Station Ip:<input type="text" id="relayID1"
                                            name="ip"></label>
+            <!--            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" style="margin-left: 8px"></label>-->
             <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
             <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
             <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
@@ -133,7 +133,7 @@
         <div id="sendForm">
             <form id="send_form" style="display: none">
                 <label>Store IP:<input type="text" id="from" name="from" style="margin-left: 70px"></label>
-                <label>Credit Card:<select id="cardNum" name='cardNum' style="margin-left: 48px"></select></label>
+                <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
                 <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
                 <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
                                           style="margin-left: 38px"></label>
@@ -156,7 +156,7 @@
         <thead>
         <tr>
             <th>
-                Store Ip
+                Queue Id
             </th>
             <th>
                 Credit Card
@@ -170,7 +170,12 @@
             <th>
                 Status
             </th>
-
+            <th>
+                Result
+            </th>
+            <th>
+                Message
+            </th>
         </tr>
         </thead>
         <tbody id="queues">
@@ -244,7 +249,7 @@
 //
 //                        console.log(nodes['_data']['4'].status);
 
-                        console.log(nodes);
+                        console.log(jsondata);
 
                         // create a network
                         var container = document.getElementById('mynetwork');
@@ -256,7 +261,92 @@
                             interaction: {hover: true},
 
                         };
-                        var network = new vis.Network(container, data, options);
+                        network = new vis.Network(container, data, options);
+
+                        var colorList = ["#473C8B", "#00008B", "#006400", "#8B1A1A", "#B22222", "#CD6600", "#708090", "#7D26CD", "#00688B", "#27408B"];
+//                        for (var i = 0; i < colorList.length; i++) {
+//                            var bgColor = getColorByRandom(colorList);
+//                        }
+                        var color1 = getColorByRandom(colorList);
+                        var color2 = getColorByRandom(colorList);
+                        var color3 = getColorByRandom(colorList);
+                        var color4 = getColorByRandom(colorList);
+                        var color5 = getColorByRandom(colorList);
+                        var color6 = getColorByRandom(colorList);
+                        for (var index in jsondata['nodes']) {
+
+                            var type = jsondata['nodes'][index]['type'];
+                            var id = jsondata['nodes'][index]['id'];
+                            var regionId = jsondata['nodes'][index]['regionID'];
+                            var color = getColorByRandom(colorList);
+                            console.log('color:', color);
+                            if (regionId == 1) {
+
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color1,
+                                        background: color1,
+                                        highlight: {border: color1, background: color1},
+                                        hover: {border: color1, background: color1}
+                                    }
+                                });
+                            } else if (regionId == 2) {
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color2,
+                                        background: color2,
+                                        highlight: {border: color2, background: color2},
+                                        hover: {border: color2, background: color2}
+                                    }
+                                });
+                            } else if (regionId==3){
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color3,
+                                        background: color3,
+                                        highlight: {border: color3, background: color3},
+                                        hover: {border: color3, background: color3}
+                                    }
+                                });
+                            }
+                            else if (regionId==4){
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color4,
+                                        background: color4,
+                                        highlight: {border: color4, background: color4},
+                                        hover: {border: color4, background: color4}
+                                    }
+                                });
+                            }
+                            else if (regionId==5){
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color5,
+                                        background: color5,
+                                        highlight: {border: color5, background: color5},
+                                        hover: {border: color5, background: color5}
+                                    }
+                                });
+                            }
+                            else if (regionId==6){
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color6,
+                                        background: color6,
+                                        highlight: {border: color6, background: color6},
+                                        hover: {border: color6, background: color6}
+                                    }
+                                });
+                            }
+                        }
+
                         network.on('click', function (params) {
                             if (params.nodes.length != 0) {
 
@@ -272,17 +362,21 @@
                                     },
                                     success: function (data) {
                                         if (data['code'] == 001) {
-                                            console.log(data);
                                             var ip = data['data']['ip'];
                                             var status = data['data']['status'];
-                                            if (status == 1) {
+                                            var type = data['data']['type'];
+                                            console.log('data:', data);
+                                            if (status == 1 && type == 1) {
                                                 status = 'Activated';
                                                 document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
-                                                    + '<br/>' + 'status :' + status + '<br/>' + '<input class="btn" type="button"  value="Inactivate" id="inactivate">';
-                                            } else {
+                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input class="btn" type="button"  value="Inactivate" id="inactivate">';
+                                            } else if (status == 0 && type == 1) {
                                                 status = 'Inactivated';
                                                 document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
-                                                    + '<br/>' + 'status :' + status + '<br/>' + '<input  class="btn" type="button" value="Activate" id="activate">';
+                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input  class="btn" type="button" value="Activate" id="activate">';
+                                            } else {
+                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip;
+
                                             }
 
                                         } else {
@@ -299,12 +393,16 @@
                                                         console.log(data);
                                                     },
                                                     success: function (data) {
-                                                        if (data['code' == '001']) {
+                                                        console.log(data);
+                                                        if (data['code'] == '001') {
                                                             console.log(id);
-                                                            nodes.update({id: id, color: {background: 'grey', highlight: {background: 'grey'}}});
-                                                        }
-                                                        else {
-                                                            getNodesFunction();
+                                                            nodes.update({
+                                                                id: id,
+                                                                color: {
+                                                                    background: 'grey',
+                                                                    highlight: {background: 'grey'}
+                                                                }
+                                                            });
                                                         }
                                                     }
 
@@ -322,12 +420,20 @@
                                                         console.log(data);
                                                     },
                                                     success: function (data) {
-                                                        if (data['code' == '001']) {
+                                                        console.log(data);
+                                                        if (data['code'] == '001') {
                                                             console.log(id);
-
-                                                        }
-                                                        else {
-                                                            getNodesFunction();
+                                                            nodes.update({
+                                                                id: id, color: {
+                                                                    border: '#2B7CE9',
+                                                                    background: '#97C2FC',
+                                                                    highlight: {
+                                                                        border: '#2B7CE9',
+                                                                        background: '#D2E5FF'
+                                                                    },
+                                                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                                                }
+                                                            });
                                                         }
                                                     }
 
@@ -341,22 +447,7 @@
                             } else {
                                 document.getElementById('eventSpan').innerHTML = '';
                             }
-
-
                         });
-                        for (var i = 1; i<=nodes.length;i++){
-                            if (nodes['_data'][i]['status'] == '0'){
-                                nodes.update({
-                                    id: nodes['_data'][i].id,
-                                    color: {
-                                        border: 'grey',
-                                        background: 'grey',
-                                        highlight: {border: 'grey', background: 'grey'},
-                                        hover: {border: 'grey', background: 'grey'}
-                                    }
-                                });
-                            }
-                        }
                     }
                 }
             });
@@ -441,16 +532,32 @@
         $.ajax({
             url: '/queues',
             type: 'get',
-            dataType:'json',
+            dataType: 'json',
             success: function (data) {
                 if (data['code'] == '001') {
                     console.log(data);
                     var queues = data['data'];
+                    if (queues == null) {
+                        for (var i = 0; i < nodes.length; i++) {
+                            nodes.update({
+                                id: i,
+                                color: {
+                                    border: '#2B7CE9',
+                                    background: '#97C2FC',
+                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                }
+                            });
+                        }
+                    }
                     for (var i = 0; i < queues.length; i++) {
-                        var current = queues[i]['length'];
+                        var current = queues[i]['current'];
                         var path = JSON.parse(queues[i]['path']);
+                        console.log(path);
+                        var currentNode = path[current];
+                        console.log(currentNode);
                         if (parseInt(queues[i]['status']) == 1) {
-                            if (parseInt(path[current]['type']) == 1) {
+                            if (parseInt(currentNode['type']) == 1) {
                                 nodes.update({
                                     id: path[current]['id'],
                                     color: {background: 'red', highlight: {background: 'red'}}
@@ -459,15 +566,15 @@
                                     edges.update({
                                         id: path[current - 1]['edge']['id'],
                                         color: {
-                                            color: '#848484',
-                                            highlight: '#848484',
-                                            hover: '#848484',
-                                            inherit: 'from',
-                                            opacity: 1
+                                            color: "#848484",
+                                            highlight: "#848484",
+                                            hover: "#848484",
+                                            opacity: 1,
+                                            inherited: false
                                         }
                                     });
                                 }
-                            } else if (parseInt(path[current]['type']) == 2) {
+                            } else if (parseInt(path[current].type) == 2) {
                                 edges.update({
                                     id: path[current]['edge']['id'],
                                     color: {color: 'red', highlight: 'red', hover: 'red'}
@@ -495,7 +602,7 @@
                                 });
                             }
 
-                        } else {
+                        } else if (parseInt(queues[i]['status']) == 2) {
                             if (parseInt(path[current]['type']) == 1) {
                                 nodes.update({
                                     id: path[current]['id'],
@@ -505,13 +612,26 @@
                                     edges.update({
                                         id: path[current + 1]['edge']['id'],
                                         color: {
-                                            color: '#848484',
-                                            highlight: '#848484',
-                                            hover: '#848484',
-                                            inherit: 'from',
-                                            opacity: 1
+                                            color: "#848484",
+                                            highlight: "#848484",
+                                            hover: "#848484",
+                                            opacity: 1,
+                                            inherited: false
                                         }
                                     });
+                                }
+                                if (current == 0) {
+                                    for (var i = 0; i < 4000; i++) {
+                                        nodes.update({
+                                            id: parseInt(path[0]['id']),
+                                            color: {
+                                                border: '#2B7CE9',
+                                                background: '#97C2FC',
+                                                highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                                hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                            }
+                                        });
+                                    }
                                 }
                             } else if (parseInt(path[current]['type']) == 2) {
                                 edges.update({
@@ -530,24 +650,37 @@
                                     });
                                 }
                             } else if (parseInt(path[current]['id']) == 1) {
-                                nodes.update({
-                                    id: 1,
+                                edges.update({
+                                    id: path[current],
                                     color: {
-                                        border: '#2B7CE9',
-                                        background: '#97C2FC',
-                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                        color: "#848484",
+                                        highlight: "#848484",
+                                        hover: "#848484",
+                                        opacity: 1,
+                                        inherited: false
                                     }
                                 });
                             }
+
+                        } else {
+                            nodes.update({
+                                id: path[0]['id'],
+                                color: {
+                                    border: '#2B7CE9',
+                                    background: '#97C2FC',
+                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+                                }
+                            });
                         }
                     }
-                }else {
+                } else {
                     console.log(data['message']);
                 }
             },
-            error:function (data) {
+            error: function (data) {
                 console.log(data);
+
             }
 
         });
@@ -555,7 +688,6 @@
 
         step++;
     }
-
 
     function sendNewTrans() {
         $form = $('#send_form');
@@ -640,30 +772,40 @@
 
         for (var index in data['data']) {
             var queue = data['data'][index];
-            if(queue.status == '1'){
+            if (queue.status == '1') {
                 queue.status = 'sending';
-            }else if(queue.status == '2'){
+            } else if (queue.status == '2') {
                 queue.status = 'returning';
-            }else if (queue.status == '3'){
+            } else if (queue.status == '3') {
                 queue.status = 'finished';
-            }else {
+            } else {
                 queue.status = 'declined';
             }
 
             $('#queues').append('<tr class="loaded-data"><th id="Store Ip">' + queue.id +
                 '</th><th id="CreditCard">' + queue.card + '</th><th id="HolderName">' + queue.holder_name +
-                '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th>')
+                '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th> + ' +
+                '<th id="result">' + queue.result + '</th><th id="message">' + queue.message + "</th>")
         }
 
         loadQueues();
 
     }
 
-    function show(data) {
-        for (var i = 0; i < data['data'].length; i++) {
-            nodes.update({id: data['data'][i], color: {background: 'red', highlight: {background: 'red'}}});
-        }
+
+    function getColorByRandom(colorList) {
+        var colorIndex = Math.floor(Math.random() * colorList.length);
+        var color = colorList[colorIndex];
+        colorList.splice(colorIndex, 1);
+        return color;
     }
+
+    //    function randomColor(){
+    //        var r=Math.floor(Math.random()*256);
+    //        var g=Math.floor(Math.random()*256);
+    //        var b=Math.floor(Math.random()*256);
+    //        return "rgb("+r+','+g+','+b+")";
+    //    }
 
 </script>
 </body>

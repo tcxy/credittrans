@@ -83,12 +83,14 @@
         }
 
         function deleteCard(cardId, accountid) {
-            $.ajax({
-                type: 'post',
-                url: '{{ route('credit.deletecard') }}',
-                data: {
+            var res = confirm('confirm?');
+            if(res == true){
+                $.ajax({
+                    type: 'post',
+                    url: '{{ route('credit.deletecard') }}',
+                    data: {
                     'cardId': cardId,
-                    'accountid': accountid
+                        'accountid': accountid
                 },
                 success: function (data) {
                     if (data['code'] == '001') {
@@ -102,6 +104,8 @@
                     console.log(data);
                 }
             })
+            }
+
         }
 
         function addCard() {
@@ -139,8 +143,7 @@
                     '</th><th id="accountid">' + card.accountid + '</th><th id="csc">' + card.csc +
                     '</th><th id="expireDate">' + card.expireDate + '</th>' +
                     '<td>' +
-                    '                <a href="#" class="delete-link" onclick="editCard(this,' + (index+1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
-                    '                <a href="#" class="delete-link">view</a>&nbsp;&nbsp;&nbsp;\n' +
+                    '                <a href="#" class="delete-link" onclick="editCard(this,' + (parseInt(index) + 1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
                     '                <a href="#" class="delete-link" onclick="deleteCard(' + card.cardId + ',' + card.accountid + ')">delete</a>' + '</td></tr>');
             }
 
@@ -264,7 +267,7 @@
             <div class="control-group">
                 <label class="control-label" for="textarea">Date of expiration:</label>
                 <div class="controls">
-                    <input type="date" class="input-xlarge" id="expireDate" name="expireDate"/>
+                    <input type="text" class="input-xlarge" id="expireDate" name="expireDate"/>
                 </div>
             </div>
             <div class="form-actions">

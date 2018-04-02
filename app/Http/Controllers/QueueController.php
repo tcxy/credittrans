@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Credit\CreditAccount;
 use App\Model\Station\Station;
 use Illuminate\Http\Request;
 use App\Model\Queue\Queue;
@@ -11,7 +12,7 @@ class QueueController extends Controller
 {
     //
     public function updateQueue(Request $request) {
-        $queues = Queue::where('status', '=', 1)->orwhere('status', '=', '2')->get();
+        $queues = Queue::where('status', '=', 1)->orwhere('status', '=', '2')->orwhere('status', '=', '4')->get();
         $array = array();
 
         foreach ($queues as $queue) {
@@ -87,6 +88,30 @@ class QueueController extends Controller
                         } else {
                             $queue->result = 'Approved';
                             $queue->message = 'The transaction is finished';
+                            $accountid = $creditcard->accountid;
+                            $account = CreditAccount::find($accountid);
+                            $cards = CreditCard::where('accountid', '=', $accountid)->get();
+                            $amount = 0;
+                            foreach ($cards as $creditcard) {
+                                $queues = Queue::where('card', '=', $creditcard->cardId)->get();
+                                foreach ($queues as $cardqueue) {
+                                    if ($cardqueue->result == 'Approved') {
+                                        $amount += $cardqueue->amount;
+                                    }
+                                }
+                            }
+                            if ($amount + $queue->amount > $account->spendlinglimit) {
+                                $queue->result = "Declined";
+                                $queue->message = 'Exceed Daily limit';
+                            } else {
+                                $account->balance = $account->balance - $queue->amount;
+                                if ($account->balance < 0) {
+                                    $queue->result = 'Declined';
+                                    $queue->message = "No enough balance";
+                                } else {
+                                    $account->save();
+                                }
+                            }
                         }
                     }
 
