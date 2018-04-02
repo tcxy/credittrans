@@ -55,7 +55,7 @@
         #eventSpan {
             position: absolute;
             width: 300px;
-            height:300px;
+            height: 300px;
             margin-left: 1150px;
         }
 
@@ -132,9 +132,16 @@
         <button type="button" class="btn btn-primary" id="send">New Transaction</button>
         <div id="sendForm">
             <form id="send_form" style="display: none">
-                <label>Store IP:<input type="text" id="from" name="from" style="margin-left: 70px"></label>
+                <label>Merchant's Name:<select id="mName" name="mName"
+                                               style="margin-left: 10px;margin-top: 5px"></select></label>
+                <label>Type:<select id="type" name="type" style="margin-left: 92px">
+                        <option value="credit">Credit</option>;
+                        <option value="debit">Debit</option>;
+                    </select></label>
                 <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
                 <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
+                <label>Expiration Date:<input type="text" id="expire" name="expire" style="margin-left: 24px"></label>
+                <label>Billing Address:<input type="text" id="billing" name="billing" style="margin-left: 27px"></label>
                 <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
                                           style="margin-left: 38px"></label>
                 <label>Amount:<input type="text" id="amount" name="amount" style="margin-left: 71px"></label>
@@ -223,6 +230,29 @@
     }
 
     function getNodesFunction() {
+        var testNodes = [
+            {id:0,label:'C',type:0,status:1,region:0},
+            {id:1,label:'G',type:0,status:1,region:1},
+            {id:2,label:'S',type:0,status:1,region:1},
+            {id:3,label:'S',type:0,status:1,region:1},
+            {id:4,label:'G',type:0,status:1,region:2},
+            {id:5,label:'S',type:0,status:1,region:2},
+            {id:6,label:'S',type:0,status:1,region:2},
+            {id:7,label:'G',type:0,status:1,region:3},
+            {id:8,label:'S',type:0,status:1,region:3},
+            {id:9,label:'S',type:0,status:1,region:3}
+        ];
+        var testEdges = [
+            {id:0,from:1,to:0,region:0},
+            {id:1,from:2,to:1,region:1},
+            {id:2,from:3,to:2,region:1},
+            {id:3,from:4,to:0,region:0},
+            {id:4,from:5,to:4,region:2},
+            {id:5,from:6,to:5,region:2},
+            {id:6,from:7,to:4,region:0},
+            {id:7,from:8,to:7,region:3},
+            {id:8,from:9,to:8,region:3}
+        ];
         var username = sessionStorage.getItem("username");
         if (username == null) {
             alert("You should login first");
@@ -243,9 +273,10 @@
                         loadCards();
                         loadQueues();
                         var jsondata = data['data'];
-                        nodes = new vis.DataSet(jsondata['nodes']);
-                        edges = new vis.DataSet(jsondata['edges']);
-
+//                        nodes = new vis.DataSet(jsondata['nodes']);
+//                        edges = new vis.DataSet(jsondata['edges']);
+                        nodes = new vis.DataSet(testNodes);
+                        edges = new vis.DataSet(testEdges);
 //
 //                        console.log(nodes['_data']['4'].status);
 
@@ -262,7 +293,6 @@
 
                         };
                         network = new vis.Network(container, data, options);
-
                         var colorList = ["#473C8B", "#00008B", "#006400", "#8B1A1A", "#B22222", "#CD6600", "#708090", "#7D26CD", "#00688B", "#27408B"];
 //                        for (var i = 0; i < colorList.length; i++) {
 //                            var bgColor = getColorByRandom(colorList);
@@ -273,15 +303,15 @@
                         var color4 = getColorByRandom(colorList);
                         var color5 = getColorByRandom(colorList);
                         var color6 = getColorByRandom(colorList);
-                        for (var index in jsondata['nodes']) {
 
-                            var type = jsondata['nodes'][index]['type'];
-                            var id = jsondata['nodes'][index]['id'];
-                            var regionId = jsondata['nodes'][index]['regionID'];
-                            var color = getColorByRandom(colorList);
-                            console.log('color:', color);
-                            if (regionId == 1) {
+                        console.log('nodes:',nodes['_data']);
+                        console.log('edges:',edges['_data']);
 
+                        for (var index in nodes['_data']){
+                            var region = nodes['_data'][index]['region'];
+                            var id = nodes['_data'][index]['id'];
+                            console.log('region:',region);
+                            if(region==1){
                                 nodes.update({
                                     id: id,
                                     color: {
@@ -291,7 +321,7 @@
                                         hover: {border: color1, background: color1}
                                     }
                                 });
-                            } else if (regionId == 2) {
+                            }else if(region==2){
                                 nodes.update({
                                     id: id,
                                     color: {
@@ -301,7 +331,7 @@
                                         hover: {border: color2, background: color2}
                                     }
                                 });
-                            } else if (regionId==3){
+                            }else if(region==3){
                                 nodes.update({
                                     id: id,
                                     color: {
@@ -312,40 +342,110 @@
                                     }
                                 });
                             }
-                            else if (regionId==4){
-                                nodes.update({
+                        }
+                        for (var index in edges['_data']){
+                            var id = edges['_data'][index]['id'];
+                            var region = edges['_data'][index]['region'];
+                            if (region == 0){
+                                edges.update({
                                     id: id,
                                     color: {
-                                        border: color4,
-                                        background: color4,
-                                        highlight: {border: color4, background: color4},
-                                        hover: {border: color4, background: color4}
-                                    }
-                                });
-                            }
-                            else if (regionId==5){
-                                nodes.update({
-                                    id: id,
-                                    color: {
-                                        border: color5,
-                                        background: color5,
-                                        highlight: {border: color5, background: color5},
-                                        hover: {border: color5, background: color5}
-                                    }
-                                });
-                            }
-                            else if (regionId==6){
-                                nodes.update({
-                                    id: id,
-                                    color: {
-                                        border: color6,
-                                        background: color6,
-                                        highlight: {border: color6, background: color6},
-                                        hover: {border: color6, background: color6}
+                                        color: '#97C2FC',
+                                        highlight: "#2B7CE9",
+                                        hover: "#2B7CE9",
+                                        opacity: 1,
+                                        inherited: false
                                     }
                                 });
                             }
                         }
+//                        for (var index in jsondata['nodes']) {
+//
+//                            var type = jsondata['nodes'][index]['type'];
+//                            var id = jsondata['nodes'][index]['id'];
+//                            var regionId = jsondata['nodes'][index]['regionID'];
+//                            var color = getColorByRandom(colorList);
+//                            var status = jsondata['nodes'][index]['status'];
+//                            console.log('status:', status);
+//                            if (regionId == 1) {
+//
+//                                nodes.update({
+//                                    id: id,
+//                                    color: {
+//                                        border: color1,
+//                                        background: color1,
+//                                        highlight: {border: color1, background: color1},
+//                                        hover: {border: color1, background: color1}
+//                                    }
+//                                });
+//                            } else if (regionId == 2) {
+//                                nodes.update({
+//                                    id: id,
+//                                    color: {
+//                                        border: color2,
+//                                        background: color2,
+//                                        highlight: {border: color2, background: color2},
+//                                        hover: {border: color2, background: color2}
+//                                    }
+//                                });
+//                            } else if (regionId == 3) {
+//                                nodes.update({
+//                                    id: id,
+//                                    color: {
+//                                        border: color3,
+//                                        background: color3,
+//                                        highlight: {border: color3, background: color3},
+//                                        hover: {border: color3, background: color3}
+//                                    }
+//                                });
+//                            }
+//                            else if (regionId == 4) {
+//                                nodes.update({
+//                                    id: id,
+//                                    color: {
+//                                        border: color4,
+//                                        background: color4,
+//                                        highlight: {border: color4, background: color4},
+//                                        hover: {border: color4, background: color4}
+//                                    }
+//                                });
+//                            }
+//                            else if (regionId == 5) {
+//                                nodes.update({
+//                                    id: id,
+//                                    color: {
+//                                        border: color5,
+//                                        background: color5,
+//                                        highlight: {border: color5, background: color5},
+//                                        hover: {border: color5, background: color5}
+//                                    }
+//                                });
+//                            }
+//                            else if (regionId == 6) {
+//                                nodes.update({
+//                                    id: id,
+//                                    color: {
+//                                        border: color6,
+//                                        background: color6,
+//                                        highlight: {border: color6, background: color6},
+//                                        hover: {border: color6, background: color6}
+//                                    }
+//                                });
+//                            }
+//                            ;
+//                            if (status == 0) {
+//                                nodes.update({
+//                                    id: id,
+//                                    color: {
+//                                        border: 'grey',
+//                                        background: 'grey',
+//                                        highlight: {border: 'grey', background: 'grey'},
+//                                        hover: {border: 'grey', background: 'grey'}
+//                                    }
+//                                });
+//                            }
+//                        }
+
 
                         network.on('click', function (params) {
                             if (params.nodes.length != 0) {
@@ -368,14 +468,16 @@
                                             console.log('data:', data);
                                             if (status == 1 && type == 1) {
                                                 status = 'Activated';
-                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
-                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input class="btn" type="button"  value="Inactivate" id="inactivate">';
+                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId
+                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div><button class="btn" id="inactivate" style="display:block">Inactivate</button>' +
+                                                    '<button class="btn" id="activate" style="display: none">Activate</button></div>';
                                             } else if (status == 0 && type == 1) {
                                                 status = 'Inactivated';
-                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip
-                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><input  class="btn" type="button" value="Activate" id="activate">';
+                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId
+                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div><button class="btn" id="inactivate" style="display:none">Inactivate</button>' +
+                                                    '<button class="btn" id="activate" style="display: block">Activate</button></div>';
                                             } else {
-                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip;
+                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId;
 
                                             }
 
@@ -395,6 +497,8 @@
                                                     success: function (data) {
                                                         console.log(data);
                                                         if (data['code'] == '001') {
+                                                            $('#inactivate').css('display', 'none');
+                                                            $('#activate').css('display', 'block');
                                                             console.log(id);
                                                             nodes.update({
                                                                 id: id,
@@ -422,6 +526,8 @@
                                                     success: function (data) {
                                                         console.log(data);
                                                         if (data['code'] == '001') {
+                                                            $('#inactivate').css('display', 'block');
+                                                            $('#activate').css('display', 'none');
                                                             console.log(id);
                                                             nodes.update({
                                                                 id: id, color: {
