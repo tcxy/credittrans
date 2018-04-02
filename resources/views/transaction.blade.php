@@ -55,9 +55,8 @@
         #eventSpan {
             position: absolute;
             width: 300px;
-            height: 00px;
-            right: 0px;
-            margin-left: 10px;
+            height:300px;
+            margin-left: 1150px;
         }
 
         #send {
@@ -271,6 +270,9 @@
                         var color1 = getColorByRandom(colorList);
                         var color2 = getColorByRandom(colorList);
                         var color3 = getColorByRandom(colorList);
+                        var color4 = getColorByRandom(colorList);
+                        var color5 = getColorByRandom(colorList);
+                        var color6 = getColorByRandom(colorList);
                         for (var index in jsondata['nodes']) {
 
                             var type = jsondata['nodes'][index]['type'];
@@ -278,7 +280,7 @@
                             var regionId = jsondata['nodes'][index]['regionID'];
                             var color = getColorByRandom(colorList);
                             console.log('color:', color);
-                            if (type == 1) {
+                            if (regionId == 1) {
 
                                 nodes.update({
                                     id: id,
@@ -289,7 +291,7 @@
                                         hover: {border: color1, background: color1}
                                     }
                                 });
-                            } else if (type == 2) {
+                            } else if (regionId == 2) {
                                 nodes.update({
                                     id: id,
                                     color: {
@@ -299,7 +301,7 @@
                                         hover: {border: color2, background: color2}
                                     }
                                 });
-                            } else if (type==0){
+                            } else if (regionId==3){
                                 nodes.update({
                                     id: id,
                                     color: {
@@ -307,6 +309,39 @@
                                         background: color3,
                                         highlight: {border: color3, background: color3},
                                         hover: {border: color3, background: color3}
+                                    }
+                                });
+                            }
+                            else if (regionId==4){
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color4,
+                                        background: color4,
+                                        highlight: {border: color4, background: color4},
+                                        hover: {border: color4, background: color4}
+                                    }
+                                });
+                            }
+                            else if (regionId==5){
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color5,
+                                        background: color5,
+                                        highlight: {border: color5, background: color5},
+                                        hover: {border: color5, background: color5}
+                                    }
+                                });
+                            }
+                            else if (regionId==6){
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color6,
+                                        background: color6,
+                                        highlight: {border: color6, background: color6},
+                                        hover: {border: color6, background: color6}
                                     }
                                 });
                             }

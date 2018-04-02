@@ -88,24 +88,27 @@
 
 
         function deleteAccount(accountid) {
-            $.ajax({
-                type: 'post',
-                url: '{{ route('credit.deleteaccount') }}',
-                data: {
-                'accountid': accountid
-            },
-            success: function (data) {
-                if (data['code'] == '001') {
-                    loadAccounts();
-                } else {
-                    alert(data['message']);
+            var res = confirm('confirm?');
+            if(res == true){
+                $.ajax({
+                    type: 'post',
+                    url: '{{ route('credit.deleteaccount') }}',
+                    data: {
+                    'accountid': accountid
+                },
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        loadAccounts();
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (data) {
+                    console.log("Connection failed");
+                    console.log(data);
                 }
-            },
-            error: function (data) {
-                console.log("Connection failed");
-                console.log(data);
+            })
             }
-        })
         }
 
 
