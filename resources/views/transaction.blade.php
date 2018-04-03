@@ -132,8 +132,9 @@
         <button type="button" class="btn btn-primary" id="send">New Transaction</button>
         <div id="sendForm">
             <form id="send_form" style="display: none">
-                <label>Merchant's Name:<select id="mName" name="mName"
-                                               style="margin-left: 10px;margin-top: 5px"></select></label>
+<!--                <label>Merchant's Name:<select id="mName" name="mName"-->
+<!--                                               style="margin-left: 10px;margin-top: 5px"></select></label>-->
+                <label>Ip<input type="text" id="from" name="from"></label>
                 <label>Type:<select id="type" name="type" style="margin-left: 92px">
                         <option value="credit">Credit</option>;
                         <option value="debit">Debit</option>;
@@ -230,29 +231,29 @@
     }
 
     function getNodesFunction() {
-        var testNodes = [
-            {id:0,label:'C',type:0,status:1,region:0},
-            {id:1,label:'G',type:0,status:1,region:1},
-            {id:2,label:'S',type:0,status:1,region:1},
-            {id:3,label:'S',type:0,status:1,region:1},
-            {id:4,label:'G',type:0,status:1,region:2},
-            {id:5,label:'S',type:0,status:1,region:2},
-            {id:6,label:'S',type:0,status:1,region:2},
-            {id:7,label:'G',type:0,status:1,region:3},
-            {id:8,label:'S',type:0,status:1,region:3},
-            {id:9,label:'S',type:0,status:1,region:3}
-        ];
-        var testEdges = [
-            {id:0,from:1,to:0,region:0},
-            {id:1,from:2,to:1,region:1},
-            {id:2,from:3,to:2,region:1},
-            {id:3,from:4,to:0,region:0},
-            {id:4,from:5,to:4,region:2},
-            {id:5,from:6,to:5,region:2},
-            {id:6,from:7,to:4,region:0},
-            {id:7,from:8,to:7,region:3},
-            {id:8,from:9,to:8,region:3}
-        ];
+//        var testNodes = [
+//            {id:0,label:'C',type:0,status:1,region:0},
+//            {id:1,label:'G',type:0,status:1,region:1},
+//            {id:2,label:'S',type:0,status:1,region:1},
+//            {id:3,label:'S',type:0,status:1,region:1},
+//            {id:4,label:'G',type:0,status:1,region:2},
+//            {id:5,label:'S',type:0,status:1,region:2},
+//            {id:6,label:'S',type:0,status:1,region:2},
+//            {id:7,label:'G',type:0,status:1,region:3},
+//            {id:8,label:'S',type:0,status:1,region:3},
+//            {id:9,label:'S',type:0,status:1,region:3}
+//        ];
+//        var testEdges = [
+//            {id:0,from:1,to:0,region:0},
+//            {id:1,from:2,to:1,region:1},
+//            {id:2,from:3,to:2,region:1},
+//            {id:3,from:4,to:0,region:0},
+//            {id:4,from:5,to:4,region:2},
+//            {id:5,from:6,to:5,region:2},
+//            {id:6,from:7,to:4,region:0},
+//            {id:7,from:8,to:7,region:3},
+//            {id:8,from:9,to:8,region:3}
+//        ];
         var username = sessionStorage.getItem("username");
         if (username == null) {
             alert("You should login first");
@@ -273,10 +274,10 @@
                         loadCards();
                         loadQueues();
                         var jsondata = data['data'];
-//                        nodes = new vis.DataSet(jsondata['nodes']);
-//                        edges = new vis.DataSet(jsondata['edges']);
-                        nodes = new vis.DataSet(testNodes);
-                        edges = new vis.DataSet(testEdges);
+                        nodes = new vis.DataSet(jsondata['nodes']);
+                        edges = new vis.DataSet(jsondata['edges']);
+//                        nodes = new vis.DataSet(testNodes);
+//                        edges = new vis.DataSet(testEdges);
 //
 //                        console.log(nodes['_data']['4'].status);
 
@@ -289,7 +290,13 @@
                             edges: edges
                         };
                         var options = {
-                            interaction: {hover: true},
+                            nodes:{
+                                size:24
+                            },
+                            edges:{
+                                width:2
+                            },
+                            interaction: {hover: true}
 
                         };
                         network = new vis.Network(container, data, options);
@@ -307,68 +314,11 @@
                         console.log('nodes:',nodes['_data']);
                         console.log('edges:',edges['_data']);
 
-                        for (var index in nodes['_data']){
-                            var region = nodes['_data'][index]['region'];
-                            var id = nodes['_data'][index]['id'];
-                            console.log('region:',region);
-                            if(region==1){
-                                nodes.update({
-                                    id: id,
-                                    color: {
-                                        border: color1,
-                                        background: color1,
-                                        highlight: {border: color1, background: color1},
-                                        hover: {border: color1, background: color1}
-                                    }
-                                });
-                            }else if(region==2){
-                                nodes.update({
-                                    id: id,
-                                    color: {
-                                        border: color2,
-                                        background: color2,
-                                        highlight: {border: color2, background: color2},
-                                        hover: {border: color2, background: color2}
-                                    }
-                                });
-                            }else if(region==3){
-                                nodes.update({
-                                    id: id,
-                                    color: {
-                                        border: color3,
-                                        background: color3,
-                                        highlight: {border: color3, background: color3},
-                                        hover: {border: color3, background: color3}
-                                    }
-                                });
-                            }
-                        }
-                        for (var index in edges['_data']){
-                            var id = edges['_data'][index]['id'];
-                            var region = edges['_data'][index]['region'];
-                            if (region == 0){
-                                edges.update({
-                                    id: id,
-                                    color: {
-                                        color: '#97C2FC',
-                                        highlight: "#2B7CE9",
-                                        hover: "#2B7CE9",
-                                        opacity: 1,
-                                        inherited: false
-                                    }
-                                });
-                            }
-                        }
-//                        for (var index in jsondata['nodes']) {
-//
-//                            var type = jsondata['nodes'][index]['type'];
-//                            var id = jsondata['nodes'][index]['id'];
-//                            var regionId = jsondata['nodes'][index]['regionID'];
-//                            var color = getColorByRandom(colorList);
-//                            var status = jsondata['nodes'][index]['status'];
-//                            console.log('status:', status);
-//                            if (regionId == 1) {
-//
+//                        for (var index in nodes['_data']){
+//                            var region = nodes['_data'][index]['region'];
+//                            var id = nodes['_data'][index]['id'];
+//                            console.log('region:',region);
+//                            if(region==1){
 //                                nodes.update({
 //                                    id: id,
 //                                    color: {
@@ -378,7 +328,7 @@
 //                                        hover: {border: color1, background: color1}
 //                                    }
 //                                });
-//                            } else if (regionId == 2) {
+//                            }else if(region==2){
 //                                nodes.update({
 //                                    id: id,
 //                                    color: {
@@ -388,7 +338,7 @@
 //                                        hover: {border: color2, background: color2}
 //                                    }
 //                                });
-//                            } else if (regionId == 3) {
+//                            }else if(region==3){
 //                                nodes.update({
 //                                    id: id,
 //                                    color: {
@@ -399,52 +349,109 @@
 //                                    }
 //                                });
 //                            }
-//                            else if (regionId == 4) {
-//                                nodes.update({
+//                        }
+//                        for (var index in edges['_data']){
+//                            var id = edges['_data'][index]['id'];
+//                            var region = edges['_data'][index]['region'];
+//                            if (region == 0){
+//                                edges.update({
 //                                    id: id,
 //                                    color: {
-//                                        border: color4,
-//                                        background: color4,
-//                                        highlight: {border: color4, background: color4},
-//                                        hover: {border: color4, background: color4}
-//                                    }
-//                                });
-//                            }
-//                            else if (regionId == 5) {
-//                                nodes.update({
-//                                    id: id,
-//                                    color: {
-//                                        border: color5,
-//                                        background: color5,
-//                                        highlight: {border: color5, background: color5},
-//                                        hover: {border: color5, background: color5}
-//                                    }
-//                                });
-//                            }
-//                            else if (regionId == 6) {
-//                                nodes.update({
-//                                    id: id,
-//                                    color: {
-//                                        border: color6,
-//                                        background: color6,
-//                                        highlight: {border: color6, background: color6},
-//                                        hover: {border: color6, background: color6}
-//                                    }
-//                                });
-//                            }
-//                            ;
-//                            if (status == 0) {
-//                                nodes.update({
-//                                    id: id,
-//                                    color: {
-//                                        border: 'grey',
-//                                        background: 'grey',
-//                                        highlight: {border: 'grey', background: 'grey'},
-//                                        hover: {border: 'grey', background: 'grey'}
+//                                        color: '#97C2FC',
+//                                        highlight: "#2B7CE9",
+//                                        hover: "#2B7CE9",
+//                                        opacity: 1,
+//                                        inherited: false
 //                                    }
 //                                });
 //                            }
 //                        }
+                        for (var index in jsondata['nodes']) {
+
+                            var type = jsondata['nodes'][index]['type'];
+                            var id = jsondata['nodes'][index]['id'];
+                            var regionId = jsondata['nodes'][index]['regionID'];
+                            var color = getColorByRandom(colorList);
+                            var status = jsondata['nodes'][index]['status'];
+                            console.log('status:', status);
+                            if (regionId == 1) {
+
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color1,
+                                        background: color1,
+                                        highlight: {border: color1, background: color1},
+                                        hover: {border: color1, background: color1}
+                                    }
+                                });
+                            } else if (regionId == 2) {
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color2,
+                                        background: color2,
+                                        highlight: {border: color2, background: color2},
+                                        hover: {border: color2, background: color2}
+                                    }
+                                });
+                            } else if (regionId == 3) {
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color3,
+                                        background: color3,
+                                        highlight: {border: color3, background: color3},
+                                        hover: {border: color3, background: color3}
+                                    }
+                                });
+                            }
+                            else if (regionId == 4) {
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color4,
+                                        background: color4,
+                                        highlight: {border: color4, background: color4},
+                                        hover: {border: color4, background: color4}
+                                    }
+                                });
+                            }
+                            else if (regionId == 5) {
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color5,
+                                        background: color5,
+                                        highlight: {border: color5, background: color5},
+                                        hover: {border: color5, background: color5}
+                                    }
+                                });
+                            }
+                            else if (regionId == 6) {
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: color6,
+                                        background: color6,
+                                        highlight: {border: color6, background: color6},
+                                        hover: {border: color6, background: color6}
+                                    }
+                                });
+                            }
+                            ;
+                            if (status == 0) {
+                                nodes.update({
+                                    id: id,
+                                    color: {
+                                        border: 'grey',
+                                        background: 'grey',
+                                        highlight: {border: 'grey', background: 'grey'},
+                                        hover: {border: 'grey', background: 'grey'}
+                                    }
+                                });
+                            }
+                        }
 
 
                         network.on('click', function (params) {
@@ -644,15 +651,17 @@
                     console.log(data);
                     var queues = data['data'];
                     if (queues == null) {
+                        console.log('null');
                         for (var i = 0; i < nodes.length; i++) {
                             nodes.update({
                                 id: i,
-                                color: {
-                                    border: '#2B7CE9',
-                                    background: '#97C2FC',
-                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                                }
+//                                color: {
+//                                    border: '#2B7CE9',
+//                                    background: '#97C2FC',
+//                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+//                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+//                                }
+                                size:24
                             });
                         }
                     }
@@ -666,45 +675,50 @@
                             if (parseInt(currentNode['type']) == 1) {
                                 nodes.update({
                                     id: path[current]['id'],
-                                    color: {background: 'red', highlight: {background: 'red'}}
+//                                    color: {background: 'red', highlight: {background: 'red'}}
+                                    size:40
                                 });
                                 if (current != 0) {
                                     edges.update({
                                         id: path[current - 1]['edge']['id'],
-                                        color: {
-                                            color: "#848484",
-                                            highlight: "#848484",
-                                            hover: "#848484",
-                                            opacity: 1,
-                                            inherited: false
-                                        }
+//                                        color: {
+//                                            color: "#848484",
+//                                            highlight: "#848484",
+//                                            hover: "#848484",
+//                                            opacity: 1,
+//                                            inherited: false
+//                                        }
+                                        width:2
                                     });
                                 }
                             } else if (parseInt(path[current].type) == 2) {
                                 edges.update({
                                     id: path[current]['edge']['id'],
-                                    color: {color: 'red', highlight: 'red', hover: 'red'}
+//                                    color: {color: 'red', highlight: 'red', hover: 'red'}
+                                    width:7
                                 });
                                 if (current != 0) {
                                     nodes.update({
                                         id: path[current - 1]['id'],
-                                        color: {
-                                            border: '#2B7CE9',
-                                            background: '#97C2FC',
-                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                                        }
+//                                        color: {
+//                                            border: '#2B7CE9',
+//                                            background: '#97C2FC',
+//                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+//                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
+//                                        }
+                                        size:24
                                     });
                                 }
                             } else if (parseInt(path[current]['id']) == 1) {
                                 nodes.update({
                                     id: 1,
-                                    color: {
-                                        border: '#2B7CE9',
-                                        background: '#97C2FC',
-                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                                    }
+//                                    color: {
+//                                        border: '#2B7CE9',
+//                                        background: '#97C2FC',
+//                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+//                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
+//                                    }
+                                    size:24
                                 });
                             }
 
@@ -712,71 +726,78 @@
                             if (parseInt(path[current]['type']) == 1) {
                                 nodes.update({
                                     id: path[current]['id'],
-                                    color: {background: 'red', highlight: {background: 'red'}}
+//                                    color: {background: 'red', highlight: {background: 'red'}}
+                                    size:40
                                 });
                                 if (current != path.length - 1) {
                                     edges.update({
                                         id: path[current + 1]['edge']['id'],
-                                        color: {
-                                            color: "#848484",
-                                            highlight: "#848484",
-                                            hover: "#848484",
-                                            opacity: 1,
-                                            inherited: false
-                                        }
+//                                        color: {
+//                                            color: "#848484",
+//                                            highlight: "#848484",
+//                                            hover: "#848484",
+//                                            opacity: 1,
+//                                            inherited: false
+//                                        }
+                                        width:2
                                     });
                                 }
                                 if (current == 0) {
                                     for (var i = 0; i < 4000; i++) {
                                         nodes.update({
                                             id: parseInt(path[0]['id']),
-                                            color: {
-                                                border: '#2B7CE9',
-                                                background: '#97C2FC',
-                                                highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                                hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                                            }
+//                                            color: {
+//                                                border: '#2B7CE9',
+//                                                background: '#97C2FC',
+//                                                highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+//                                                hover: {border: '#2B7CE9', background: '#D2E5FF'}
+//                                            }
+                                            size:24
                                         });
                                     }
                                 }
                             } else if (parseInt(path[current]['type']) == 2) {
                                 edges.update({
                                     id: path[current]['edge']['id'],
-                                    color: {color: 'red', highlight: 'red', hover: 'red'}
+//                                    color: {color: 'red', highlight: 'red', hover: 'red'}
+                                    width:7
                                 });
                                 if (current != 0) {
                                     nodes.update({
                                         id: path[current + 1]['id'],
-                                        color: {
-                                            border: '#2B7CE9',
-                                            background: '#97C2FC',
-                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                                        }
+//                                        color: {
+//                                            border: '#2B7CE9',
+//                                            background: '#97C2FC',
+//                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+//                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
+//                                        }
+                                        size:24
                                     });
                                 }
                             } else if (parseInt(path[current]['id']) == 1) {
                                 edges.update({
                                     id: path[current],
-                                    color: {
-                                        color: "#848484",
-                                        highlight: "#848484",
-                                        hover: "#848484",
-                                        opacity: 1,
-                                        inherited: false
-                                    }
+//                                    color: {
+//                                        color: "#848484",
+//                                        highlight: "#848484",
+//                                        hover: "#848484",
+//                                        opacity: 1,
+//                                        inherited: false
+//                                    }
+                                    width:2
                                 });
                             }
 
                         } else {
                             nodes.update({
                                 id: path[0]['id'],
-                                color: {
-                                    border: '#2B7CE9',
-                                    background: '#97C2FC',
-                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                                }
+//                                color: {
+//                                    border: '#2B7CE9',
+//                                    background: '#97C2FC',
+//                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
+//                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
+//                                }
+                                size:24
                             });
                         }
                     }
