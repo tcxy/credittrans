@@ -236,29 +236,29 @@
     }
 
     function getNodesFunction() {
-//        var testNodes = [
-//            {id:0,label:'C',type:0,status:1,region:0},
-//            {id:1,label:'G',type:0,status:1,region:1},
-//            {id:2,label:'S',type:0,status:1,region:1},
-//            {id:3,label:'S',type:0,status:1,region:1},
-//            {id:4,label:'G',type:0,status:1,region:2},
-//            {id:5,label:'S',type:0,status:1,region:2},
-//            {id:6,label:'S',type:0,status:1,region:2},
-//            {id:7,label:'G',type:0,status:1,region:3},
-//            {id:8,label:'S',type:0,status:1,region:3},
-//            {id:9,label:'S',type:0,status:1,region:3}
-//        ];
-//        var testEdges = [
-//            {id:0,from:1,to:0,region:0},
-//            {id:1,from:2,to:1,region:1},
-//            {id:2,from:3,to:2,region:1},
-//            {id:3,from:4,to:0,region:0},
-//            {id:4,from:5,to:4,region:2},
-//            {id:5,from:6,to:5,region:2},
-//            {id:6,from:7,to:4,region:0},
-//            {id:7,from:8,to:7,region:3},
-//            {id:8,from:9,to:8,region:3}
-//        ];
+        var testNodes = [
+            {id: 0, type: 0, status: 1, region: 0},
+            {id: 1, type: 3, status: 1, region: 1, limit: 10},
+            {id: 2, type: 1, status: 1, region: 1, limit: 10},
+            {id: 3, type: 2, status: 1, region: 1},
+            {id: 4, type: 3, status: 1, region: 2, limit: 10},
+            {id: 5, type: 1, status: 1, region: 2, limit: 10},
+            {id: 6, type: 2, status: 1, region: 2},
+            {id: 7, type: 3, status: 1, region: 3, limit: 10},
+            {id: 8, type: 1, status: 1, region: 3, limit: 10},
+            {id: 9, type: 2, status: 1, region: 3}
+        ];
+        var testEdges = [
+            {id: 0, from: 1, to: 0, region: 0},
+            {id: 1, from: 2, to: 1, region: 1},
+            {id: 2, from: 3, to: 2, region: 1},
+            {id: 3, from: 4, to: 0, region: 0},
+            {id: 4, from: 5, to: 4, region: 2},
+            {id: 5, from: 6, to: 5, region: 2},
+            {id: 6, from: 7, to: 4, region: 0},
+            {id: 7, from: 8, to: 7, region: 3},
+            {id: 8, from: 9, to: 8, region: 3}
+        ];
         var username = sessionStorage.getItem("username");
         if (username == null) {
             alert("You should login first");
@@ -318,47 +318,150 @@
 
                         console.log('nodes:', nodes['_data']);
                         console.log('edges:', edges['_data']);
-
-//                        for (var index in nodes['_data']){
+//test graph
+//                        for (var index in nodes['_data']) {
 //                            var region = nodes['_data'][index]['region'];
 //                            var id = nodes['_data'][index]['id'];
-//                            console.log('region:',region);
-//                            if(region==1){
+//                            var type = nodes['_data'][index]['type'];
+//                            var status = nodes['_data'][index]['status'];
+//                            console.log('type:', type);
+//                            if (region == 1) {
+//                                if (type == 1) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'square',
+//                                        label: 'Relay Station',
+//                                        color: {
+//                                            border: color1,
+//                                            background: color1,
+//                                            highlight: {border: color1, background: color1},
+//                                            hover: {border: color1, background: color1}
+//                                        }
+//                                    });
+//                                } else if (type == 2) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'circle',
+//                                        label: 'Store',
+//                                        color: {
+//                                            border: color1,
+//                                            background: color1,
+//                                            highlight: {border: color1, background: color1},
+//                                            hover: {border: color1, background: color1}
+//                                        }
+//                                    });
+//                                } else if (type == 3) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'diamond',
+//                                        label: 'Gateway',
+//                                        color: {
+//                                            border: color1,
+//                                            background: color1,
+//                                            highlight: {border: color1, background: color1},
+//                                            hover: {border: color1, background: color1}
+//                                        }
+//                                    });
+//                                }
+//                            } else if (region == 2) {
+//                                if (type == 1) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'square',
+//                                        label: 'Relay Station',
+//                                        color: {
+//                                            border: color2,
+//                                            background: color2,
+//                                            highlight: {border: color2, background: color2},
+//                                            hover: {border: color2, background: color2}
+//                                        }
+//                                    });
+//                                } else if (type == 2) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'circle',
+//                                        label: 'Store',
+//                                        color: {
+//                                            border: color2,
+//                                            background: color2,
+//                                            highlight: {border: color2, background: color2},
+//                                            hover: {border: color2, background: color2}
+//                                        }
+//                                    });
+//                                } else if (type == 3) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'diamond',
+//                                        label: 'Gateway',
+//                                        color: {
+//                                            border: color2,
+//                                            background: color2,
+//                                            highlight: {border: color2, background: color2},
+//                                            hover: {border: color2, background: color2}
+//                                        }
+//                                    });
+//                                }
+//                            } else if (region == 3) {
+//                                if (type == 1) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'square',
+//                                        label: 'Relay Station',
+//                                        color: {
+//                                            border: color3,
+//                                            background: color3,
+//                                            highlight: {border: color3, background: color3},
+//                                            hover: {border: color3, background: color3}
+//                                        }
+//                                    });
+//                                } else if (type == 2) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'circle',
+//                                        label: 'Store',
+//                                        color: {
+//                                            border: color3,
+//                                            background: color3,
+//                                            highlight: {border: color3, background: color3},
+//                                            hover: {border: color3, background: color3}
+//                                        }
+//                                    });
+//                                } else if (type == 3) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'diamond',
+//                                        label: 'Gateway',
+//                                        color: {
+//                                            border: color3,
+//                                            background: color3,
+//                                            highlight: {border: color3, background: color3},
+//                                            hover: {border: color3, background: color3}
+//                                        }
+//                                    });
+//                                }
+//                            } else if(type==0){
 //                                nodes.update({
 //                                    id: id,
-//                                    color: {
-//                                        border: color1,
-//                                        background: color1,
-//                                        highlight: {border: color1, background: color1},
-//                                        hover: {border: color1, background: color1}
-//                                    }
+//                                    shape: 'database',
+//                                    label: 'Process Center'
 //                                });
-//                            }else if(region==2){
+//                            }
+//                            if (status == 0) {
 //                                nodes.update({
 //                                    id: id,
 //                                    color: {
-//                                        border: color2,
-//                                        background: color2,
-//                                        highlight: {border: color2, background: color2},
-//                                        hover: {border: color2, background: color2}
-//                                    }
-//                                });
-//                            }else if(region==3){
-//                                nodes.update({
-//                                    id: id,
-//                                    color: {
-//                                        border: color3,
-//                                        background: color3,
-//                                        highlight: {border: color3, background: color3},
-//                                        hover: {border: color3, background: color3}
+//                                        border: 'grey',
+//                                        background: 'grey',
+//                                        highlight: {border: 'grey', background: 'grey'},
+//                                        hover: {border: 'grey', background: 'grey'}
 //                                    }
 //                                });
 //                            }
 //                        }
-//                        for (var index in edges['_data']){
+//                        for (var index in edges['_data']) {
 //                            var id = edges['_data'][index]['id'];
 //                            var region = edges['_data'][index]['region'];
-//                            if (region == 0){
+//                            if (region == 0) {
 //                                edges.update({
 //                                    id: id,
 //                                    color: {
@@ -371,6 +474,7 @@
 //                                });
 //                            }
 //                        }
+//END TEST GRAPH
                         for (var index in jsondata['nodes']) {
 
                             var type = jsondata['nodes'][index]['type'];
@@ -444,7 +548,6 @@
                                     }
                                 });
                             }
-                            ;
                             if (status == 0) {
                                 nodes.update({
                                     id: id,
@@ -456,6 +559,7 @@
                                     }
                                 });
                             }
+
                         }
 
 
@@ -723,7 +827,7 @@
 //                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                    }
-                                    size: 24
+                                    shape:'big database'
                                 });
                             }
 
@@ -889,6 +993,8 @@
             data: {"page": 1},
             success: function (data) {
                 if (data['code'] == '001') {
+                    console.log('data:', data);
+//                    var returnData = JSON.parse(data['data']);
                     loadList(data);
                 }
             },
@@ -918,19 +1024,20 @@
                 '</th><th id="CreditCard">' + queue.card + '</th><th id="HolderName">' + queue.holder_name +
                 '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th> + ' +
                 '<th id="result">' + queue.result + '</th><th id="message">' + queue.message + "</th>" +
-                '<td>' + ' <a href="#" class="send-link" onclick="send('+sendId+')">Send</a>' + '</td></tr>');
+                '<td>' + ' <button type="button" class="btn btn-primary" id=index onclick="send(' + sendId + ')">Send</button>' + '</td></tr>');
         }
 //        loadQueues();
 
     }
+
     function send(sendId) {
         var from = sendId;
         $.ajax({
             url: '/shortest',
             type: 'post',
-            data: {'from':from},
+            data: {'from': '64.233.161.148'},
             success: function (data) {
-                console.log('from:',from);
+                console.log('data:', data);
                 var jsondata = data['data'];
                 if (data['code'] == '001') {
                     clock = setInterval("animation()", 2000);
@@ -942,6 +1049,7 @@
                 console.log(e);
             }
         });
+
     }
 
 
@@ -951,8 +1059,6 @@
         colorList.splice(colorIndex, 1);
         return color;
     }
-
-
 
 
     //    function randomColor(){

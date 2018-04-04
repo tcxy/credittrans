@@ -9,9 +9,9 @@
     <link href="{{ asset('css/bootstrap-responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/jquery-bootstrap-pagination.js') }}"></script>
     <script src="{{ asset('js/site.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
     <style>
         .container {
             margin: 0 auto;
@@ -124,7 +124,7 @@
                     '<th id="accountid" hidden="hidden">' + account.accountid + '</th>' +
                     '<td>' +
                     '                <a href="#" class="delete-link" onclick="editAccount(this,' + (parseInt(index) + 1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
-                        '                <a href="#" data-toggle="modal" data-target="#myModal">view</a>&nbsp;&nbsp;&nbsp;\n' +
+                        '                <a href="#" data-toggle="modal" data-target="#myModal">view</button>&nbsp;&nbsp;&nbsp;\n' +
                         '                <a href="#" class="delete-link" onclick="deleteAccount(' + account.accountid + ')">delete</a>' + '</td></tr>');
                 console.log('id:',data['accounts'][index]['accountid']);
             }
@@ -161,6 +161,9 @@
                     console.log(data);
                 }
             });
+        }
+        function show() {
+            $('#myModal').modal('show');
         }
     </script>
 </head>
