@@ -132,12 +132,14 @@
         <button type="button" class="btn btn-primary" id="send">New Transaction</button>
         <div id="sendForm">
             <form id="send_form" style="display: none">
-<!--                <label>Merchant's Name:<select id="mName" name="mName"-->
-<!--                                               style="margin-left: 10px;margin-top: 5px"></select></label>-->
-                <label>Ip<input type="text" id="from" name="from"></label>
+                <!--                <label>Merchant's Name:<select id="mName" name="mName"-->
+                <!--                                               style="margin-left: 10px;margin-top: 5px"></select></label>-->
+                <label>Ip<input type="text" id="from" name="from" style="margin-left: 112px"></label>
                 <label>Type:<select id="type" name="type" style="margin-left: 92px">
-                        <option value="credit">Credit</option>;
-                        <option value="debit">Debit</option>;
+                        <option value="credit">Credit</option>
+                        ;
+                        <option value="debit">Debit</option>
+                        ;
                     </select></label>
                 <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
                 <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
@@ -183,6 +185,9 @@
             </th>
             <th>
                 Message
+            </th>
+            <th>
+                Action
             </th>
         </tr>
         </thead>
@@ -290,11 +295,11 @@
                             edges: edges
                         };
                         var options = {
-                            nodes:{
-                                size:24
+                            nodes: {
+                                size: 24
                             },
-                            edges:{
-                                width:2
+                            edges: {
+                                width: 2
                             },
                             interaction: {hover: true}
 
@@ -311,8 +316,8 @@
                         var color5 = getColorByRandom(colorList);
                         var color6 = getColorByRandom(colorList);
 
-                        console.log('nodes:',nodes['_data']);
-                        console.log('edges:',edges['_data']);
+                        console.log('nodes:', nodes['_data']);
+                        console.log('edges:', edges['_data']);
 
 //                        for (var index in nodes['_data']){
 //                            var region = nodes['_data'][index]['region'];
@@ -661,7 +666,7 @@
 //                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                }
-                                size:24
+                                size: 24
                             });
                         }
                     }
@@ -676,7 +681,7 @@
                                 nodes.update({
                                     id: path[current]['id'],
 //                                    color: {background: 'red', highlight: {background: 'red'}}
-                                    size:40
+                                    size: 40
                                 });
                                 if (current != 0) {
                                     edges.update({
@@ -688,14 +693,14 @@
 //                                            opacity: 1,
 //                                            inherited: false
 //                                        }
-                                        width:2
+                                        width: 2
                                     });
                                 }
                             } else if (parseInt(path[current].type) == 2) {
                                 edges.update({
                                     id: path[current]['edge']['id'],
 //                                    color: {color: 'red', highlight: 'red', hover: 'red'}
-                                    width:7
+                                    width: 7
                                 });
                                 if (current != 0) {
                                     nodes.update({
@@ -706,7 +711,7 @@
 //                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                        }
-                                        size:24
+                                        size: 24
                                     });
                                 }
                             } else if (parseInt(path[current]['id']) == 1) {
@@ -718,7 +723,7 @@
 //                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                    }
-                                    size:24
+                                    size: 24
                                 });
                             }
 
@@ -727,7 +732,7 @@
                                 nodes.update({
                                     id: path[current]['id'],
 //                                    color: {background: 'red', highlight: {background: 'red'}}
-                                    size:40
+                                    size: 40
                                 });
                                 if (current != path.length - 1) {
                                     edges.update({
@@ -739,7 +744,7 @@
 //                                            opacity: 1,
 //                                            inherited: false
 //                                        }
-                                        width:2
+                                        width: 2
                                     });
                                 }
                                 if (current == 0) {
@@ -752,7 +757,7 @@
 //                                                highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                                hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                            }
-                                            size:24
+                                            size: 24
                                         });
                                     }
                                 }
@@ -760,7 +765,7 @@
                                 edges.update({
                                     id: path[current]['edge']['id'],
 //                                    color: {color: 'red', highlight: 'red', hover: 'red'}
-                                    width:7
+                                    width: 7
                                 });
                                 if (current != 0) {
                                     nodes.update({
@@ -771,7 +776,7 @@
 //                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                        }
-                                        size:24
+                                        size: 24
                                     });
                                 }
                             } else if (parseInt(path[current]['id']) == 1) {
@@ -784,7 +789,7 @@
 //                                        opacity: 1,
 //                                        inherited: false
 //                                    }
-                                    width:2
+                                    width: 2
                                 });
                             }
 
@@ -797,7 +802,7 @@
 //                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                }
-                                size:24
+                                size: 24
                             });
                         }
                     }
@@ -827,11 +832,11 @@
                 console.log($form.serialize());
                 var jsondata = data['data'];
                 if (data['code'] == '001') {
-                    path = data['data']['path'];
-                    queueData = data['data'];
-
-                    step = 0;
-                    clock = setInterval("animation()", 2000);
+//                    path = data['data']['path'];
+//                    queueData = data['data'];
+//
+//                    step = 0;
+//                    clock = setInterval("animation()", 2000);
 //                     show(data);
                 } else {
                     alert(data['message']);
@@ -896,9 +901,9 @@
 
     function loadList(data) {
         $('.loaded-data').remove();
-
         for (var index in data['data']) {
             var queue = data['data'][index];
+            var sendId = queue.from;
             if (queue.status == '1') {
                 queue.status = 'sending';
             } else if (queue.status == '2') {
@@ -912,11 +917,31 @@
             $('#queues').append('<tr class="loaded-data"><th id="Store Ip">' + queue.id +
                 '</th><th id="CreditCard">' + queue.card + '</th><th id="HolderName">' + queue.holder_name +
                 '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th> + ' +
-                '<th id="result">' + queue.result + '</th><th id="message">' + queue.message + "</th>")
+                '<th id="result">' + queue.result + '</th><th id="message">' + queue.message + "</th>" +
+                '<td>' + ' <a href="#" class="send-link" onclick="send('+sendId+')">Send</a>' + '</td></tr>');
         }
+//        loadQueues();
 
-        loadQueues();
-
+    }
+    function send(sendId) {
+        var from = sendId;
+        $.ajax({
+            url: '/shortest',
+            type: 'post',
+            data: {'from':from},
+            success: function (data) {
+                console.log('from:',from);
+                var jsondata = data['data'];
+                if (data['code'] == '001') {
+                    clock = setInterval("animation()", 2000);
+                } else {
+                    alert(data['message']);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
     }
 
 
@@ -926,6 +951,9 @@
         colorList.splice(colorIndex, 1);
         return color;
     }
+
+
+
 
     //    function randomColor(){
     //        var r=Math.floor(Math.random()*256);

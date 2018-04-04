@@ -126,6 +126,7 @@
                     '                <a href="#" class="delete-link" onclick="editAccount(this,' + (parseInt(index) + 1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
                         '                <a href="#" data-toggle="modal" data-target="#myModal">view</a>&nbsp;&nbsp;&nbsp;\n' +
                         '                <a href="#" class="delete-link" onclick="deleteAccount(' + account.accountid + ')">delete</a>' + '</td></tr>');
+                console.log('id:',data['accounts'][index]['accountid']);
             }
 
 
