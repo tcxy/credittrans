@@ -9,9 +9,9 @@
     <link href='{{ asset("css/bootstrap-responsive.css") }}' rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
     <link href='{{ asset("css/vis-network.min.css") }}' rel="stylesheet"/>
-    <script type="text/javascript" src="{{ asset('js/vis.js') }}"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-
+    <script type="text/javascript" src="{{ asset('js/vis.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
     <style type="text/css">
         #mynetwork {
             position: absolute;
@@ -818,16 +818,17 @@
                                         size: 24
                                     });
                                 }
-                            } else if (parseInt(path[current]['id']) == 1) {
+                            }
+                            else if (parseInt(path[current]['id']) == 1) {
                                 nodes.update({
                                     id: 1,
 //                                    color: {
-//                                        border: '#2B7CE9',
-//                                        background: '#97C2FC',
+//                                        border: 'red',
+//                                        background: 'red',
 //                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                    }
-                                    shape:'big database'
+                                    size:24
                                 });
                             }
 
@@ -1007,7 +1008,8 @@
 
     function loadList(data) {
         $('.loaded-data').remove();
-        for (var index in data['data']) {
+        var index;
+        for (index in data['data']) {
             var queue = data['data'][index];
             var sendId = queue.from;
             if (queue.status == '1') {
@@ -1024,13 +1026,20 @@
                 '</th><th id="CreditCard">' + queue.card + '</th><th id="HolderName">' + queue.holder_name +
                 '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th> + ' +
                 '<th id="result">' + queue.result + '</th><th id="message">' + queue.message + "</th>" +
-                '<td>' + ' <button type="button" class="btn btn-primary" id=index onclick="send(' + sendId + ')">Send</button>' + '</td></tr>');
+                '<td>' + ' <button type="button" class="btn btn-primary" onclick="disable(this.id); send('+sendId+');">Send</button>' + '</td></tr>');
+            $('#queues button').eq(index).attr('id', "btn" + index);
+            console.log('sendid:',sendId);
         }
 //        loadQueues();
+    }
 
+    function disable(id) {
+        console.log("id: ", id);
+        $('#'+id).attr('disabled',"true");
     }
 
     function send(sendId) {
+        console.log("sengId: ",sendId);
         var from = sendId;
         $.ajax({
             url: '/shortest',
@@ -1049,7 +1058,6 @@
                 console.log(e);
             }
         });
-
     }
 
 

@@ -8,7 +8,7 @@
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="{{ asset('js/jquery-bootstrap-pagination.js') }}"></script>
     <script src="{{ asset('js/site.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
@@ -124,7 +124,7 @@
                     '<th id="accountid" hidden="hidden">' + account.accountid + '</th>' +
                     '<td>' +
                     '                <a href="#" class="delete-link" onclick="editAccount(this,' + (parseInt(index) + 1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
-                        '                <a href="#" data-toggle="modal" data-target="#myModal">view</button>&nbsp;&nbsp;&nbsp;\n' +
+                        '                <a href="#" data-toggle="modal" data-target="#myModal">view</a>&nbsp;&nbsp;&nbsp;\n' +
                         '                <a href="#" class="delete-link" onclick="deleteAccount(' + account.accountid + ')">delete</a>' + '</td></tr>');
                 console.log('id:',data['accounts'][index]['accountid']);
             }
@@ -162,9 +162,8 @@
                 }
             });
         }
-        function show() {
-            $('#myModal').modal('show');
-        }
+
+        $('#myModal').modal('show');
     </script>
 </head>
 <body onload="loadAccounts()">
@@ -313,25 +312,25 @@
             </li>
         </ul>
     </div>
-
-</div>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 
 
 
