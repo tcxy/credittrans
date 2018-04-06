@@ -90,27 +90,13 @@ class QueueController extends Controller
                             $queue->message = 'The transaction is finished';
                             $accountid = $creditcard->accountid;
                             $account = CreditAccount::find($accountid);
-                            $cards = CreditCard::where('accountid', '=', $accountid)->get();
-                            $amount = 0;
-                            foreach ($cards as $creditcard) {
-                                $queues = Queue::where('card', '=', $creditcard->cardId)->get();
-                                foreach ($queues as $cardqueue) {
-                                    if ($cardqueue->result == 'Approved') {
-                                        $amount += $cardqueue->amount;
-                                    }
-                                }
-                            }
-                            if ($amount + $queue->amount > $account->spendlinglimit) {
+
+                            if ($account->balance + $queue->amount > $account->spendlinglimit) {
                                 $queue->result = "Declined";
-                                $queue->message = 'Exceed Daily limit';
+                                $queue->message = 'Exceed spending limit';
                             } else {
-                                $account->balance = $account->balance - $queue->amount;
-                                if ($account->balance < 0) {
-                                    $queue->result = 'Declined';
-                                    $queue->message = "No enough balance";
-                                } else {
-                                    $account->save();
-                                }
+                                $account->balance = $account->balance + $queue->amount;
+                                $account->save();
                             }
                         }
                     }

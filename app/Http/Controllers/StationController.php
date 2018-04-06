@@ -85,12 +85,17 @@ class StationController extends Controller
             return response()->json(['code' => '002', 'message' => 'The station doesn\'t exist']);
         }
         $to = $to_station->id;
+        $station->region = $to_station->region;
+        if ($type == 2) {
+            $station->merchantName = $request->input('merchantName');
+        }
         $station->save();
 
         $connection = new Connection;
         $connection->from = $station->id;
         $connection->to = $to;
         $connection->weight = $weight;
+        $connection->region = $to_station->region;
         $connection->save();
 
         return response()->json(['code' => '001']);
@@ -276,5 +281,39 @@ class StationController extends Controller
         $station->save();
 
         return response()->json(['code' => '001']);
+    }
+
+    public function getGateway(Request $request) {
+        $ip = $request->input('ip');
+        $pc = Station::find(1);
+        $gateway = new Station;
+        $gateway->ip = $ip;
+        $gateway->type = 0;
+        $gateway->limit = 3;
+        $gateway->status = true;
+        $regions = Station::all()->groupBy('region')->count();
+        $gateway->region = $regions + 1;
+        $gateway->save();
+        $connection = new Connection;
+        $connection->from = $gateway->id;
+        $connection->to = 1;
+        $connection->weight = $request->input('weight_for_pc');
+        $connection->region = 0;
+        $connection->save();
+        $station = new Station();
+        $station->ip = $request->input('stationIp');
+        $station->region = $gateway->region;
+        $station->status = true;
+        $station->limit;
+        $station->type = 1;
+        $station->save();
+        $connection = new Connection;
+        $connection->from = $station->id;
+        $connection->to = $gateway->id;
+        $connection->region = $gateway->region;
+        $connection->weight = $request->input('weight_for_station');
+        $connection->save();
+
+        return \response()->json(['code' => '001']);
     }
 }
