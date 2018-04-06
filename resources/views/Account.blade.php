@@ -148,7 +148,24 @@
         }
         function viewAccount(accountid) {
             console.log('id:',accountid);
-            ShowDiv('view','fade');
+            var id = parseInt(accountid);
+//            ShowDiv('view','fade');
+            $.ajax({
+                type:'get',
+                url:'/cardwithaccount',
+                data:{'id': parseInt(accountid)},
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        console.log("data",data);
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (e) {
+                    console.log("Connection failed");
+                    console.log(e);
+                }
+            })
         }
 
 

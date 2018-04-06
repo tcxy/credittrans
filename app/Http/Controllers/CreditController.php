@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Model\Credit\CreditAccount;
 use App\Model\Credit\CreditCard;
+use phpDocumentor\Reflection\Types\Integer;
 
 class CreditController extends Controller
 {
@@ -238,6 +239,6 @@ class CreditController extends Controller
         $accountid = $request->input('id');
         $cards = CreditCard::where('accountid', '=', $accountid);
 
-        return response()->json(['code' => 001, 'data' => $cards]);
+        return response()->json(['code' => '001', 'data' => $cards, 'id' => $accountid]);
     }
 }
