@@ -69,6 +69,51 @@
             height: 100px;
             margin-top: 20px;
         }
+
+        .black_overlay {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: .80;
+            filter: alpha(opacity=80);
+        }
+
+        .white_content {
+            display: none;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 16px solid lightblue;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+
+        .white_content_small {
+            display: none;
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            width: 40%;
+            height: 50%;
+            border: 16px solid lightblue;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+
+        #view {
+            margin-left: 200px;
+            margin-top: 50px;
+        }
     </style>
 </head>
 <body onload="getNodesFunction()">
@@ -100,9 +145,10 @@
     </div>
 </div>
 <div id="inputField">
-    <button type="button" class="btn btn-primary" id="addRelay">Add new Relay</button>
-    <div id="relayForm">
-        <form id="relay_form" style="display: none">
+    <button type="button" class="btn btn-primary" id="addRelay" onclick="ShowDiv('newRelay','fade')">Add new Relay
+    </button>
+    <div>
+        <form style="display: none">
             <input hidden="hidden" name="type" value="1">
 
             <label>Relay Station Ip:<input type="text" id="relayID1"
@@ -115,9 +161,10 @@
         </form>
     </div>
     <div id="addNewStore">
-        <button type="button" class="btn btn-primary" id="addStore">Add new Store</button>
-        <div id="storeForm">
-            <form id="store_form" style="display: none">
+        <button type="button" class="btn btn-primary" id="addStore" onclick="ShowDiv('newStore','fade')">Add new Store
+        </button>
+        <div>
+            <form style="display: none">
                 <label>Relay Station Ip:<input type="text" id="relayID2" name="to"></label>
                 <label>Store Ip:<input type="text" id="storeID2" name="ip" style="margin-left: 70px;"></label>
                 <label>Weight:<input type="text" id="weight2" name="weight" style="margin-left: 77px;"></label>
@@ -129,9 +176,10 @@
         </div>
     </div>
     <div id="sendTrans">
-        <button type="button" class="btn btn-primary" id="send">New Transaction</button>
-        <div id="sendForm">
-            <form id="send_form" style="display: none">
+        <button type="button" class="btn btn-primary" id="send" onclick="ShowDiv('newTrans','fade')">New Transaction
+        </button>
+        <div>
+            <form style="display: none">
                 <!--                <label>Merchant's Name:<select id="mName" name="mName"-->
                 <!--                                               style="margin-left: 10px;margin-top: 5px"></select></label>-->
                 <label>Ip<input type="text" id="from" name="from" style="margin-left: 112px"></label>
@@ -159,8 +207,76 @@
         <button type="button" class="btn btn-danger" style="margin-left: 20px" onclick="pause()">Pause</button>
     </div>
 </div>
-<div id="eventSpan"></div>
+<!--<div id="eventSpan"></div>-->
 <div id="mynetwork"></div>
+<div id="fade" class="black_overlay">
+</div>
+<div id="newRelay" class="white_content_small">
+    <div style="text-align: center; cursor: default; height: 40px;">
+        <h2>Add new relay</h2>
+    </div>
+    <div id="relayForm" style="margin-left: 50px;">
+        <form id="relay_form">
+            <input hidden="hidden" name="type" value="1">
+            <label>Relay Station Ip:<input type="text" id="relayID1"
+                                           name="ip"></label>
+            <!--            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" style="margin-left: 8px"></label>-->
+            <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
+            <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
+            <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
+            <input type="button" value="Clear" class="btn" id="clear1" onclick="CloseDiv('newRelay','fade')">
+        </form>
+    </div>
+</div>
+<div id="newStore" class="white_content_small">
+    <div style="text-align: center; cursor: default; height: 40px;">
+        <h2>Add new store</h2>
+    </div>
+    <div id="storeForm" style="margin-left: 50px">
+        <form id="store_form">
+            <label>Relay Station Ip:<input type="text" id="relayID2" name="to"></label>
+            <label>Store Ip:<input type="text" id="storeID2" name="ip" style="margin-left: 70px;"></label>
+            <label>Weight:<input type="text" id="weight2" name="weight" style="margin-left: 77px;"></label>
+            <input name="type" hidden="hidden" value="2">
+            <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
+            <input type="button" value="Clear" class="btn" id="clear2" onclick="CloseDiv('newStore','fade')">
+        </form>
+    </div>
+</div>
+<div id="newTrans" class="white_content">
+    <div style="text-align: center; cursor: default; height: 40px;">
+        <h2>Add new transaction</h2>
+    </div>
+    <div id="sendForm" style="margin-left:350px">
+        <form id="send_form">
+            <!--                <label>Merchant's Name:<select id="mName" name="mName"-->
+            <!--                                               style="margin-left: 10px;margin-top: 5px"></select></label>-->
+            <label>Ip<input type="text" id="from" name="from" style="margin-left: 112px"></label>
+            <label>Type:<select id="type" name="type" style="margin-left: 92px">
+                    <option value="credit">Credit</option>
+                    ;
+                    <option value="debit">Debit</option>
+                    ;
+                </select></label>
+            <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
+            <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
+            <label>Expiration Date:<input type="text" id="expire" name="expire" style="margin-left: 24px"></label>
+            <label>Billing Address:<input type="text" id="billing" name="billing" style="margin-left: 27px"></label>
+            <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
+                                      style="margin-left: 38px"></label>
+            <label>Amount:<input type="text" id="amount" name="amount" style="margin-left: 71px"></label>
+            <div id="form_button" style="margin-left: 150px">
+                <input type="button" value="Submit" class="btn btn-primary" id="submit3" onclick="sendNewTrans()">
+                <input type="button" value="Clear" class="btn" id="clear2" onclick="CloseDiv('newTrans','fade')">
+            </div>
+        </form>
+    </div>
+</div>
+<div id="viewNodes" class="white_content_small">
+    <div style="text-align: center; cursor: default; height: 40px;">
+        <h2>View Selected</h2>
+    </div>
+</div>
 <div id="queueField" style="margin-top:650px">
     <table class="table table-bordered table-striped" id="queueTable">
         <thead>
@@ -198,23 +314,19 @@
     </table>
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#addRelay').click(function () {
-            $('#relay_form').toggle();
-            clearRelayForm();
-        })
-    });
-    $(document).ready(function () {
-        $('#addStore').click(function () {
-            $('#store_form').toggle();
-            clearStoreForm();
-        })
-    });
-    $(document).ready(function () {
-        $('#send').click(function () {
-            $('#send_form').toggle();
-        })
-    });
+    function ShowDiv(show_div, bg_div) {
+        document.getElementById(show_div).style.display = 'block';
+        document.getElementById(bg_div).style.display = 'block';
+        var bgdiv = document.getElementById(bg_div);
+        bgdiv.style.width = document.body.scrollWidth;
+        // bgdiv.style.height = $(document).height();
+        $("#" + bg_div).height($(document).height());
+    };
+
+    function CloseDiv(show_div, bg_div) {
+        document.getElementById(show_div).style.display = 'none';
+        document.getElementById(bg_div).style.display = 'none';
+    };
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -578,22 +690,23 @@
                                     },
                                     success: function (data) {
                                         if (data['code'] == 001) {
+                                            ShowDiv('viewNodes', 'fade');
                                             var ip = data['data']['ip'];
                                             var status = data['data']['status'];
                                             var type = data['data']['type'];
                                             console.log('data:', data);
                                             if (status == 1 && type == 1) {
                                                 status = 'Activated';
-                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId
+                                                document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId
                                                     + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div><button class="btn" id="inactivate" style="display:block">Inactivate</button>' +
-                                                    '<button class="btn" id="activate" style="display: none">Activate</button></div>';
+                                                    '<button class="btn" id="activate" style="display: none">Activate</button></div>' + '</div>';
                                             } else if (status == 0 && type == 1) {
                                                 status = 'Inactivated';
-                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId
+                                                document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId
                                                     + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div><button class="btn" id="inactivate" style="display:none">Inactivate</button>' +
-                                                    '<button class="btn" id="activate" style="display: block">Activate</button></div>';
+                                                    '<button class="btn" id="activate" style="display: block">Activate</button></div>' + '</div>';
                                             } else {
-                                                document.getElementById('eventSpan').innerHTML = 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId;
+                                                document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId + '</div>'
 
                                             }
 
@@ -623,6 +736,7 @@
                                                                     highlight: {background: 'grey'}
                                                                 }
                                                             });
+                                                            CloseDiv('viewNodes','fade');
                                                         }
                                                     }
 
@@ -656,19 +770,25 @@
                                                                     hover: {border: '#2B7CE9', background: '#D2E5FF'}
                                                                 }
                                                             });
+                                                            CloseDiv('viewNodes','fade');
                                                         }
                                                     }
 
                                                 })
                                             })
                                         });
+                                            $('#back').click(function () {
+                                                CloseDiv('viewNodes','fade');
+                                            });
 
                                     }
                                 });
 
-                            } else {
-                                document.getElementById('eventSpan').innerHTML = '';
                             }
+//                            else {
+//                                document.getElementById('eventSpan').innerHTML = '';
+//                            }
+
                         });
                     }
                 }
@@ -713,6 +833,7 @@
                 console.log(data);
                 if (data['code'] == '001') {
                     getNodesFunction();
+                    CloseDiv('newRelay', 'fade');
                 }
                 else alert(data['message']);
             },
@@ -740,6 +861,7 @@
                 console.log(data);
                 if (data['code'] == '001') {
                     getNodesFunction();
+                    CloseDiv('newStore', 'fade');
                 } else {
                     alert(data['message']);
                 }
@@ -828,7 +950,7 @@
 //                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
 //                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
 //                                    }
-                                    size:24
+                                    size: 24
                                 });
                             }
 
@@ -937,6 +1059,7 @@
                 console.log($form.serialize());
                 var jsondata = data['data'];
                 if (data['code'] == '001') {
+                    CloseDiv('newTrans', 'fade');
 //                    path = data['data']['path'];
 //                    queueData = data['data'];
 //
@@ -1026,38 +1149,38 @@
                 '</th><th id="CreditCard">' + queue.card + '</th><th id="HolderName">' + queue.holder_name +
                 '</th><th id="Amount">' + queue.amount + '</th><th id="Status">' + queue.status + '</th> + ' +
                 '<th id="result">' + queue.result + '</th><th id="message">' + queue.message + "</th>" +
-                '<td>' + ' <button type="button" class="btn btn-primary" onclick="disable(this.id); send('+sendId+');">Send</button>' + '</td></tr>');
+                '<td>' + ' <button type="button" class="btn btn-primary" onclick="disable(this.id); send(' + sendId + ');">Send</button>' + '</td></tr>');
             $('#queues button').eq(index).attr('id', "btn" + index);
-            console.log('sendid:',sendId);
+            console.log('sendid:', sendId);
         }
 //        loadQueues();
     }
 
     function disable(id) {
         console.log("id: ", id);
-        $('#'+id).attr('disabled',"true");
+        $('#' + id).attr('disabled', "true");
     }
 
     function send(sendId) {
-        console.log("sengId: ",sendId);
+        console.log("sengId: ", sendId);
         var from = sendId;
-        $.ajax({
-            url: '/shortest',
-            type: 'post',
-            data: {'from': '64.233.161.148'},
-            success: function (data) {
-                console.log('data:', data);
-                var jsondata = data['data'];
-                if (data['code'] == '001') {
-                    clock = setInterval("animation()", 2000);
-                } else {
-                    alert(data['message']);
-                }
-            },
-            error: function (e) {
-                console.log(e);
-            }
-        });
+//        $.ajax({
+//            url: '/shortest',
+//            type: 'post',
+//            data: {'from': '64.233.161.148'},
+//            success: function (data) {
+//                console.log('data:', data);
+//                var jsondata = data['data'];
+//                if (data['code'] == '001') {
+//                    clock = setInterval("animation()", 2000);
+//                } else {
+//                    alert(data['message']);
+//                }
+//            },
+//            error: function (e) {
+//                console.log(e);
+//            }
+//        });
     }
 
 
