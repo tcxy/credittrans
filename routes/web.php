@@ -55,6 +55,7 @@ Route::post('/addcard', 'CreditController@addCard')->name('credit.addcard');
 Route::get('/card', function () {
    return view('creditCard');
 });
+Route::get('/cardwithaccount', 'CreditController@cardWithAccount');
 
 Route::get('/graph', 'StationController@getGraph')->name('graph.get');
 Route::post('/addstation', 'StationController@add')->name('graph.add');

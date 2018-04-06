@@ -183,6 +183,8 @@ class StationController extends Controller
         $queue->from = $start_station->id;
         $queue->path = json_encode($edges);
         $card = $request->input('cardNum');
+        $queue->billing_address = $request->input('address');
+        $queue->create_at = date();
         if (!$card) {
             $card = '000000000000000';
         }

@@ -233,4 +233,11 @@ class CreditController extends Controller
         // If the total mod 10 equals 0, the number is valid
         return ($total % 10 == 0) ? TRUE : FALSE;
     }
+
+    public function cardWithAccount(Request $request) {
+        $accountid = $request->input('id');
+        $cards = CreditCard::where('accountid', '=', $accountid);
+
+        return response()->json(['code' => 001, 'data' => $cards]);
+    }
 }
