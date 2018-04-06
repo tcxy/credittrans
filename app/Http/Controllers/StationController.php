@@ -20,7 +20,7 @@ class StationController extends Controller
 
         foreach ($stations as $station) {
             if ($station->type == 0) {
-                $station->shape = 'database';
+                $station->shape = 'star';
                 $station->label = 'process center';
             } else if ($station->type == 1) {
                 $station->shape = 'triangle';

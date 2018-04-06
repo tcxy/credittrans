@@ -8,10 +8,10 @@
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site.css') }}" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="{{ asset('js/bootstrap.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="{{ asset('js/jquery-bootstrap-pagination.js') }}"></script>
     <script src="{{ asset('js/site.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
     <style>
         .container {
             margin: 0 auto;
@@ -19,8 +19,44 @@
 
         }
 
-        #scene {
-            border: 1px solid black;
+        .black_overlay {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: 0.8;
+        }
+
+        .white_content {
+            display: none;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 16px solid lightblue;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+
+        .white_content_small {
+            display: none;
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            width: 40%;
+            height: 50%;
+            border: 16px solid lightblue;
+            background-color: white;
+            opacity: 1;
+            z-index: 1002;
+            overflow: auto;
         }
     </style>
 
@@ -88,7 +124,7 @@
 
 
         function deleteAccount(accountid) {
-            var res = confirm('confirm?');
+            var res = confirm('Are you sure to delete this account?');
             if(res == true){
                 $.ajax({
                     type: 'post',
@@ -110,6 +146,10 @@
             })
             }
         }
+        function viewAccount(accountid) {
+            console.log('id:',accountid);
+            ShowDiv('view','fade');
+        }
 
 
         function loadList(data) {
@@ -124,11 +164,10 @@
                     '<th id="accountid" hidden="hidden">' + account.accountid + '</th>' +
                     '<td>' +
                     '                <a href="#" class="delete-link" onclick="editAccount(this,' + (parseInt(index) + 1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
-                        '                <a href="#" data-toggle="modal" data-target="#myModal">view</a>&nbsp;&nbsp;&nbsp;\n' +
+                        '                <a href="#" onclick="viewAccount('+account.accountid+')">view</a>&nbsp;&nbsp;&nbsp;\n' +
                         '                <a href="#" class="delete-link" onclick="deleteAccount(' + account.accountid + ')">delete</a>' + '</td></tr>');
                 console.log('id:',data['accounts'][index]['accountid']);
             }
-
 
             $('.pagination').unbind();
             $('.pagination').pagination({
@@ -161,6 +200,22 @@
                     console.log(data);
                 }
             });
+        }
+        function ShowDiv(show_div, bg_div) {
+            document.getElementById(show_div).style.display = 'block';
+            document.getElementById(bg_div).style.display = 'block';
+            var bgdiv = document.getElementById(bg_div);
+            bgdiv.style.width = document.body.scrollWidth;
+            // bgdiv.style.height = $(document).height();
+            $("#" + bg_div).height($(document).height());
+        }
+
+        function CloseDiv(show_div, bg_div) {
+            document.getElementById(show_div).style.display = 'none';
+            document.getElementById(bg_div).style.display = 'none';
+        }
+        function back() {
+            CloseDiv('view','fade');
         }
     </script>
 </head>
@@ -312,25 +367,12 @@
     </div>
 
 </div>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
+<div id="fade" class="black_overlay"></div>
+<div id="view" class="white_content_small" style="opacity: 1">
+    <button type="button" class="btn btn-primary" id="back" onclick="back()">back</button>
+    <div style="text-align: center; cursor: default; height: 40px;">
+        <h2>View Account</h2>
     </div>
 </div>
-
-
-
 </body>
 </html>
