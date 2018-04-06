@@ -52,12 +52,6 @@
             margin-top: 20px;
         }
 
-        #eventSpan {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            margin-left: 1150px;
-        }
 
         #send {
             margin-left: 50px;
@@ -113,6 +107,20 @@
         #view {
             margin-left: 200px;
             margin-top: 50px;
+        }
+        #relayForm{
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 90%;
+            height: 20%;
+        }
+        #storeForm{
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 90%;
+            height: 20%;
         }
     </style>
 </head>
@@ -215,7 +223,7 @@
     <div style="text-align: center; cursor: default; height: 40px;">
         <h2>Add new relay</h2>
     </div>
-    <div id="relayForm" style="margin-left: 50px;">
+    <div id="relayForm">
         <form id="relay_form">
             <input hidden="hidden" name="type" value="1">
             <label>Relay Station Ip:<input type="text" id="relayID1"
@@ -223,8 +231,10 @@
             <!--            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" style="margin-left: 8px"></label>-->
             <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
             <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
+           <div id="buttonField">
             <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
             <input type="button" value="Clear" class="btn" id="clear1" onclick="CloseDiv('newRelay','fade')">
+           </div>
         </form>
     </div>
 </div>
@@ -551,10 +561,126 @@
 //                                        }
 //                                    });
 //                                }
-//                            } else if(type==0){
+//                            } else if (region == 4) {
+//                                if (type == 1) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'square',
+//                                        label: 'Relay Station',
+//                                        color: {
+//                                            border: color4,
+//                                            background: color4,
+//                                            highlight: {border: color4, background: color4},
+//                                            hover: {border: color4, background: color4}
+//                                        }
+//                                    });
+//                                } else if (type == 2) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'circle',
+//                                        label: 'Store',
+//                                        color: {
+//                                            border: color4,
+//                                            background: color4,
+//                                            highlight: {border: color4, background: color4},
+//                                            hover: {border: color4, background: color4}
+//                                        }
+//                                    });
+//                                } else if (type == 3) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'diamond',
+//                                        label: 'Gateway',
+//                                        color: {
+//                                            border: color4,
+//                                            background: color4,
+//                                            highlight: {border: color4, background: color4},
+//                                            hover: {border: color4, background: color4}
+//                                        }
+//                                    });
+//                                }
+//                            }else if (region == 5) {
+//                                if (type == 1) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'square',
+//                                        label: 'Relay Station',
+//                                        color: {
+//                                            border: color5,
+//                                            background: color5,
+//                                            highlight: {border: color5, background: color5},
+//                                            hover: {border: color5, background: color5}
+//                                        }
+//                                    });
+//                                } else if (type == 2) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'circle',
+//                                        label: 'Store',
+//                                        color: {
+//                                            border: color5,
+//                                            background: color5,
+//                                            highlight: {border: color5, background: color5},
+//                                            hover: {border: color5, background: color5}
+//                                        }
+//                                    });
+//                                } else if (type == 3) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'diamond',
+//                                        label: 'Gateway',
+//                                        color: {
+//                                            border: color5,
+//                                            background: color5,
+//                                            highlight: {border: color5, background: color5},
+//                                            hover: {border: color5, background: color5}
+//                                        }
+//                                    });
+//                                }
+//                            }
+//                            else if (region == 6) {
+//                                if (type == 1) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'square',
+//                                        label: 'Relay Station',
+//                                        color: {
+//                                            border: color6,
+//                                            background: color6,
+//                                            highlight: {border: color6, background: color6},
+//                                            hover: {border: color6, background: color6}
+//                                        }
+//                                    });
+//                                } else if (type == 2) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'circle',
+//                                        label: 'Store',
+//                                        color: {
+//                                            border: color6,
+//                                            background: color6,
+//                                            highlight: {border: color6, background: color6},
+//                                            hover: {border: color6, background: color6}
+//                                        }
+//                                    });
+//                                } else if (type == 3) {
+//                                    nodes.update({
+//                                        id: id,
+//                                        shape: 'diamond',
+//                                        label: 'Gateway',
+//                                        color: {
+//                                            border: color6,
+//                                            background: color6,
+//                                            highlight: {border: color6, background: color6},
+//                                            hover: {border: color6, background: color6}
+//                                        }
+//                                    });
+//                                }
+//                            }
+//                            else if(type==0){
 //                                nodes.update({
 //                                    id: id,
-//                                    shape: 'database',
+//                                    shape: 'star',
 //                                    label: 'Process Center'
 //                                });
 //                            }
@@ -846,10 +972,6 @@
 
     // add new store
     function addNewStore() {
-//        var sid = document.getElementById('storeID2');
-//        var rid = document.getElementById('relayID2');
-//        nodes.push({id: sid, label: 'Store#' + sid, shape: 'circle', status: true});
-//        edges.push({from: rid, to: sid, length: EDGE_LENGTH_SUB});
         console.log(nodes);
         $form = $('#store_form');
         console.log($form.serialize());
@@ -886,12 +1008,6 @@
                         for (var i = 0; i < nodes.length; i++) {
                             nodes.update({
                                 id: i,
-//                                color: {
-//                                    border: '#2B7CE9',
-//                                    background: '#97C2FC',
-//                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-//                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
-//                                }
                                 size: 24
                             });
                         }
@@ -906,37 +1022,22 @@
                             if (parseInt(currentNode['type']) == 1) {
                                 nodes.update({
                                     id: path[current]['id'],
-//                                    color: {background: 'red', highlight: {background: 'red'}}
                                     size: 40
                                 });
                                 if (current != 0) {
                                     edges.update({
                                         id: path[current - 1]['edge']['id'],
-//                                        color: {
-//                                            color: "#848484",
-//                                            highlight: "#848484",
-//                                            hover: "#848484",
-//                                            opacity: 1,
-//                                            inherited: false
-//                                        }
                                         width: 2
                                     });
                                 }
                             } else if (parseInt(path[current].type) == 2) {
                                 edges.update({
                                     id: path[current]['edge']['id'],
-//                                    color: {color: 'red', highlight: 'red', hover: 'red'}
                                     width: 7
                                 });
                                 if (current != 0) {
                                     nodes.update({
                                         id: path[current - 1]['id'],
-//                                        color: {
-//                                            border: '#2B7CE9',
-//                                            background: '#97C2FC',
-//                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-//                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
-//                                        }
                                         size: 24
                                     });
                                 }
@@ -944,12 +1045,6 @@
                             else if (parseInt(path[current]['id']) == 1) {
                                 nodes.update({
                                     id: 1,
-//                                    color: {
-//                                        border: 'red',
-//                                        background: 'red',
-//                                        highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-//                                        hover: {border: '#2B7CE9', background: '#D2E5FF'}
-//                                    }
                                     size: 24
                                 });
                             }
@@ -958,19 +1053,11 @@
                             if (parseInt(path[current]['type']) == 1) {
                                 nodes.update({
                                     id: path[current]['id'],
-//                                    color: {background: 'red', highlight: {background: 'red'}}
                                     size: 40
                                 });
                                 if (current != path.length - 1) {
                                     edges.update({
                                         id: path[current + 1]['edge']['id'],
-//                                        color: {
-//                                            color: "#848484",
-//                                            highlight: "#848484",
-//                                            hover: "#848484",
-//                                            opacity: 1,
-//                                            inherited: false
-//                                        }
                                         width: 2
                                     });
                                 }
@@ -978,12 +1065,6 @@
                                     for (var i = 0; i < 4000; i++) {
                                         nodes.update({
                                             id: parseInt(path[0]['id']),
-//                                            color: {
-//                                                border: '#2B7CE9',
-//                                                background: '#97C2FC',
-//                                                highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-//                                                hover: {border: '#2B7CE9', background: '#D2E5FF'}
-//                                            }
                                             size: 24
                                         });
                                     }
@@ -991,31 +1072,17 @@
                             } else if (parseInt(path[current]['type']) == 2) {
                                 edges.update({
                                     id: path[current]['edge']['id'],
-//                                    color: {color: 'red', highlight: 'red', hover: 'red'}
                                     width: 7
                                 });
                                 if (current != 0) {
                                     nodes.update({
                                         id: path[current + 1]['id'],
-//                                        color: {
-//                                            border: '#2B7CE9',
-//                                            background: '#97C2FC',
-//                                            highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-//                                            hover: {border: '#2B7CE9', background: '#D2E5FF'}
-//                                        }
                                         size: 24
                                     });
                                 }
                             } else if (parseInt(path[current]['id']) == 1) {
                                 edges.update({
                                     id: path[current],
-//                                    color: {
-//                                        color: "#848484",
-//                                        highlight: "#848484",
-//                                        hover: "#848484",
-//                                        opacity: 1,
-//                                        inherited: false
-//                                    }
                                     width: 2
                                 });
                             }
@@ -1023,12 +1090,6 @@
                         } else {
                             nodes.update({
                                 id: path[0]['id'],
-//                                color: {
-//                                    border: '#2B7CE9',
-//                                    background: '#97C2FC',
-//                                    highlight: {border: '#2B7CE9', background: '#D2E5FF'},
-//                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
-//                                }
                                 size: 24
                             });
                         }
