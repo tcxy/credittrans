@@ -217,6 +217,12 @@
         function back() {
             CloseDiv('view','fade');
         }
+        document.onkeydown = function (event) {
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if (e && e.keyCode == 27) { // 按 Esc
+                CloseDiv('view','fade');
+            }
+        };
     </script>
 </head>
 <body onload="loadAccounts()">

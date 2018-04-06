@@ -52,7 +52,6 @@
             margin-top: 20px;
         }
 
-
         #send {
             margin-left: 50px;
             margin-top: 20px;
@@ -108,14 +107,16 @@
             margin-left: 200px;
             margin-top: 50px;
         }
-        #relayForm{
+
+        #relayForm {
             position: absolute;
             top: 20%;
             left: 20%;
             width: 90%;
             height: 20%;
         }
-        #storeForm{
+
+        #storeForm {
             position: absolute;
             top: 20%;
             left: 10%;
@@ -231,10 +232,10 @@
             <!--            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" style="margin-left: 8px"></label>-->
             <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
             <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
-           <div id="buttonField">
-            <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
-            <input type="button" value="Clear" class="btn" id="clear1" onclick="CloseDiv('newRelay','fade')">
-           </div>
+            <div id="buttonField">
+                <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
+                <input type="button" value="Clear" class="btn" id="clear1" onclick="CloseDiv('newRelay','fade')">
+            </div>
         </form>
     </div>
 </div>
@@ -862,7 +863,7 @@
                                                                     highlight: {background: 'grey'}
                                                                 }
                                                             });
-                                                            CloseDiv('viewNodes','fade');
+                                                            CloseDiv('viewNodes', 'fade');
                                                         }
                                                     }
 
@@ -896,16 +897,16 @@
                                                                     hover: {border: '#2B7CE9', background: '#D2E5FF'}
                                                                 }
                                                             });
-                                                            CloseDiv('viewNodes','fade');
+                                                            CloseDiv('viewNodes', 'fade');
                                                         }
                                                     }
 
                                                 })
                                             })
                                         });
-                                            $('#back').click(function () {
-                                                CloseDiv('viewNodes','fade');
-                                            });
+                                        $('#back').click(function () {
+                                            CloseDiv('viewNodes', 'fade');
+                                        });
 
                                     }
                                 });
@@ -1225,23 +1226,23 @@
     function send(sendId) {
         console.log("sengId: ", sendId);
         var from = sendId;
-//        $.ajax({
-//            url: '/shortest',
-//            type: 'post',
-//            data: {'from': '64.233.161.148'},
-//            success: function (data) {
-//                console.log('data:', data);
-//                var jsondata = data['data'];
-//                if (data['code'] == '001') {
-//                    clock = setInterval("animation()", 2000);
-//                } else {
-//                    alert(data['message']);
-//                }
-//            },
-//            error: function (e) {
-//                console.log(e);
-//            }
-//        });
+        $.ajax({
+            url: '/shortest',
+            type: 'post',
+            data: {'from': '64.233.161.148'},
+            success: function (data) {
+                console.log('data:', data);
+                var jsondata = data['data'];
+                if (data['code'] == '001') {
+                    clock = setInterval("animation()", 2000);
+                } else {
+                    alert(data['message']);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
     }
 
 
@@ -1259,6 +1260,15 @@
     //        var b=Math.floor(Math.random()*256);
     //        return "rgb("+r+','+g+','+b+")";
     //    }
+    document.onkeydown = function (event) {
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+        if (e && e.keyCode == 27) { // 按 Esc
+            CloseDiv('viewNodes','fade');
+            CloseDiv('newTrans','fade');
+            CloseDiv('newStore','fade');
+            CloseDiv('newRelay','fade');
+        }
+    };
 
 </script>
 </body>
