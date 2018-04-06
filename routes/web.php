@@ -68,4 +68,4 @@ Route::post('/inactivate', 'StationController@inActivateStation');
 
 Route::get('/queues', 'QueueController@updateQueue');
 Route::get('/getqueue', 'QueueController@getQueue');
-Route::get('queueswithaccount', 'QueueController@getQueueWithAccount');
+Route::get('/queueswithaccount', 'QueueController@getQueueWithAccount');
