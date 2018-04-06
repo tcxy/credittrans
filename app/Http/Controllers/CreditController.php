@@ -237,7 +237,7 @@ class CreditController extends Controller
 
     public function cardWithAccount(Request $request) {
         $accountid = $request->input('id');
-        $cards = CreditCard::where('accountid', '=', $accountid);
+        $cards = CreditCard::where('accountid', '=', $accountid)->get();
 
         return response()->json(['code' => '001', 'data' => $cards, 'id' => $accountid]);
     }

@@ -188,4 +188,16 @@ class QueueController extends Controller
         return response()->json(['code' => '001', 'data' => $handled_queues]);
     }
 
+    public function getQueueWithAccount(Request $request) {
+        $accountid = $request->input('id');
+        $cards = CreditCard::where('accountid', '=', $accountid)->get();
+        $queues = array();
+        foreach ($cards as $card) {
+            $card_queues = Queue::where('card', '=', $card->cardId)->get();
+            array_push($queues, $card_queues);
+        }
+
+        return response()->json(['code' => '001', 'data' => $queues]);
+    }
+
 }
