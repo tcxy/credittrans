@@ -153,7 +153,7 @@ class StationController extends Controller
             return response()->json(['code' => '002', 'message' => 'The store with this ip doesn\'t exist']);
         }
 
-        $to = '32.181.121.11';
+        $to = Station::find(1)->ip;
         $graph = Graph::create();
         $edges = Connection::all();
         foreach ($edges as $edge) {
