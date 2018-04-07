@@ -15,25 +15,13 @@
     <style type="text/css">
         #mynetwork {
             position: absolute;
-            width: 700px;
+            width: 1300px;
             height: 600px;
+            margin-left: 75px;
+            margin-top: 10px;
             border: 1px solid lightgray;
-            margin-left: 370px;
 
         }
-
-        #addStore {
-            margin-left: 50px;
-        }
-
-        #addRelay {
-            margin-left: 50px;
-        }
-
-        #inputField {
-            float: left;
-        }
-
         input {
             margin-left: 20px;
             margin-top: 10px;
@@ -46,23 +34,6 @@
         #submit2 {
             margin-left: 150px;
         }
-
-        #addNewStore {
-            float: left;
-            margin-top: 20px;
-        }
-
-        #send {
-            margin-left: 50px;
-            margin-top: 20px;
-        }
-
-        #path {
-            width: 300px;
-            height: 100px;
-            margin-top: 20px;
-        }
-
         .black_overlay {
             display: none;
             position: absolute;
@@ -70,7 +41,7 @@
             left: 0%;
             width: 100%;
             height: 100%;
-            background-color: black;
+            background-color: #333333;
             z-index: 1001;
             -moz-opacity: 0.8;
             opacity: .80;
@@ -84,7 +55,7 @@
             left: 10%;
             width: 80%;
             height: 80%;
-            border: 16px solid lightblue;
+            border: 16px solid #F6F6F6;
             background-color: white;
             z-index: 1002;
             overflow: auto;
@@ -97,15 +68,18 @@
             left: 30%;
             width: 40%;
             height: 50%;
-            border: 16px solid lightblue;
+            border: 16px solid #F6F6F6;
             background-color: white;
             z-index: 1002;
             overflow: auto;
         }
 
         #view {
-            margin-left: 200px;
+            margin-left: 180px;
             margin-top: 50px;
+        }
+        #buttonField{
+            margin-left: -20px;
         }
 
         #relayForm {
@@ -140,6 +114,26 @@
                     <li>
                         <a href="/card">Credit card</a>
                     </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Action <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" onclick="ShowDiv('newRelay','fade')">Add new relay</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="ShowDiv('newStore','fade')">Add new store</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="ShowDiv('newTrans','fade')">Add new transaction</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="ShowDiv('addRegion','fade')">Add new region</a>
+                            </li>
+                            <li>
+                                <a href="#" >TBD...</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
                 <ul class="nav pull-right">
                     <li>
@@ -153,69 +147,10 @@
         </div>
     </div>
 </div>
-<div id="inputField">
-    <button type="button" class="btn btn-primary" id="addRelay" onclick="ShowDiv('newRelay','fade')">Add new Relay
-    </button>
-    <div>
-        <form style="display: none">
-            <input hidden="hidden" name="type" value="1">
-
-            <label>Relay Station Ip:<input type="text" id="relayID1"
-                                           name="ip"></label>
-            <!--            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" style="margin-left: 8px"></label>-->
-            <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
-            <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
-            <input type="button" value="Submit" class="btn btn-primary" id="submit1" onclick="addRelay()">
-            <input type="button" value="Clear" class="btn" id="clear1" onclick="clearRelayForm()">
-        </form>
-    </div>
-    <div id="addNewStore">
-        <button type="button" class="btn btn-primary" id="addStore" onclick="ShowDiv('newStore','fade')">Add new Store
-        </button>
-        <div>
-            <form style="display: none">
-                <label>Relay Station Ip:<input type="text" id="relayID2" name="to"></label>
-                <label>Store Ip:<input type="text" id="storeID2" name="ip" style="margin-left: 70px;"></label>
-                <label>Weight:<input type="text" id="weight2" name="weight" style="margin-left: 77px;"></label>
-                <input name="type" hidden="hidden" value="2">
-                <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
-                <input type="button" value="Clear" class="btn" id="clear2" onclick="clearStoreForm()">
-            </form>
-
-        </div>
-    </div>
-    <div id="sendTrans">
-        <button type="button" class="btn btn-primary" id="send" onclick="ShowDiv('newTrans','fade')">New Transaction
-        </button>
-        <div>
-            <form style="display: none">
-                <!--                <label>Merchant's Name:<select id="mName" name="mName"-->
-                <!--                                               style="margin-left: 10px;margin-top: 5px"></select></label>-->
-                <label>Ip<input type="text" id="from" name="from" style="margin-left: 112px"></label>
-                <label>Type:<select id="type" name="type" style="margin-left: 92px">
-                        <option value="credit">Credit</option>
-                        ;
-                        <option value="debit">Debit</option>
-                        ;
-                    </select></label>
-                <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
-                <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
-                <label>Expiration Date:<input type="text" id="expire" name="expire" style="margin-left: 24px"></label>
-                <label>Billing Address:<input type="text" id="billing" name="billing" style="margin-left: 27px"></label>
-                <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
-                                          style="margin-left: 38px"></label>
-                <label>Amount:<input type="text" id="amount" name="amount" style="margin-left: 71px"></label>
-                <input type="button" value="Submit" class="btn btn-primary" id="submit3" onclick="sendNewTrans()">
-                <input type="button" value="Clear" class="btn" id="clear2" onclick="clearTransForm()">
-            </form>
-        </div>
-    </div>
-    <div id="path"></div>
     <div id="action" style="margin-left:50px;margin-top:20px">
         <button type="button" class="btn btn-success" onclick="restart()">Resume</button>
         <button type="button" class="btn btn-danger" style="margin-left: 20px" onclick="pause()">Pause</button>
     </div>
-</div>
 <!--<div id="eventSpan"></div>-->
 <div id="mynetwork"></div>
 <div id="fade" class="black_overlay">
@@ -226,7 +161,7 @@
     </div>
     <div id="relayForm">
         <form id="relay_form">
-            <input hidden="hidden" name="type" value="1">
+            <input type="hidden" name="type" value="1">
             <label>Relay Station Ip:<input type="text" id="relayID1"
                                            name="ip"></label>
             <!--            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" style="margin-left: 8px"></label>-->
@@ -247,8 +182,10 @@
         <form id="store_form">
             <label>Relay Station Ip:<input type="text" id="relayID2" name="to"></label>
             <label>Store Ip:<input type="text" id="storeID2" name="ip" style="margin-left: 70px;"></label>
+            <label>Merchant's Name:<input type="text" id="merName" name="merName"
+                                           style="margin-left: 10px;margin-top: 5px"></label>
             <label>Weight:<input type="text" id="weight2" name="weight" style="margin-left: 77px;"></label>
-            <input name="type" hidden="hidden" value="2">
+            <input name="type" type="hidden" value="2">
             <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
             <input type="button" value="Clear" class="btn" id="clear2" onclick="CloseDiv('newStore','fade')">
         </form>
@@ -260,15 +197,15 @@
     </div>
     <div id="sendForm" style="margin-left:350px">
         <form id="send_form">
-            <!--                <label>Merchant's Name:<select id="mName" name="mName"-->
-            <!--                                               style="margin-left: 10px;margin-top: 5px"></select></label>-->
-            <label>Ip<input type="text" id="from" name="from" style="margin-left: 112px"></label>
+            <!--            <label>Ip<input type="text" id="from" name="from" style="margin-left: 112px"></label>-->
             <label>Type:<select id="type" name="type" style="margin-left: 92px">
                     <option value="credit">Credit</option>
                     ;
                     <option value="debit">Debit</option>
                     ;
                 </select></label>
+            <label>Merchant's Name:<select id="mName" name="mName"
+                                           style="margin-left: 10px;margin-top: 5px"></select></label>
             <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
             <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
             <label>Expiration Date:<input type="text" id="expire" name="expire" style="margin-left: 24px"></label>
@@ -276,16 +213,53 @@
             <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
                                       style="margin-left: 38px"></label>
             <label>Amount:<input type="text" id="amount" name="amount" style="margin-left: 71px"></label>
-            <div id="form_button" style="margin-left: 150px">
+            <div style="margin-left: 150px">
                 <input type="button" value="Submit" class="btn btn-primary" id="submit3" onclick="sendNewTrans()">
-                <input type="button" value="Clear" class="btn" id="clear2" onclick="CloseDiv('newTrans','fade')">
+                <input type="button" value="Clear" class="btn" id="clear3" onclick="CloseDiv('newTrans','fade')">
+            </div>
+        </form>
+    </div>
+</div>
+<div id="addRegion" class="white_content">
+    <div style="text-align: center; cursor: default; height: 40px;">
+        <h2>Add new region</h2>
+    </div>
+    <div id="regionForm" style="margin-left:350px">
+        <form id="region_form">
+            <label>Gateway Ip:<input type="text" id="ip" name="ip" style="margin-left: 65px"></label>
+            <label>Weight to PC:<input type="text" id="weight_for_pc" name="weight_for_pc" style="margin-left: 54px"></label>
+            <label>Relay Station Ip:<input type="text" id="stationIp" name="stationIp" style="margin-left: 38px"></label>
+            <label>Weight to Gateway:<input type="text" id="weight_for_station" name="weight_for_station"></label>
+            <div style="margin-left: 150px">
+                <input type="button" value="Submit" class="btn btn-primary" id="submit4" onclick="addRegion()">
+                <input type="button" value="Clear" class="btn" id="clear4" onclick="CloseDiv('addRegion','fade')">
+            </div>
+        </form>
+    </div>
+</div>
+<div id="limitChanging" class="white_content_small">
+    <div style="text-align: center; cursor: default; height: 40px;">
+        <h2>Limit Changing</h2>
+    </div>
+    <div id="showLimit" style="text-align: center;height: 40px">Current Limit:10</div>
+    <div id="limitForm" style="margin-left:100px">
+        <form id="limit_form">
+            <label>New Limit:<input type="text" id="limit" name="limit"></label>
+            <div style="margin-left: 120px">
+                <input type="button" value="Submit" class="btn btn-primary" id="submit5">
+                <input type="button" value="Clear" class="btn" id="clear5" onclick="CloseDiv('limitChanging','fade')">
             </div>
         </form>
     </div>
 </div>
 <div id="viewNodes" class="white_content_small">
     <div style="text-align: center; cursor: default; height: 40px;">
-        <h2>View Selected</h2>
+        <h2>View Selected Node</h2>
+    </div>
+</div>
+<div id="viewEdges" class="white_content_small">
+    <div style="text-align: center; cursor: default; height: 40px;">
+        <h2>View Selected Edge</h2>
     </div>
 </div>
 <div id="queueField" style="margin-top:650px">
@@ -825,13 +799,13 @@
                                             if (status == 1 && type == 1) {
                                                 status = 'Activated';
                                                 document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId
-                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div><button class="btn" id="inactivate" style="display:block">Inactivate</button>' +
-                                                    '<button class="btn" id="activate" style="display: none">Activate</button></div>' + '</div>';
+                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input class="btn" id="inactivate" style="display:block" value="Inactivate">' +
+                                                    '<input class="btn" id="activate" style="display: none" value="Activate"></div>' + '</div>';
                                             } else if (status == 0 && type == 1) {
                                                 status = 'Inactivated';
                                                 document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId
-                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div><button class="btn" id="inactivate" style="display:none">Inactivate</button>' +
-                                                    '<button class="btn" id="activate" style="display: block">Activate</button></div>' + '</div>';
+                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input type="button" class="btn" id="inactivate" style="display:none" value="Inactivate">' +
+                                                    '<input class="btn" id="activate" style="display: block" value="Activate">' + '<input class="btn" id="changeLimit" style="display: block" value="Change Limit">' + '</div>' + '</div>';
                                             } else {
                                                 document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + regionId + '</div>'
 
@@ -904,6 +878,10 @@
                                                 })
                                             })
                                         });
+                                        $('#changeLimit').click(function () {
+                                            CloseDiv('viewNodes','fade');
+                                            ShowDiv('limitChanging','fade');
+                                        });
                                         $('#back').click(function () {
                                             CloseDiv('viewNodes', 'fade');
                                         });
@@ -912,9 +890,9 @@
                                 });
 
                             }
-//                            else {
-//                                document.getElementById('eventSpan').innerHTML = '';
-//                            }
+                            else if(params.edges.length != 0){
+                                ShowDiv('viewEdges','fade');
+                            }
 
                         });
                     }
@@ -926,28 +904,6 @@
     }
 
 
-    function clearRelayForm() {
-        document.getElementById('relayID1').value = '';
-        document.getElementById('connectedTo').value = '';
-        document.getElementById('weight').value = '';
-    }
-
-    function clearStoreForm() {
-        document.getElementById('relayID2').value = '';
-        document.getElementById('storeID2').value = '';
-        document.getElementById('weight2').value = '';
-    }
-
-
-    function clearTransForm() {
-        document.getElementById('from').value = '';
-        document.getElementById('cardNum').value = '';
-        document.getElementById('cvv').value = '';
-        document.getElementById('holder_name').value = '';
-        document.getElementById('amount').value = '';
-        document.body.onload(getNodesFunction());
-
-    }
 
     function addRelay() {
         $form = $('#relay_form');
@@ -993,6 +949,28 @@
                 console.log(e);
             }
         });
+    }
+
+    function addRegion() {
+        $form = $('#region_form');
+        console.log($form.serialize());
+        $.ajax({
+            url: "/addgateway",
+            type: 'post',
+            data: $form.serialize(),
+            success:function (data) {
+                if(data['data']=='001'){
+                    console.log('data:',data);
+                    getNodesFunction();
+                    CloseDiv('addRegion', 'fade');
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error:function (e) {
+                console.log(e);
+            }
+        })
     }
 
     function animation() {
@@ -1262,11 +1240,14 @@
     //    }
     document.onkeydown = function (event) {
         var e = event || window.event || arguments.callee.caller.arguments[0];
-        if (e && e.keyCode == 27) { // 按 Esc
-            CloseDiv('viewNodes','fade');
-            CloseDiv('newTrans','fade');
-            CloseDiv('newStore','fade');
-            CloseDiv('newRelay','fade');
+        if (e && e.keyCode == 27) {
+            CloseDiv('viewNodes', 'fade');
+            CloseDiv('newTrans', 'fade');
+            CloseDiv('newStore', 'fade');
+            CloseDiv('newRelay', 'fade');
+            CloseDiv('viewEdges', 'fade');
+            CloseDiv('viewEdges', 'fade');
+            CloseDiv('addRegion', 'fade');
         }
     };
 

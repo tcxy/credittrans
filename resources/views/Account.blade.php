@@ -26,7 +26,7 @@
             left: 0%;
             width: 100%;
             height: 100%;
-            background-color: black;
+            background-color: #333333;
             z-index: 1001;
             -moz-opacity: 0.8;
             opacity: 0.8;
@@ -39,7 +39,7 @@
             left: 10%;
             width: 80%;
             height: 80%;
-            border: 16px solid lightblue;
+            border: 16px solid #F6F6F6;
             background-color: white;
             z-index: 1002;
             overflow: auto;
@@ -52,7 +52,7 @@
             left: 30%;
             width: 40%;
             height: 50%;
-            border: 16px solid lightblue;
+            border: 16px solid #F6F6F6;
             background-color: white;
             opacity: 1;
             z-index: 1002;

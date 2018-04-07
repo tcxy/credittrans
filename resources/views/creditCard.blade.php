@@ -26,7 +26,7 @@
             left: 0%;
             width: 100%;
             height: 100%;
-            background-color: black;
+            background-color: #333333;
             z-index: 1001;
             -moz-opacity: 0.8;
             opacity: 0.8;
@@ -39,7 +39,7 @@
             left: 10%;
             width: 80%;
             height: 80%;
-            border: 16px solid lightblue;
+            border: 16px solid #F6F6F6;
             background-color: white;
             z-index: 1002;
             overflow: auto;
@@ -52,7 +52,7 @@
             left: 30%;
             width: 40%;
             height: 50%;
-            border: 16px solid lightblue;
+            border: 16px solid #F6F6F6;
             background-color: white;
             opacity: 1;
             z-index: 1002;
@@ -109,7 +109,7 @@
                             var returnData = data['data'];
                             for (var index in returnData['accounts']) {
                                 var account = returnData['accounts'][index];
-                                $('select#accountid').append('<option class="loaded-accounts" value="' + account.accountid + '">' + account.holdername + '</option>');
+                                $('select#accountid').append('<option class="loaded-accounts" value=" + account.accountid + ">' + account.holdername + '</option>');
                             }
                         }
                     },
@@ -233,8 +233,6 @@
                 error: function (data) {
                     console.log("Connection failed");
                     console.log(data);
-                    loadCards();
-                    CloseDiv('newAccount','fade');
                 }
             });
         }
@@ -443,6 +441,25 @@
                 <label class="control-label" for="textarea">Spending Limit:</label>
                 <div class="controls">
                     <input type="text" class="input-xlarge" id="spendlinglimit" name="spendlinglimit"/>
+                </div>
+            </div>
+            <legend>New credit card</legend>
+            <div class="control-group">
+                <label class="control-label" for="textarea">Credit Number:</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="cardId" name="cardId"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="textarea">CVV Number:</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="csc" name="csc"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="textarea">Date of expiration:</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="expireDate" name="expireDate"/>
                 </div>
             </div>
             <div>
