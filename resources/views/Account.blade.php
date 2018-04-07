@@ -147,8 +147,67 @@
             }
         }
         function viewAccount(accountid) {
-            console.log('id:',accountid);
+            var id = parseInt(accountid);
             ShowDiv('view','fade');
+            $.ajax({
+                type:'get',
+                url:'/cardwithaccount',
+                data:{'id': parseInt(accountid)},
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        $('.loaded').remove();
+                        console.log("data",data);
+                        for (var index in data['data']) {
+                            var id = data['data'][index]['cardId'];
+                            var csc = data['data'][index]['csc'];
+                            var expireDate = data['data'][index]['expireDate'];
+                            console.log('id',id);
+                            $('#cards').append('<tr class="loaded"><th id="ID">' + id +
+                                '</th><th id="cardCSC">' + csc + '</th><th id="cardExpireDate">' + expireDate + '</th></tr>');
+
+                        }
+
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (e) {
+                    console.log("Connection failed");
+                    console.log(e);
+                }
+
+            });
+            $.ajax({
+                type:'get',
+                url:'/queueswithaccount',
+                data:{'id': parseInt(accountid)},
+                success: function (data) {
+                    if (data['code'] == '001') {
+                        $('.loaded-queue').remove();
+                        var returnData = data['data'][0]
+                        console.log("data",returnData);
+                        for (var index in returnData) {
+                            var transid = returnData[index]['id'];
+                            var message = returnData[index]['message'];
+                            var from = returnData[index]['from'];
+                            var card = returnData[index]['card'];
+                            console.log('id',id);
+                            $('#trans').append('<tr class="loaded-queue"><th id="transID">' + transid +
+                                '</th><th id="message">' + message + '</th><th id="transfrom">' + from + '<th id="transCard">' + card +
+                                '</th></tr>');
+                        }
+
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (e) {
+                    console.log("Connection failed");
+                    console.log(e);
+                }
+
+            });
+
         }
 
 
@@ -156,7 +215,7 @@
             $('.loaded-data').remove();
 
             for (var index in data['accounts']) {
-                console.log('account:' + data['accounts'][index]);
+                console.log('account:' ,data['accounts'][index]);
                 var account = data['accounts'][index];
                 $('#accounts').append('<tr class="loaded-data"><th id="holdername">' + account.holdername +
                     '</th><th id="phonenumber">' + account.phonenumber + '</th><th id="address">' + account.address +
@@ -374,11 +433,34 @@
 
 </div>
 <div id="fade" class="black_overlay"></div>
-<div id="view" class="white_content_small" style="opacity: 1">
+<div id="view" class="white_content" style="opacity: 1">
     <button type="button" class="btn btn-primary" id="back" onclick="back()">back</button>
     <div style="text-align: center; cursor: default; height: 40px;">
         <h2>View Account</h2>
     </div>
+    <legend>Card List:</legend>
+    <table id="cardsTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>cardID</th>
+                <th>csc</th>
+                <th>expireDate</th>
+            </tr>
+        </thead>
+        <tbody id="cards"></tbody>
+    </table>
+    <legend>Transactions List:</legend>
+    <table id="queuesTable" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>transactionID</th>
+            <th>message</th>
+            <th>from</th>
+            <th>card</th>
+        </tr>
+        </thead>
+        <tbody id="trans"></tbody>
+    </table>
 </div>
 </body>
 </html>

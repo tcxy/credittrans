@@ -69,4 +69,4 @@ Route::post('/addgateway', 'StationController@addGateway');
 
 Route::get('/queues', 'QueueController@updateQueue');
 Route::get('/getqueue', 'QueueController@getQueue');
-Route::get('queueswithaccount', 'QueueController@getQueueWithAccount');
+Route::get('/queueswithaccount', 'QueueController@getQueueWithAccount');
