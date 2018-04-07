@@ -288,7 +288,7 @@ class StationController extends Controller
         $pc = Station::find(1);
         $gateway = new Station;
         $gateway->ip = $ip;
-        $gateway->type = 0;
+        $gateway->type = 3;
         $gateway->limit = $request->input('gateway_limit');
         $gateway->status = true;
         $regions = Station::all()->groupBy('region')->count();
@@ -314,6 +314,6 @@ class StationController extends Controller
         $connection->weight = $request->input('weight_for_station');
         $connection->save();
 
-        return \response()->json(['code' => '001']);
+        return response()->json(['code' => '001']);
     }
 }
