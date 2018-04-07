@@ -959,12 +959,12 @@
             type: 'post',
             data: $form.serialize(),
             success:function (data) {
-                if(data['data']=='001'){
+                if(data['code']=='001'){
                     console.log('data:',data);
                     getNodesFunction();
                     CloseDiv('addRegion', 'fade');
                 } else {
-                    console.log(data['message']);
+                    console.log($form.serialize());
                 }
             },
             error:function (e) {

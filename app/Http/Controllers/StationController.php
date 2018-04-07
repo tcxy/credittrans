@@ -289,7 +289,6 @@ class StationController extends Controller
         $gateway = new Station;
         $gateway->ip = $ip;
         $gateway->type = 0;
-        $gateway->limit = $request->input('gateway_limit');
         $gateway->status = true;
         $regions = Station::all()->groupBy('region')->count();
         $gateway->region = $regions + 1;
@@ -304,7 +303,6 @@ class StationController extends Controller
         $station->ip = $request->input('stationIp');
         $station->region = $gateway->region;
         $station->status = true;
-        $station->limit = $request->input('station_limit');
         $station->type = 1;
         $station->save();
         $connection = new Connection;
