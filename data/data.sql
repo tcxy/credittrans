@@ -1,9 +1,8 @@
-use cs744;
--- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: cs744
+-- Host: localhost    Database: cs744
 -- ------------------------------------------------------
--- Server version	5.7.17
+-- Server version	5.7.21-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -79,6 +78,7 @@ CREATE TABLE `connections` (
   `from` int(11) NOT NULL,
   `to` int(11) NOT NULL,
   `weight` int(11) NOT NULL,
+  `region` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -89,7 +89,7 @@ CREATE TABLE `connections` (
 
 LOCK TABLES `connections` WRITE;
 /*!40000 ALTER TABLE `connections` DISABLE KEYS */;
-INSERT INTO `connections` VALUES (1,2,1,3),(2,3,1,2),(3,4,2,1),(4,5,2,3),(5,6,3,2),(6,7,2,4),(7,8,7,2),(8,13,7,3),(9,16,3,2),(10,17,3,3),(11,18,7,3),(12,19,18,2),(13,20,7,4);
+INSERT INTO `connections` VALUES (1,2,1,3,NULL),(2,3,1,2,NULL),(3,4,2,1,NULL),(4,5,2,3,NULL),(5,6,3,2,NULL),(6,7,2,4,NULL),(7,8,7,2,NULL),(8,13,7,3,NULL),(9,16,3,2,NULL),(10,17,3,3,NULL),(11,18,7,3,NULL),(12,19,18,2,NULL),(13,20,7,4,NULL);
 /*!40000 ALTER TABLE `connections` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ CREATE TABLE `creditaccounts` (
   `spendlinglimit` double NOT NULL,
   `balance` double NOT NULL,
   PRIMARY KEY (`accountid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +117,7 @@ CREATE TABLE `creditaccounts` (
 
 LOCK TABLES `creditaccounts` WRITE;
 /*!40000 ALTER TABLE `creditaccounts` DISABLE KEYS */;
-INSERT INTO `creditaccounts` VALUES (1,'Wei Du','6464319033','1824 La Crosse St',2000,49),(2,'Jason Peter','6084319023','1824 La Crossse St',200,800);
+INSERT INTO `creditaccounts` VALUES (1,'Wei Du','6464319033','1824 La Crosse St',2000,650);
 /*!40000 ALTER TABLE `creditaccounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,7 +143,7 @@ CREATE TABLE `creditcards` (
 
 LOCK TABLES `creditcards` WRITE;
 /*!40000 ALTER TABLE `creditcards` DISABLE KEYS */;
-INSERT INTO `creditcards` VALUES ('4340847829821680',762,'2019-03-01','2'),('4716459360888577',201,'2019-12-01','1');
+INSERT INTO `creditcards` VALUES ('4716459360888577',201,'2019-12-01','1');
 /*!40000 ALTER TABLE `creditcards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,7 +159,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -168,7 +168,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(6,'2018_02_04_044557_create_admin_table',2),(9,'2018  02  04  093520  questions',3),(10,'2018_02_18_045942_creat_creaditaccount_table',4),(12,'2018_02_18_050035_create_creditcard_table',5),(13,'2018_03_04_135808_create_station_table',6),(14,'2018_03_04_140140_create_connections_table',6);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(6,'2018_02_04_044557_create_admin_table',2),(9,'2018  02  04  093520  questions',3),(10,'2018_02_18_045942_creat_creaditaccount_table',4),(12,'2018_02_18_050035_create_creditcard_table',5),(13,'2018_03_04_135808_create_station_table',6),(14,'2018_03_04_140140_create_connections_table',6),(15,'2018_03_18_185300_create_queues_table',7);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,11 +239,15 @@ CREATE TABLE `queues` (
   `holder_name` varchar(255) NOT NULL,
   `amount` double NOT NULL,
   `result` varchar(255) DEFAULT NULL,
-  `status` int(11) NOT NULL COMMENT '1 - processing\n2 - returning\n3 - finish\n4 - stopped',
+  `status` int(11) NOT NULL,
   `current` int(11) NOT NULL,
-  `f_status` int(11) DEFAULT NULL,
+  `f_current` int(11) NOT NULL,
+  `merchant` varchar(255) NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `handled_at` timestamp NULL DEFAULT NULL,
+  `billing_address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,7 +256,6 @@ CREATE TABLE `queues` (
 
 LOCK TABLES `queues` WRITE;
 /*!40000 ALTER TABLE `queues` DISABLE KEYS */;
-INSERT INTO `queues` VALUES (1,'The card don\'t exist',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(2,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(3,'The card don\'t exist',1,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(4,'The card don\'t exist',1,'[{\"id\": 8, \"type\": \"1\"}, {\"edge\": {\"id\": 7, \"to\": 7, \"from\": 8, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','000000000000000','000','null',0,'Declined',3,0,NULL),(5,'The information of the card doesn\'t match with our records',1,'[{\"id\": 5, \"type\": \"1\"}, {\"edge\": {\"id\": 4, \"to\": 2, \"from\": 5, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','484','Wei',500,'Declined',3,0,NULL),(6,'The information of the card doesn\'t match with our records',17,'[{\"id\": 17, \"type\": \"1\"}, {\"edge\": {\"id\": 10, \"to\": 3, \"from\": 17, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','200','Wei Du',100,'Declined',3,0,NULL),(7,'The information of the card doesn\'t match with our records',6,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','200','Wei Du',100,'Declined',3,0,NULL),(8,'The transaction is finished',13,'[{\"id\": 13, \"type\": \"1\"}, {\"edge\": {\"id\": 8, \"to\": 7, \"from\": 13, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',120,'Approved',3,0,NULL),(9,'The nearest relay is inactivated, please resend a new transaction later',19,'[{\"id\": 19, \"type\": \"1\"}, {\"edge\": {\"id\": 12, \"to\": 18, \"from\": 19, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 18, \"type\": \"1\"}, {\"edge\": {\"id\": 11, \"to\": 7, \"from\": 18, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',120,NULL,3,1,NULL),(10,'The transaction is finished',19,'[{\"id\": 19, \"type\": \"1\"}, {\"edge\": {\"id\": 12, \"to\": 18, \"from\": 19, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 18, \"type\": \"1\"}, {\"edge\": {\"id\": 11, \"to\": 7, \"from\": 18, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',120,'Approved',3,0,NULL),(11,'The transaction is finished',8,'[{\"id\": 8, \"type\": \"1\"}, {\"edge\": {\"id\": 7, \"to\": 7, \"from\": 8, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',100,'Approved',3,0,NULL),(12,'The transaction is finished',6,'[{\"id\": 6, \"type\": \"1\"}, {\"edge\": {\"id\": 5, \"to\": 3, \"from\": 6, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',100,'Approved',3,0,NULL),(13,'The nearest relay is inactivated, please resend a new transaction later',19,'[{\"id\": 19, \"type\": \"1\"}, {\"edge\": {\"id\": 12, \"to\": 18, \"from\": 19, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 18, \"type\": \"1\"}, {\"edge\": {\"id\": 11, \"to\": 7, \"from\": 18, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',201,NULL,3,1,NULL),(14,'The transaction is finished',16,'[{\"id\": 16, \"type\": \"1\"}, {\"edge\": {\"id\": 9, \"to\": 3, \"from\": 16, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 3, \"type\": \"1\"}, {\"edge\": {\"id\": 2, \"to\": 1, \"from\": 3, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',201,'Approved',3,0,NULL),(15,'The transaction is finished',20,'[{\"id\": 20, \"type\": \"1\"}, {\"edge\": {\"id\": 13, \"to\": 7, \"from\": 20, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',100,'Approved',3,0,NULL),(16,'The transaction is finished',19,'[{\"id\": 19, \"type\": \"1\"}, {\"edge\": {\"id\": 12, \"to\": 18, \"from\": 19, \"weight\": 2}, \"type\": \"2\"}, {\"id\": 18, \"type\": \"1\"}, {\"edge\": {\"id\": 11, \"to\": 7, \"from\": 18, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 7, \"type\": \"1\"}, {\"edge\": {\"id\": 6, \"to\": 2, \"from\": 7, \"weight\": 4}, \"type\": \"2\"}, {\"id\": 2, \"type\": \"1\"}, {\"edge\": {\"id\": 1, \"to\": 1, \"from\": 2, \"weight\": 3}, \"type\": \"2\"}, {\"id\": 1, \"type\": \"1\"}]','4716459360888577','201','Wei Du',100,'Approved',3,0,NULL);
 /*!40000 ALTER TABLE `queues` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -269,7 +272,9 @@ CREATE TABLE `station` (
   `status` tinyint(1) NOT NULL,
   `ip` varchar(45) NOT NULL,
   `queues` json DEFAULT NULL,
-  `limit` int(11) DEFAULT NULL,
+  `limit` int(11) DEFAULT '3',
+  `region` int(11) DEFAULT '0',
+  `merchantName` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `station_ip_unique` (`ip`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
@@ -281,7 +286,7 @@ CREATE TABLE `station` (
 
 LOCK TABLES `station` WRITE;
 /*!40000 ALTER TABLE `station` DISABLE KEYS */;
-INSERT INTO `station` VALUES (1,0,1,'32.181.121.11','[]',NULL),(2,1,1,'151.250.93.7','[]',NULL),(3,1,1,'84.46.44.129','[]',NULL),(4,2,1,'140.76.60.104',NULL,NULL),(5,2,1,'73.173.4.239',NULL,NULL),(6,2,1,'56.136.162.39',NULL,NULL),(7,1,1,'41.123.143.237','[]',NULL),(8,2,1,'4.9.150.118',NULL,NULL),(13,2,1,'64.233.161.147',NULL,NULL),(16,2,1,'104.110.178.164',NULL,NULL),(17,2,1,'19.218.44.71',NULL,NULL),(18,1,1,'61.182.123.146','[]',NULL),(19,2,1,'64.233.161.148',NULL,NULL),(20,2,1,'85.56.18.242',NULL,NULL);
+INSERT INTO `station` VALUES (1,0,1,'32.181.121.11','[]',NULL,0,NULL),(2,1,1,'151.250.93.7','[]',NULL,0,NULL),(3,1,1,'84.46.44.129','[]',NULL,0,NULL),(4,2,1,'140.76.60.104',NULL,NULL,0,NULL),(5,2,1,'73.173.4.239',NULL,NULL,0,NULL),(6,2,1,'56.136.162.39',NULL,NULL,0,NULL),(7,1,1,'41.123.143.237','[]',NULL,0,NULL),(8,2,1,'4.9.150.118',NULL,NULL,0,NULL),(13,2,1,'64.233.161.147',NULL,NULL,0,NULL),(16,2,1,'104.110.178.164',NULL,NULL,0,NULL),(17,2,1,'19.218.44.71',NULL,NULL,0,NULL),(18,1,1,'61.182.123.146','[]',NULL,0,NULL),(19,2,1,'64.233.161.148','[]',NULL,0,NULL),(20,2,1,'85.56.18.242','[]',NULL,0,NULL);
 /*!40000 ALTER TABLE `station` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -347,4 +352,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-27 14:27:40
+-- Dump completed on 2018-04-07 16:28:47
