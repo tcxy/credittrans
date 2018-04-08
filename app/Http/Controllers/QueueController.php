@@ -186,4 +186,13 @@ class QueueController extends Controller
         return response()->json(['code' => '001', 'data' => $queues]);
     }
 
+    public function sendQueue(Request $request) {
+        $id = $request->input('id');
+        $queue = Queue::find($id);
+        $queue->status = 1;
+        $queue->save();
+
+        return response()->json(['code' => '001']);
+    }
+
 }

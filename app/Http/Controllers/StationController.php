@@ -210,7 +210,7 @@ class StationController extends Controller
         $queue->cvv = $cvv;
         $queue->holder_name = $holder_name;
         $queue->amount = $amount;
-        $queue->status = 1;
+        $queue->status = 0;
         $queue->current = 0;
         $queue->save();
 
