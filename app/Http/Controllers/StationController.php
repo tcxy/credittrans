@@ -147,10 +147,11 @@ class StationController extends Controller
 
     function shortest(Request $request) {
         $from_ip = $request->input('from');
-        $start_station = Station::where('ip', '=', $from_ip)->get()->first();
+        $merchantName = $request->input('mName');
+        $start_station = Station::where('merchantName', '=', $merchantName)->get()->first();
 
         if (!$start_station) {
-            return response()->json(['code' => '002', 'message' => 'The store with this ip doesn\'t exist']);
+            return response()->json(['code' => '002', 'message' => 'The store with this name doesn\'t exist']);
         }
 
         $to = Station::find(1)->ip;
