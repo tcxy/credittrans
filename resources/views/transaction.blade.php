@@ -198,12 +198,12 @@
     <div id="sendForm" style="margin-left:350px">
         <form id="send_form">
             <!--            <label>Ip<input type="text" id="from" name="from" style="margin-left: 112px"></label>-->
-            <label>Type:<select id="type" name="type" style="margin-left: 92px">
+            <label>Type:<select id="type" name="type" style="margin-left: 90px">
                     <option value="credit">Credit</option>
                     <option value="debit">Debit</option>
                 </select></label>
             <label>Merchant's Name:
-                <select id="mName" name="mName"style="margin-left: 10px;margin-top: 5px"></select>
+                <select id="mName" name="mName"style="margin-left: 4px;margin-top: 5px"></select>
             </label>
             <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
             <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
@@ -774,22 +774,22 @@
                                             if (status == 1 && type == 1) {
                                                 status = 'Activated';
                                                 document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + region
-                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input class="btn" id="inactivate" style="display:block" value="Inactivate">' +
+                                                    + '<br/>' + 'current limit:' + limit + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input class="btn" id="inactivate" style="display:block" value="Inactivate">' +
                                                     '<input class="btn" id="activate" style="display: none" value="Activate"></div>' + '</div>';
                                             } else if (status == 0 && type == 1) {
                                                 status = 'Inactivated';
                                                 document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + region
-                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input type="button" class="btn" id="inactivate" style="display:none" value="Inactivate">' +
+                                                    + '<br/>' + 'current limit:' + limit + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input type="button" class="btn" id="inactivate" style="display:none" value="Inactivate">' +
                                                     '<input class="btn" id="activate" style="display: block" value="Activate">' + '<input class="btn" id="changeLimit" style="display: block" value="Change Limit">' + '</div>' + '</div>';
                                             } else if (status == 1 && type == 3) {
                                                 status = 'Activated';
                                                 document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + region
-                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input class="btn" id="inactivate" style="display:block" value="Inactivate">' +
+                                                    + '<br/>' + 'ccurrent limit:' + limit + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input class="btn" id="inactivate" style="display:block" value="Inactivate">' +
                                                     '<input class="btn" id="activate" style="display: none" value="Activate"></div>' + '</div>';
                                             } else if (status == 0 && type == 3) {
                                                 status = 'Inactivated';
                                                 document.getElementById('viewNodes').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected node id :' + id + '<br/>' + 'selected node ip :' + ip + '<br/>' + 'regionId:' + region
-                                                    + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input type="button" class="btn" id="inactivate" style="display:none" value="Inactivate">' +
+                                                    + '<br/>' + 'current limit:' + limit + '<br/>' + 'status :' + status + '<br/>' + 'queues :' + data['data']['queues'] + '<br/><div id="buttonField"><input type="button" class="btn" id="inactivate" style="display:none" value="Inactivate">' +
                                                     '<input class="btn" id="activate" style="display: block" value="Activate">' + '<input class="btn" id="changeLimit" style="display: block" value="Change Limit">' + '</div>' + '</div>';
                                             }
                                             else {
@@ -975,7 +975,38 @@
 
                             }
                             else if(params.edges.length != 0){
+                                var edgeId = params.edges[0];
+                                document.getElementById('viewEdges').innerHTML = '<button type="button" class="btn btn-primary" id="back">' + 'back' + '</button>' + '<div id="view">' + 'selected edge id :' + edgeId + '<div id="buttonField"><input class="btn" id="inactivate" style="display:block" value="Inactivate">' +
+                                    '<input class="btn" id="activate" style="display: none" value="Activate"></div>' + '</div>';
                                 ShowDiv('viewEdges','fade');
+                                console.log('edgeid:',edgeId);
+
+                                $('#back').click(function () {
+                                    CloseDiv('viewEdges', 'fade');
+                                });
+                                $(document).ready(function () {
+                                    $('#inactivate').click(function () {
+                                        $('#inactivate').css('display', 'none');
+                                        $('#activate').css('display', 'block');
+                                        edges.update({
+                                            id: edgeId,
+                                            color: {
+                                                color: 'grey',
+                                                highlight: 'grey',
+                                                hover: 'grey',
+                                                opacity: 1,
+                                                inherited: false
+                                            }
+                                        });
+                                    })
+                                });
+                                $(document).ready(function () {
+                                    $('#activate').click(function () {
+                                        $('#inactivate').css('display', 'block');
+                                        $('#activate').css('display', 'none');
+                                    })
+                                });
+
                             }
 
                         });
@@ -1175,6 +1206,7 @@
     function sendNewTrans() {
         $form = $('#send_form');
         console.log($form.serialize());
+        console.log($('#mName').val());
         $.ajax({
             url: '/shortest',
             type: 'post',
@@ -1188,7 +1220,7 @@
 //                    queueData = data['data'];
 //
 //                    step = 0;
-//                    clock = setInterval("animation()", 2000);
+                    clock = setInterval("animation()", 2000);
 //                     show(data);
                 } else {
                     alert(data['message']);
@@ -1267,7 +1299,7 @@
                         var name = returnData[index]['merchantName'];
                         var type = returnData[index]['type'];
                         if(type == '2'){
-                            $('#mName').append('<option class="loaded-name" value=" + name + ">' + name + '</option>');
+                            $('#mName').append('<option class="loaded-name" value=' + name + '>' + name + '</option>');
                         }
                     }
                 }else {
@@ -1366,7 +1398,7 @@
             var val = $('#type').val();
             $('#self').remove();
             if(val == 'debit') {
-                $('#mName').append('<option class="loaded-name" id="self">SELF</option>');
+                $('#mName').append('<option class="loaded-name" value="self">SELF</option>');
             }
         })
         .trigger('change');

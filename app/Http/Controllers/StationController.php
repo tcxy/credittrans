@@ -191,6 +191,7 @@ class StationController extends Controller
         $card = $request->input('cardNum');
         $queue->billing_address = $request->input('address');
         $queue->create_at = date('Y-m-d H:i:s');
+        $queue->merchant = $merchantName;
         if (!$card) {
             $card = '000000000000000';
         }
