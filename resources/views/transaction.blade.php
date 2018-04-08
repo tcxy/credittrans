@@ -240,7 +240,7 @@
     <div style="text-align: center; cursor: default; height: 40px;">
         <h2>Limit Changing</h2>
     </div>
-    <div id="showLimit" style="text-align: center;height: 40px">Current Limit:10</div>
+    <div id="showLimit" style="text-align: center;height: 40px"></div>
     <div id="limitForm" style="margin-left:100px">
         <form id="limit_form">
             <label>New Limit:<input type="text" id="limit" name="limit"></label>
@@ -322,6 +322,20 @@
     var path;
     var step;
     var network;
+    var colorList = ["#473C8B", "#00008B", "#006400", "#8B1A1A", "#B22222", "#CD6600", "#708090", "#7D26CD", "#00688B", "#27408B"];
+    //                        for (var i = 0; i < colorList.length; i++) {
+    //                            var bgColor = getColorByRandom(colorList);
+    //                        }
+    var color1 = getColorByRandom(colorList);
+    var color2 = getColorByRandom(colorList);
+    var color3 = getColorByRandom(colorList);
+    var color4 = getColorByRandom(colorList);
+    var color5 = getColorByRandom(colorList);
+    var color6 = getColorByRandom(colorList);
+    var color7 = getColorByRandom(colorList);
+    var color8 = getColorByRandom(colorList);
+
+    var region;
 
     var username = sessionStorage.getItem("username");
     if (username == null) {
@@ -379,26 +393,13 @@
 
                         };
                         network = new vis.Network(container, data, options);
-                        var colorList = ["#473C8B", "#00008B", "#006400", "#8B1A1A", "#B22222", "#CD6600", "#708090", "#7D26CD", "#00688B", "#27408B"];
-//                        for (var i = 0; i < colorList.length; i++) {
-//                            var bgColor = getColorByRandom(colorList);
-//                        }
-
-                        var color1 = getColorByRandom(colorList);
-                        var color2 = getColorByRandom(colorList);
-                        var color3 = getColorByRandom(colorList);
-                        var color4 = getColorByRandom(colorList);
-                        var color5 = getColorByRandom(colorList);
-                        var color6 = getColorByRandom(colorList);
-                        var color7 = getColorByRandom(colorList);
-                        var color8 = getColorByRandom(colorList);
 
                         console.log('nodes:', nodes['_data']);
                         console.log('edges:', edges['_data']);
 //test graph
 //Draw graph
                         for (var index in nodes['_data']) {
-                            var region = nodes['_data'][index]['region'];
+                            region = nodes['_data'][index]['region'];
                             var id = nodes['_data'][index]['id'];
                             var type = nodes['_data'][index]['type'];
                             var status = nodes['_data'][index]['status'];
@@ -766,7 +767,7 @@
                                             var ip = data['data']['ip'];
                                             var status = data['data']['status'];
                                             var type = data['data']['type'];
-                                            var region = data['data']['type'];
+                                            var region = data['data']['region'];
                                             var limit = data['data']['limit'];
                                             var merchantName = data['data']['merchantName'];
                                             console.log('data:', data);
@@ -817,10 +818,14 @@
                                                             $('#activate').css('display', 'block');
                                                             console.log(id);
                                                             nodes.update({
-                                                                id: id,
-                                                                color: {
+                                                                id: id, color: {
+                                                                    border: 'grey',
                                                                     background: 'grey',
-                                                                    highlight: {background: 'grey'}
+                                                                    highlight: {
+                                                                        border: 'grey',
+                                                                        background: 'grey'
+                                                                    },
+                                                                    hover: {border: 'grey', background: 'grey'}
                                                                 }
                                                             });
                                                             CloseDiv('viewNodes', 'fade');
@@ -840,22 +845,115 @@
                                                         console.log(data);
                                                     },
                                                     success: function (data) {
-                                                        console.log(data);
+                                                        console.log("data:",data);
                                                         if (data['code'] == '001') {
+                                                            console.log('region :',region);
                                                             $('#inactivate').css('display', 'block');
                                                             $('#activate').css('display', 'none');
-                                                            console.log(id);
-                                                            nodes.update({
-                                                                id: id, color: {
-                                                                    border: '#2B7CE9',
-                                                                    background: '#97C2FC',
-                                                                    highlight: {
-                                                                        border: '#2B7CE9',
-                                                                        background: '#D2E5FF'
-                                                                    },
-                                                                    hover: {border: '#2B7CE9', background: '#D2E5FF'}
-                                                                }
-                                                            });
+                                                            console.log("id:",id);
+                                                               if(region=='1'){
+                                                                   nodes.update({
+                                                                       id: id, color: {
+                                                                           border: color1,
+                                                                           background: color1,
+                                                                           highlight: {
+                                                                               border: color1,
+                                                                               background: color1
+                                                                           },
+                                                                           hover: {border: color1, background: color1}
+                                                                       }
+                                                                   });
+                                                               }
+                                                               else if(region=='2'){
+                                                                   nodes.update({
+                                                                       id: id, color: {
+                                                                           border: color2,
+                                                                           background: color2,
+                                                                           highlight: {
+                                                                               border: color2,
+                                                                               background: color2
+                                                                           },
+                                                                           hover: {border: color2, background: color2}
+                                                                       }
+                                                                   });
+                                                               }
+                                                            else if(region=='3'){
+                                                                nodes.update({
+                                                                    id: id, color: {
+                                                                        border: color3,
+                                                                        background: color3,
+                                                                        highlight: {
+                                                                            border: color3,
+                                                                            background: color3
+                                                                        },
+                                                                        hover: {border: color3, background: color3}
+                                                                    }
+                                                                });
+                                                            }
+                                                            else if(region=='4'){
+                                                                nodes.update({
+                                                                    id: id, color: {
+                                                                        border: color4,
+                                                                        background: color4,
+                                                                        highlight: {
+                                                                            border: color4,
+                                                                            background: color4
+                                                                        },
+                                                                        hover: {border: color4, background: color4}
+                                                                    }
+                                                                });
+                                                            }else if(region=='5'){
+                                                                nodes.update({
+                                                                    id: id, color: {
+                                                                        border: color5,
+                                                                        background: color5,
+                                                                        highlight: {
+                                                                            border: color5,
+                                                                            background: color5
+                                                                        },
+                                                                        hover: {border: color5, background: color5}
+                                                                    }
+                                                                });
+                                                            }
+                                                            else if(region=='6'){
+                                                                nodes.update({
+                                                                    id: id, color: {
+                                                                        border: color6,
+                                                                        background: color6,
+                                                                        highlight: {
+                                                                            border: color6,
+                                                                            background: color6
+                                                                        },
+                                                                        hover: {border: color6, background: color6}
+                                                                    }
+                                                                });
+                                                            }
+                                                            else if(region=='7'){
+                                                                nodes.update({
+                                                                    id: id, color: {
+                                                                        border: color7,
+                                                                        background: color7,
+                                                                        highlight: {
+                                                                            border: color7,
+                                                                            background: color7
+                                                                        },
+                                                                        hover: {border: color7, background: color7}
+                                                                    }
+                                                                });
+                                                            }
+                                                            else if(region=='8'){
+                                                                nodes.update({
+                                                                    id: id, color: {
+                                                                        border: color8,
+                                                                        background: color8,
+                                                                        highlight: {
+                                                                            border: color8,
+                                                                            background: color8
+                                                                        },
+                                                                        hover: {border: color8, background: color8}
+                                                                    }
+                                                                });
+                                                            }
                                                             CloseDiv('viewNodes', 'fade');
                                                         }
                                                     }
@@ -864,6 +962,7 @@
                                             })
                                         });
                                         $('#changeLimit').click(function () {
+                                            document.getElementById('showLimit').innerHTML = 'Current Limit:' + limit;
                                             CloseDiv('viewNodes','fade');
                                             ShowDiv('limitChanging','fade');
                                         });
@@ -1160,7 +1259,7 @@
             url: "/graph",
             success: function(data){
                 if (data['code'] == '001') {
-//                    $('select#mName').empty();
+                    $('select#mName').empty();
                     var payType = document.getElementById('type').value;
                     console.log('type:',payType);
                     var returnData = data['data']['nodes'];
