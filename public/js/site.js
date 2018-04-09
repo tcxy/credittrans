@@ -22,7 +22,7 @@
                 i = !a.nodeName || d.inArray(a.nodeName.toLowerCase(), ['iframe', '#document', 'html', 'body']) != -1;
             if (!i) return a;
             var e = (a.contentWindow || a).document || a.ownerDocument || a;
-            return d.browser.safari || e.compatMode == 'BackCompat' ? e.body : e.documentElement
+            // return d.browser.safari || e.compatMode == 'BackCompat' ? e.body : e.documentElement
         })
     };
     d.fn.scrollTo = function (n, j, b) {

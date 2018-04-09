@@ -88,8 +88,8 @@
                         if (data['code'] == '001') {
                             console.log(data['data']);
                             var returnData = data['data'];
-
                             loadList(returnData);
+                            loadDate();
                         }
                     },
                     error: function (data) {
@@ -157,23 +157,28 @@
             form.submit(function (e) {
                 e.preventDefault();
             });
-
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function (data) {
-                    if (data['code'] == '001') {
-                        loadCards();
-                    } else {
-                        alert(data['message']);
+            var validate_card = validateCardInput();
+            if(validate_card==true){
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (data) {
+                        if (data['code'] == '001') {
+                            loadCards();
+                        } else {
+                            alert(data['message']);
+                        }
+                    },
+                    error: function (data) {
+                        console.log("submit-form:",form.serialize());
+                        console.log(data);
                     }
-                },
-                error: function (data) {
-                    console.log("Connection failed");
-                    console.log(data);
-                }
-            });
+                });
+            }else {
+                alert('input required');
+            }
+
         }
 
         function loadList(data) {
@@ -182,9 +187,9 @@
             for (var index in data['cards']) {
                 console.log('card:' + data['cards'][index]);
                 var card = data['cards'][index];
-                $('#cards').append('<tr class="loaded-data"><th id="cardId">' + card.cardId +
-                    '</th><th id="accountid">' + card.accountid + '</th><th id="csc">' + card.csc +
-                    '</th><th id="expireDate">' + card.expireDate + '</th>' +
+                $('#cards').append('<tr class="loaded-data"><th>' + card.cardId +
+                    '</th><th>' + card.accountid + '</th><th>' + card.csc +
+                    '</th><th>' + card.expireDate + '</th>' +
                     '<td>' +
                     '                <a href="#" class="delete-link" onclick="editCard(this,' + (parseInt(index) + 1) + ')">edit</a>&nbsp;&nbsp;&nbsp;\n' +
                     '                <a href="#" class="delete-link" onclick="deleteCard(' + card.cardId + ',' + card.accountid + ')">delete</a>' + '</td></tr>');
@@ -197,6 +202,19 @@
                 current_page: data['current_page'],
                 call_back: query
             });
+        }
+        function loadDate() {
+            $('select.year').empty();
+            $('select.month').empty();
+            for (var y=19;y<=70;y++){
+                $('.year').append('<option class="loaded-year" value=' + y + '>' + y + '</option>');
+            }
+            for (var m=1;m<=9;m++){
+                $('.month').append('<option class="loaded-month" value='+'0'+ m +'>' + '0' + m + '</option>');
+            }
+            $('.month').append('<option class="loaded-month" value=10>' + '10' + '</option>');
+            $('.month').append('<option class="loaded-month" value=11>' + '11' + '</option>');
+            $('.month').append('<option class="loaded-month" value=12>' + '12' + '</option>');
         }
         function ShowDiv(show_div, bg_div) {
             document.getElementById(show_div).style.display = 'block';
@@ -217,24 +235,70 @@
         function addAccount() {
             $form = $('#acc_form');
             console.log($form.serialize());
-            $.ajax({
-                type: 'post',
-                url: '/addaccount',
-                data: $form.serialize(),
-                success: function (data) {
-                    if (data['code'] == '001') {
-                        alert('added');
-                        loadCards();
-                        CloseDiv('newAccount','fade');
-                    } else {
-                        alert(data['message']);
+            var validate_acc = validateAccInput();
+            if(validate_acc==true){
+                $.ajax({
+                    type: 'post',
+                    url: '/addaccount',
+                    data: $form.serialize(),
+                    success: function (data) {
+                        if (data['code'] == '001') {
+                            alert('added');
+                            loadCards();
+                            CloseDiv('newAccount','fade');
+                        } else {
+                            alert(data['message']);
+                        }
+                    },
+                    error: function (data) {
+                        console.log("submit-form:",$form.serialize());
+                        console.log(data);
                     }
-                },
-                error: function (data) {
-                    console.log("Connection failed");
-                    console.log(data);
-                }
-            });
+                });
+            }else{
+                alert('input required');
+            }
+
+        }
+        function validateCardInput() {
+            var accountid = document.getElementById('accountid').value;
+            var cardId = document.getElementById('cardId').value;
+            var csc = document.getElementById('csc').value;
+            if(accountid==''){
+                return false;
+            }else if(cardId==''){
+                return false;
+            }else if(csc==''){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        function validateAccInput() {
+            var holdername = document.getElementById('holdername').value;
+            var phonenumber = document.getElementById('phonenumber').value;
+            var address = document.getElementById('address').value;
+            var balance = document.getElementById('balance').value;
+            var spendlinglimit = document.getElementById('spendlinglimit').value;
+            var cardId_account = document.getElementById('cardId-account').value;
+            var csc_account = document.getElementById('csc-account').value;
+            if(holdername==''){
+                return false;
+            }else if(phonenumber==''){
+                return false;
+            }else if(address==''){
+                return false;
+            }else if(balance==''){
+                return false;
+            }else if(spendlinglimit==''){
+                return false;
+            }else if(cardId_account==''){
+                return false;
+            }else if(csc_account==''){
+                return false;
+            }else {
+                return true;
+            }
         }
         document.onkeydown = function (event) {
             var e = event || window.event || arguments.callee.caller.arguments[0];
@@ -282,54 +346,14 @@
     <a class="toggle-link" href="#new-file">Create new credit card</a>
     <form id="new-file" class="form-horizontal hidden" method="post" action="{{ route('credit.addcard') }}">
         <fieldset>
-            <legend>New credit card</legend>
             <div class="control-group">
                 <label class="control-label">Account number:</label>
                 <div class="controls">
                     <select style="width: 284px" id="accountid" name="accountid">
                     </select>
                     <a href="#" onclick="ShowDiv('newAccount','fade')">New account</a>
-
-                    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                        <div class="modal-dialog modal-sm" role="document">
-                            <div class="modal-content">
-                                <legend style="text-align: center">New Account</legend>
-                                <div class="control-group">
-                                    <label class="control-label" for="textarea">Holder name:</label>
-                                    <div class="controls">
-                                        <input type="text" class="input-xlarge" id="holdername" name="holdername"/>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="textarea">Phone Number:</label>
-                                    <div class="controls">
-                                        <input type="tel" class="input-xlarge" id="phonenumber" name="phonenumber"/>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="textarea">Address:</label>
-                                    <div class="controls">
-                                        <input type="tel" class="input-xlarge" id="address" name="address"/>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="textarea">Balance:</label>
-                                    <div class="controls">
-                                        <input type="text" class="input-xlarge" id="balance" name="balance"/>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="textarea">Spending Limit:</label>
-                                    <div class="controls">
-                                        <input type="text" class="input-xlarge" id="spendlinglimit" name="spendlinglimit"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
-            <legend>New credit card</legend>
             <div class="control-group">
                 <label class="control-label" for="textarea">Credit Number:</label>
                 <div class="controls">
@@ -345,11 +369,11 @@
             <div class="control-group">
                 <label class="control-label" for="textarea">Date of expiration:</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="expireDate" name="expireDate"/>
+                    <select class="month" name="month" style="width: 80px"></select><select class="year" name="year" style="width: 80px;margin-left: 10px"></select>
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" class="btn btn-primary" onclick="addCard()">Summit</button>
+                <button type="button" class="btn btn-primary" onclick="addCard()">Submit</button>
                 <input type="button" class="btn" id="cancel" value="Cancel"/>
             </div>
         </fieldset>
@@ -381,28 +405,28 @@
     </form>
 
 
-    <div class="pagination">
-        <ul>
-            <li class="disabled">
-                <a href="#">&laquo;</a>
-            </li>
-            <li class="active">
-                <a href="#">1</a>
-            </li>
-            <li>
-                <a href="#">2</a>
-            </li>
-            <li>
-                <a href="#">3</a>
-            </li>
-            <li>
-                <a href="#">4</a>
-            </li>
-            <li>
-                <a href="#">&raquo;</a>
-            </li>
-        </ul>
-    </div>
+<!--    <div class="pagination">-->
+<!--        <ul>-->
+<!--            <li class="disabled">-->
+<!--                <a href="#">&laquo;</a>-->
+<!--            </li>-->
+<!--            <li class="active">-->
+<!--                <a href="#">1</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#">2</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#">3</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#">4</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#">&raquo;</a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </div>-->
 
 </div>
 <div id="fade" class="black_overlay"></div>
@@ -447,23 +471,23 @@
             <div class="control-group">
                 <label class="control-label" for="textarea">Credit Number:</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="cardId" name="cardId"/>
+                    <input type="text" class="input-xlarge" id="cardId-account" name="cardId"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">CVV Number:</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="csc" name="csc"/>
+                    <input type="text" class="input-xlarge" id="csc-account" name="csc"/>
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="textarea">Date of expiration:</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="expireDate" name="expireDate"/>
+                    <select class="month" name="month" style="width: 80px"></select><select class="year" name="year" style="width: 80px;margin-left: 10px"></select>
                 </div>
             </div>
             <div>
-                <button type="button" class="btn btn-primary" style="margin-left: 80px" onclick="addAccount()">Summit</button>
+                <button type="button" class="btn btn-primary" style="margin-left: 80px" onclick="addAccount()">Submit</button>
                 <button type="button" class="btn" style="margin-left: 20px" onclick="back()">Cancel</button>
             </div>
         </form>

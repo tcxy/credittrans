@@ -106,8 +106,8 @@
                                  if (data['code'] == '001') {
                                      console.log(data['data']);
                                      var returnData = data['data'];
-
                                      loadList(returnData);
+                                     loadDate();
                                  }
                              },
                              error: function (data) {
@@ -235,30 +235,48 @@
                 call_back: query
             });
         }
+        function loadDate() {
+            $('select#year').empty();
+            $('select#month').empty();
+            for (var y=19;y<=70;y++){
+                $('#year').append('<option class="loaded-year" value=' + y + '>' + y + '</option>');
+            }
+            for (var m=1;m<=9;m++){
+                $('#month').append('<option class="loaded-month" value='+'0'+ m +'>' + '0' + m + '</option>');
+            }
+            $('#month').append('<option class="loaded-month" value=10>' + '10' + '</option>');
+            $('#month').append('<option class="loaded-month" value=11>' + '11' + '</option>');
+            $('#month').append('<option class="loaded-month" value=12>' + '12' + '</option>');
+        }
 
         function addAccount() {
             var form = $('#new-file');
-
+            var validate = validateInput();
             form.submit(function (e) {
                 e.preventDefault();
             });
 
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function (data) {
-                    if (data['code'] == '001') {
-                        loadAccounts();
-                    } else {
-                        alert(data['message']);
+            if(validate == true){
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (data) {
+                        if (data['code'] == '001') {
+                            loadAccounts();
+                        } else {
+                            alert(data['message']);
+                        }
+                    },
+                    error: function (data) {
+                        console.log('form:',form.serialize());
+                        console.log(data);
                     }
-                },
-                error: function (data) {
-                    console.log("Connection failed");
-                    console.log(data);
-                }
-            });
+                });
+            }else {
+                alert('input required');
+            }
+
         }
         function ShowDiv(show_div, bg_div) {
             document.getElementById(show_div).style.display = 'block';
@@ -275,6 +293,33 @@
         }
         function back() {
             CloseDiv('view','fade');
+        }
+        function validateInput() {
+            var holdername = document.getElementById('holdername').value;
+            var phonenumber = document.getElementById('phonenumber').value;
+            var address = document.getElementById('address').value;
+            var balance = document.getElementById('balance').value;
+            var spendlinglimit = document.getElementById('spendlinglimit').value;
+            var cardId = document.getElementById('cardId').value;
+            var csc = document.getElementById('csc').value;
+            if(holdername==''){
+                return false;
+            }
+            else if (phonenumber==''){
+                return false;
+            }else if (address==''){
+                return false;
+            }else if (balance==''){
+                return false;
+            }else if (spendlinglimit==''){
+                return false;
+            }else if (cardId==''){
+                return false;
+            }else if (csc==''){
+                return false;
+            }else {
+                return true;
+            }
         }
         document.onkeydown = function (event) {
             var e = event || window.event || arguments.callee.caller.arguments[0];
@@ -368,11 +413,11 @@
             <div class="control-group">
                 <label class="control-label" for="textarea">Date of expiration:</label>
                 <div class="controls">
-                    <input type="text" class="input-xlarge" id="expireDate" name="expireDate"/>
+                   <select id="month" name="month" style="width: 80px"></select><select id="year" name="year" style="width: 80px;margin-left: 10px"></select>
                 </div>
             </div>
             <div class="form-actions">
-                <button type="button" class="btn btn-primary" onclick="addAccount()">Summit</button>
+                <button type="button" class="btn btn-primary" onclick="addAccount()">Submit</button>
                 <input type="button" class="btn" value="Cancel"/>
             </div>
         </fieldset>
@@ -408,28 +453,28 @@
     </form>
 
 
-    <div class="pagination">
-        <ul>
-            <li class="disabled">
-                <a href="#">&laquo;</a>
-            </li>
-            <li class="active">
-                <a href="#">1</a>
-            </li>
-            <li>
-                <a href="#">2</a>
-            </li>
-            <li>
-                <a href="#">3</a>
-            </li>
-            <li>
-                <a href="#">4</a>
-            </li>
-            <li>
-                <a href="#">&raquo;</a>
-            </li>
-        </ul>
-    </div>
+<!--    <div class="pagination">-->
+<!--        <ul>-->
+<!--            <li class="disabled">-->
+<!--                <a href="#">&laquo;</a>-->
+<!--            </li>-->
+<!--            <li class="active">-->
+<!--                <a href="#">1</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#">2</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#">3</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#">4</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#">&raquo;</a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </div>-->
 
 </div>
 <div id="fade" class="black_overlay"></div>

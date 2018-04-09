@@ -164,7 +164,6 @@
             <input type="hidden" name="type" value="1">
             <label>Relay Station Ip:<input type="text" id="relayID1"
                                            name="ip"></label>
-            <!--            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" style="margin-left: 8px"></label>-->
             <label>ConnectedTo Ip:<input type="text" id="connectedTo" name="to"></label>
             <label>Weight:<input type="text" id="weight" name="weight" style="margin-left: 77px;"></label>
             <div id="buttonField">
@@ -180,11 +179,11 @@
     </div>
     <div id="storeForm" style="margin-left: 50px">
         <form id="store_form">
-            <label>Relay Station Ip:<input type="text" id="relayID2" name="to"></label>
-            <label>Store Ip:<input type="text" id="storeID2" name="ip" style="margin-left: 70px;"></label>
-            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName"
+            <label>Relay Station Ip:<input type="text" id="relayID2" class="store_input" name="to"></label>
+            <label>Store Ip:<input type="text" id="storeID2" name="ip" class="store_input" style="margin-left: 70px;"></label>
+            <label>Merchant's Name:<input type="text" id="merchantName" name="merchantName" class="store_input"
                                            style="margin-left: 10px;margin-top: 5px"></label>
-            <label>Weight:<input type="text" id="weight2" name="weight" style="margin-left: 77px;"></label>
+            <label>Weight:<input type="text" id="weight2" name="weight" class="store_input" style="margin-left: 77px;"></label>
             <input name="type" type="hidden" value="2">
             <input type="button" value="Submit" class="btn btn-primary" id="submit2" onclick="addNewStore()">
             <input type="button" value="Clear" class="btn" id="clear2" onclick="CloseDiv('newStore','fade')">
@@ -203,11 +202,11 @@
                     <option value="debit">Debit</option>
                 </select></label>
             <label>Merchant's Name:
-                <select id="mName" name="mName"style="margin-left: 4px;margin-top: 5px"></select>
+                <select id="mName" name="mName" style="margin-left: 4px;margin-top: 5px"></select>
             </label>
             <label>Credit Card:<input type="text" id="cardNum" name='cardNum' style="margin-left: 48px"/></label>
             <label>CVV:<input type="text" id="cvv" name="cvv" style="margin-left: 94px"></label>
-            <label>Expiration Date:<input type="text" id="expire" name="expire" style="margin-left: 24px"></label>
+            <label>Expiration Date:<select id="month" name="month" style="width: 80px;margin-left: 24px"></select><select id="year" name="year" style="width: 80px;margin-left: 10px"></select></label>
             <label>Billing Address:<input type="text" id="billing" name="billing" style="margin-left: 27px"></label>
             <label>Holder Name:<input type="text" id="holder_name" name="holder_name"
                                       style="margin-left: 38px"></label>
@@ -366,6 +365,7 @@
                         loadCards();
                         loadQueues();
                         loadMerchantName();
+                        loadDate();
                         var jsondata = data['data'];
                         nodes = new vis.DataSet(jsondata['nodes']);
                         edges = new vis.DataSet(jsondata['edges']);
@@ -1023,69 +1023,86 @@
     function addRelay() {
         $form = $('#relay_form');
         console.log($form.serialize());
-        $.ajax({
-            url: '/addstation',
-            type: 'post',
-            data: $form.serialize(),
-            success: function (data) {
-                console.log(data);
-                if (data['code'] == '001') {
-                    getNodesFunction();
-                    CloseDiv('newRelay', 'fade');
+        var validate_relay = validateRelay();
+        console.log('validate:',validate_relay);
+        if(validate_relay==true){
+            $.ajax({
+                url: '/addstation',
+                type: 'post',
+                data: $form.serialize(),
+                success: function (data) {
+                    console.log(data);
+                    if (data['code'] == '001') {
+                        getNodesFunction();
+                        CloseDiv('newRelay', 'fade');
+                    }
+                    else alert(data['message']);
+                },
+                error: function (e) {
+                    console.log(e);
                 }
-                else alert(data['message']);
-            },
-            error: function (e) {
-                console.log(e);
-            }
-        })
-
+            })
+        }else{
+            alert('input required');
+        }
     }
 
     // add new store
+
     function addNewStore() {
         console.log(nodes);
         $form = $('#store_form');
         console.log($form.serialize());
-        $.ajax({
-            url: "/addstation",
-            type: 'post',
-            data: $form.serialize(),
-            success: function (data) {
-                console.log(data);
-                if (data['code'] == '001') {
-                    getNodesFunction();
-                    CloseDiv('newStore', 'fade');
-                } else {
-                    alert(data['message']);
+        var validate_store = validateStore();
+        if(validate_store==true){
+            $.ajax({
+                url: "/addstation",
+                type: 'post',
+                data: $form.serialize(),
+                success: function (data) {
+                    console.log(data);
+                    if (data['code'] == '001') {
+                        getNodesFunction();
+                        CloseDiv('newStore', 'fade');
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
                 }
-            },
-            error: function (e) {
-                console.log(e);
-            }
-        });
+            });
+        }else {
+            alert('input required');
+        }
+
     }
 
     function addRegion() {
         $form = $('#region_form');
         console.log($form.serialize());
-        $.ajax({
-            url: "/addgateway",
-            type: 'post',
-            data: $form.serialize(),
-            success:function (data) {
-                if(data['code']=='001'){
-                    console.log('data:',data);
-                    getNodesFunction();
-                    CloseDiv('addRegion', 'fade');
-                } else {
-                    console.log($form.serialize());
+        var validate_region = validateRegion();
+        if(validate_region==true){
+            $.ajax({
+                url: "/addgateway",
+                type: 'post',
+                data: $form.serialize(),
+                success:function (data) {
+                    if(data['code']=='001'){
+                        console.log('data:',data);
+                        getNodesFunction();
+                        CloseDiv('addRegion', 'fade');
+                    } else {
+                        console.log($form.serialize());
+                    }
+                },
+                error:function (e) {
+                    console.log(e);
                 }
-            },
-            error:function (e) {
-                console.log(e);
-            }
-        })
+            })
+        }else{
+            alert('input required');
+        }
     }
 
     function animation() {
@@ -1206,32 +1223,29 @@
     function sendNewTrans() {
         $form = $('#send_form');
         console.log($form.serialize());
-        console.log($('#mName').val());
-        $.ajax({
-            url: '/shortest',
-            type: 'post',
-            data: $form.serialize(),
-            success: function (data) {
-                console.log($form.serialize());
-                var jsondata = data['data'];
-                if (data['code'] == '001') {
-                    CloseDiv('newTrans', 'fade');
-//                    path = data['data']['path'];
-//                    queueData = data['data'];
-//
-//                    step = 0;
-                    clock = setInterval("animation()", 2000);
-//                     show(data);
-                } else {
-                    alert(data['message']);
+        var validate_trans = validateTrans();
+        if(validate_trans==true){
+            $.ajax({
+                url: '/shortest',
+                type: 'post',
+                data: $form.serialize(),
+                success: function (data) {
+                    console.log($form.serialize());
+                    var jsondata = data['data'];
+                    if (data['code'] == '001') {
+                        CloseDiv('newTrans', 'fade');
+//                        clock = setInterval("animation()", 2000);
+                    } else {
+                        alert(data['message']);
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
                 }
-            },
-            error: function (e) {
-                console.log(e);
-            }
-        });
-
-
+            });
+        }else{
+            alert('input required');
+        }
     }
 
 
@@ -1311,6 +1325,20 @@
             }
     });
     }
+    function loadDate() {
+        $('select#year').empty();
+        $('select#month').empty();
+        for (var y=19;y<=70;y++){
+            $('#year').append('<option class="loaded-year" value=' + y + '>' + y + '</option>');
+        }
+        for (var m=1;m<=9;m++){
+            $('#month').append('<option class="loaded-month" value='+'0'+ m +'>' + '0' + m + '</option>');
+        }
+        $('#month').append('<option class="loaded-month" value=10>' + '10' + '</option>');
+        $('#month').append('<option class="loaded-month" value=11>' + '11' + '</option>');
+        $('#month').append('<option class="loaded-month" value=12>' + '12' + '</option>');
+
+    }
     function loadList(data) {
         $('.loaded-data').remove();
         var index;
@@ -1364,6 +1392,74 @@
             }
         });
     }
+    function validateRelay(){
+        var relayID1 = document.getElementById('relayID1').value;
+        var connectedTo = document.getElementById('connectedTo').value;
+        var weight = document.getElementById('weight').value;
+        if(relayID1==''){
+            return false;
+        }else if(connectedTo==''){
+            return false;
+        }else if(weight==''){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    function validateStore(){
+        var relayID2 = document.getElementById('relayID2').value;
+        var storeID2 = document.getElementById('storeID2').value;
+        var merchantName = document.getElementById('merchantName').value;
+        var weight2 = document.getElementById('weight2').value;
+        if(relayID2==''){
+            return false;
+        }else if(storeID2==''){
+            return false;
+        }else if(merchantName==''){
+            return false;
+        }else if(weight2==''){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    function validateTrans() {
+        var cardNum = document.getElementById('cardNum').value;
+        var cvv = document.getElementById('cvv').value;
+        var billing = document.getElementById('billing').value;
+        var holder_name = document.getElementById('holder_name').value;
+        var amount = document.getElementById('amount').value;
+        if(cardNum==''){
+            return false;
+        }else if(cvv==''){
+            return false;
+        }else if(billing==''){
+            return false;
+        }else if(holder_name==''){
+            return false;
+        }else if(amount==''){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    function validateRegion() {
+        var ip = document.getElementById('ip').value;
+        var weight_for_pc = document.getElementById('weight_for_pc').value;
+        var stationIp = document.getElementById('stationIp').value;
+        var weight_for_station = document.getElementById('weight_for_station').value;
+        if(ip==''){
+            return false;
+        }else if(weight_for_station==''){
+            return false;
+        }else if(stationIp==''){
+            return false;
+        }else if(weight_for_pc==''){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 
     function getColorByRandom(colorList) {
@@ -1372,14 +1468,6 @@
         colorList.splice(colorIndex, 1);
         return color;
     }
-
-
-    //    function randomColor(){
-    //        var r=Math.floor(Math.random()*256);
-    //        var g=Math.floor(Math.random()*256);
-    //        var b=Math.floor(Math.random()*256);
-    //        return "rgb("+r+','+g+','+b+")";
-    //    }
     document.onkeydown = function (event) {
         var e = event || window.event || arguments.callee.caller.arguments[0];
         if (e && e.keyCode == 27) {
@@ -1387,7 +1475,6 @@
             CloseDiv('newTrans', 'fade');
             CloseDiv('newStore', 'fade');
             CloseDiv('newRelay', 'fade');
-            CloseDiv('viewEdges', 'fade');
             CloseDiv('viewEdges', 'fade');
             CloseDiv('addRegion', 'fade');
         }
@@ -1398,7 +1485,7 @@
             var val = $('#type').val();
             $('#self').remove();
             if(val == 'debit') {
-                $('#mName').append('<option class="loaded-name" value="self">SELF</option>');
+                $('#mName').append('<option class="loaded-name" value="self" id="self">SELF</option>');
             }
         })
         .trigger('change');
