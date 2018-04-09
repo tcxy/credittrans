@@ -66,6 +66,7 @@ Route::get('/stationinfo', 'StationController@stationInfo');
 Route::post('/activate', 'StationController@activateStation');
 Route::post('/inactivate', 'StationController@inActivateStation');
 Route::post('/addgateway', 'StationController@getGateway');
+Route::post('/updatelimit', 'StationController@changeLimit');
 
 Route::get('/queues', 'QueueController@updateQueue');
 Route::get('/getqueue', 'QueueController@getQueue');

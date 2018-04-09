@@ -316,4 +316,14 @@ class StationController extends Controller
 
         return response()->json(['code' => '001']);
     }
+
+    public function changeLimit(Request $request) {
+        $id = $request->input('id');
+        $station = Station::find($id);
+        $station->limit = intval($request->input('limit'));
+
+        $station->save();
+
+        return response()->json(['code' => '001']);
+    }
 }
